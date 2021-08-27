@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5音视频播放测试</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            place-content: center;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #video_play {
+            width: 300px;
+            height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <label>音频：</label><input type="file" name="audioInput" id="audio_input" accept="audio/*">
+            <!-- capture="microphone" -->
+            <label>视频：</label><input type="file" name="videoInput" id="video_input" accept="video/*">
+            <!-- capture="camcorder" -->
+        </div>
+        <div class="row">
+            <audio id="audio_play" controls>当前浏览器不支持HTML5音频组件</audio>
+            <video id="video_play" controls>当前浏览器不支持HTML5视频组件</video>
+        </div>
+        <div class="row">
+            <p id="console_output">
+                输出：&#13;&#10;
+            </p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function onInputVideoChange(e) {
+            outPutToText(e)
+            let file = e.target.files[0];
+            outPutToText(`${file.name} ${file.size / 1024 / 1024}MB ${file.type}`);
+            let url = URL.createObjectURL(file);
+            outPutToText(url);
+            videoPlay.src = url;
+        }
+
+        function onInputAudioChange(e) {
+            outPutToText(e)
+            let file = e.target.files[0];
+            outPutToText(`${file.name} ${file.size / 1024 / 1024}MB ${file.type}`);
+            let url = URL.createObjectURL(file);
+            outPutToText(url);
+            audioPlay.src = url;
+        }
+
+        function outPutToText(text) {
+            console.log(text);
+            consoleOutput.innerText += text + '\n';
+        }
+
+        /** @type{HTMLInputElement} */
+        let videoInput = document.getElementById('video_input')
+        videoInput.addEventListener("change", onInputVideoChange);
+        /** @type{HTMLInputElement} */
+        let audioInput = document.getElementById('audio_input')
+        audioInput.addEventListener("change", onInputAudioChange);
+        /** @type{HTMLAudioElement} */
+        let audioPlay = document.getElementById('audio_play')
+        /** @type{HTMLVideoElement} */
+        let videoPlay = document.getElementById('video_play')
+        /** @type{HTMLParagraphElement} */
+        let consoleOutput = document.getElementById('console_output')
+
+    </script>
+</body>
+
+</html>

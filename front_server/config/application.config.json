@@ -1,0 +1,4 @@
+{
+  "port": 8521,
+  "server": "http://localhost:8522"
+}

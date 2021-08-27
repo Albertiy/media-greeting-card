@@ -1,0 +1,10 @@
+{
+  "port": 8512,
+  "env": "dev",
+  "staticPath": "./public",
+  "frontAddress": "http://localhost:8521",
+  "logDirectory": "log",
+  "fileRoot": "../uploadFiles",
+  "tokenSecret": "it's fine if you no more love me",
+  "tokenExpires": 86400
+}
