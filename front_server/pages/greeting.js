@@ -16,6 +16,13 @@ const defaultProgressValue = 0;
 function GreetingPage(props) {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+    let [isInWeChat, setIsInWeChat] = useState(true);
+
+    useEffect(() => {
+        setIsInWeChat(tools.isInWeChat)
+        // alert(tools.myBrowser())
+    }, [])
+
     let [audioFile, setAudioFile] = useState(defaultAudioFile);
     let [videoFile, setVideoFile] = useState(defaultVideoFile);
     let [progressValue, setProgressValue] = useState(defaultProgressValue);
@@ -103,6 +110,7 @@ function GreetingPage(props) {
         </header>
         <main>
             <div className={styles.container}>
+                <div>{isInWeChat ? '您正在微信浏览器中使用' : '请在微信浏览器中打开此页面！（分享此页面到微信，或者微信扫码）'}</div>
                 <div className={styles.row}>
                     <label>音频：</label>
                     <input type="file" name="audioInput" id="audio_input" accept="audio/*" ref={audioInput} onChange={onInputAudioChange} />
