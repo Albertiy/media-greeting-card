@@ -8,7 +8,7 @@ function TitleBar(props) {
     </div>)
 }
 
-TitleBar.prototype = {
+TitleBar.propTypes = {
     title: PropTypes.string.isRequired,
 }
 
