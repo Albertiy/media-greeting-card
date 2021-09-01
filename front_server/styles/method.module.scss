@@ -32,6 +32,8 @@
   letter-spacing: 0.125rem;
 
   margin-top: 1.75rem;
+
+  transition: transform 0.2s cubic-bezier(0, 0.95, 0.84, 0.83);
 }
 
 .audio_logo {
@@ -48,4 +50,23 @@
   height: 15.625rem;
   background-size: contain;
   margin-bottom: 1.5625rem;
+  margin-left: 10px;
+}
+
+.btn:active {
+  transform: scale(1.2);
+}
+
+@media (max-width: 600px) {
+  .audio_logo {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 16px;
+  }
+
+  .video_logo {
+    width: 198px;
+    height: 198px;
+    margin-bottom: 16px;
+  }
 }
