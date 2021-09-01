@@ -1,3 +1,4 @@
+const path = require('path');
 let config = require('./config/application.config.json');
 let server = config.server ? config.server : '';
 
@@ -29,4 +30,7 @@ module.exports = {
       },
     ]
   },
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
+  }
 }
