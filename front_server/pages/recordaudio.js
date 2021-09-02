@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TitleBar from "../src/component/title_bar";
 import styles from '../styles/recordaudio.module.scss'
 import Icon from "@mdi/react";
@@ -11,6 +11,11 @@ function RecordAudio() {
 
     const [timeInfo, setTimeInfo] = useState(defaultTimeInfo);
 
+    useEffect(() => {
+        let p = navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+        console.log(p);
+    }, [])
+    
     return (
         <div className={styles.container}>
             <Head>
