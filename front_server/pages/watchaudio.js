@@ -7,7 +7,7 @@ import { mdiShareVariant, mdiDownload } from '@mdi/js';
 
 const defaultTimeInfo = '00:00';
 
-function RecordAudio() {
+function WatchAudio() {
 
     const [timeInfo, setTimeInfo] = useState(defaultTimeInfo);
 
@@ -36,7 +36,7 @@ function RecordAudio() {
                     </div>
                 </div>
                 <div className={styles.btn_panel}>
-                    <audio className={styles.audio} controls={true} preload="auto" src="http://other.web.nf01.sycdn.kuwo.cn/6f27093b9bbe6808c6094daf073c89d3/61306d12/resource/n2/25/82/4077967709.mp3" >
+                    <audio className={styles.audio} controls={true} preload="auto" src="http://other.web.re01.sycdn.kuwo.cn/7be5f59e2dcd96d6a13ae276087aef18/613077cb/resource/n3/27/32/2494893181.mp3" >
                     </audio>
                 </div>
             </main>
@@ -45,4 +45,4 @@ function RecordAudio() {
         </div>
     )
 }
-export default RecordAudio;
+export default WatchAudio;
