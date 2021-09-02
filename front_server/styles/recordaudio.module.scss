@@ -17,60 +17,100 @@
   padding-bottom: 1.75rem;
 }
 
+.cover {
+  width: 256px;
+  height: 256px;
+  background-color: $color-button-panel;
+  border: 1px solid $color-border;
+  box-shadow: $shadow-panel;
+  margin-bottom: 30%;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.cover_image {
+  width: 250px;
+  height: 250px;
+}
+
+.btn_panel {
+  width: 250px;
+  height: 60px;
+  border-radius: 50px;
+  background-color: $color-button-panel;
+  box-shadow: $shadow-panel;
+  margin-bottom: 10%;
+
+  padding: 4px 20px 4px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  user-select: none;
+}
+
+.info {
+  width: 168px;
+  height: 24px;
+  border-radius: 15px;
+  background-color: $color-button-panel;
+  box-shadow: $shadow-panel;
+
+  padding: 2px 10px 2px;
+  text-align: center;
+  font-size: 14px;
+  color: $color-button-text;
+}
+
+@media (max-width: 400px) {
+  .cover {
+    transform: scale(0.8);
+  }
+}
+
 .btn {
-  font-size: 1.75rem;
-  width: 100%;
-  height: 50%;
   position: relative;
+
   display: flex;
   flex-direction: column;
   align-items: center;
 
   text-align: center;
-  color: $color-label-bluePurple;
-  font-size: 1.25rem;
+  color: $color-button-text;
+  font-size: 12px;
   letter-spacing: 0.125rem;
-
-  margin-top: 1.75rem;
-
-  transition: transform 0.2s cubic-bezier(0, 0.95, 0.84, 0.83);
 }
 
-.audio_logo {
-  background-image: url("../public/img/cassette-tape.png");
-  width: 14.0625rem;
-  height: 14.0625rem;
-  background-size: contain;
-  margin-bottom: 1.5625rem;
+.icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: $color-button-icon-background;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.video_logo {
-  background-image: url("../public/img/influencer.png");
-  width: 15.625rem;
-  height: 15.625rem;
-  background-size: contain;
-  margin-bottom: 1.5625rem;
-  margin-left: 10px;
+.btn_panel .btn:nth-child(1) .icon {
+  color: $color-button-icon-green;
+}
+.btn_panel .btn:nth-child(2) .icon {
+  color: $color-button-icon-blue;
+}
+.btn_panel .btn:nth-child(3) .icon {
+  color: $color-button-icon-green;
 }
 
-.btn:active {
-  transform: scale(1.2);
+.icon svg {
+  transition: filter 0.3s cubic-bezier(0.13, 0.97, 0.27, 0.98);
 }
 
-@media (max-width: 600px) {
-  .btn {
-    margin-top: 16px;
-  }
-
-  .audio_logo {
-    width: 180px;
-    height: 180px;
-    margin-bottom: 16px;
-  }
-
-  .video_logo {
-    width: 198px;
-    height: 198px;
-    margin-bottom: 16px;
-  }
+.icon:active svg {
+  // transform: scale(1.2);
+  filter: brightness(1.2);
 }

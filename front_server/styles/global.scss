@@ -16,8 +16,8 @@ $color-label-bluePurple: #2f2686;
 $color-border: #777777;
 
 $color-button-panel: #ffffff;
-$color-button-text: #f0f0f0;
 $color-button-text: #7d7d7d;
+$color-button-icon-background: #f0f0f0;
 $color-button-icon-green: #00e311;
 $color-button-icon-blue: #00b1d7;
 
@@ -28,10 +28,10 @@ $color-link-text: #3894ff;
 
 $color-from-to-text: #101010;
 
-$color-float-icon: rgba(255, 255, 255, 100);
-$color-share-background: rgba(111, 209, 255, 92);
-$color-download-background: rgba(255, 160, 160, 77);
+$color-float-icon: rgba(255, 255, 255, 1);
+$color-share-background: rgba(111, 209, 255, 0.92);
+$color-download-background: rgba(255, 160, 160, 0.77);
 
-$color-shadow-panel: rgba(0, 0, 0, 40);
+$color-shadow-panel: rgba(0, 0, 0, 0.4);
 
 $shadow-panel: 0px 2px 6px 0px $color-shadow-panel;
