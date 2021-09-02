@@ -7,7 +7,7 @@ import { mdiPlay, mdiCheckBold, mdiRefresh, mdiVideoOutline } from '@mdi/js';
 
 const defaultTimeInfo = '00:00';
 
-function RecordAudio() {
+function RecordVideo() {
 
     const [timeInfo, setTimeInfo] = useState(defaultTimeInfo);
 
@@ -55,4 +55,4 @@ function RecordAudio() {
         </div>
     )
 }
-export default RecordAudio;
+export default RecordVideo;

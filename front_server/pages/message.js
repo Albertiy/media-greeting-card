@@ -4,7 +4,7 @@ import NoStyleInput from '../src/component/input_nostyle'
 import TitleBar from '../src/component/title_bar'
 import styles from '../styles/message.module.scss'
 
-export default function Home() {
+export default function MessagePage() {
     return (
         <div className={styles.container}>
             <Head>
