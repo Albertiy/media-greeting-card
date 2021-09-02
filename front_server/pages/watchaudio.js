@@ -3,7 +3,7 @@ import { useState } from "react";
 import TitleBar from "../src/component/title_bar";
 import styles from '../styles/watchaudio.module.scss'
 import Icon from "@mdi/react";
-import { mdiPlay, mdiCheckBold, mdiMicrophone } from '@mdi/js';
+import { mdiShareVariant, mdiDownload } from '@mdi/js';
 
 const defaultTimeInfo = '00:00';
 
@@ -27,13 +27,17 @@ function RecordAudio() {
                     <div className={styles.text_to}>TO：小美</div>
                     <div className={styles.text_from}>FROM：锤锤</div>
                 </div>
-                <div className={styles.btn_panel}>
-                    <audio className={styles.audio} controls={true} preload="auto" >
-                        <source src="" />
-                    </audio>
+                <div className={styles.float_bar}>
+                    <div className={styles.float_share} title="分享">
+                        <Icon path={mdiShareVariant} size={1}></Icon>
+                    </div>
+                    <div className={styles.float_download} title="下载">
+                        <Icon path={mdiDownload} size={1}></Icon>
+                    </div>
                 </div>
-                <div className={styles.info}>
-                    <div>时长：{timeInfo}</div>
+                <div className={styles.btn_panel}>
+                    <audio className={styles.audio} controls={true} preload="auto" src="http://other.web.nf01.sycdn.kuwo.cn/6f27093b9bbe6808c6094daf073c89d3/61306d12/resource/n2/25/82/4077967709.mp3" >
+                    </audio>
                 </div>
             </main>
             <footer>

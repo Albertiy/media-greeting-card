@@ -23,7 +23,7 @@
   background-color: $color-button-panel;
   border: 1px solid $color-border;
   box-shadow: $shadow-panel;
-  margin-bottom: 30%;
+  margin-bottom: 10%;
   text-align: center;
   display: grid;
   justify-items: center;
@@ -55,7 +55,7 @@
 
 .btn_panel {
   width: 250px;
-  height: 60px;
+  // height: 60px;
   border-radius: 50px;
   background-color: $color-button-panel;
   box-shadow: $shadow-panel;
@@ -73,21 +73,6 @@
 
 .audio {
   width: 100%;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.info {
-  width: 168px;
-  height: 24px;
-  border-radius: 15px;
-  background-color: $color-button-panel;
-  box-shadow: $shadow-panel;
-
-  padding: 2px 10px 2px;
-  text-align: center;
-  font-size: 14px;
-  color: $color-button-text;
 }
 
 @media (max-width: 400px) {
@@ -96,45 +81,43 @@
   }
 }
 
-.btn {
-  position: relative;
+.float_bar {
+  align-self: flex-end;
+  margin-bottom: 6%;
+  margin-right: 20px;
+}
 
+.float_btn {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  text-align: center;
-  color: $color-button-text;
-  font-size: 12px;
-  letter-spacing: 0.125rem;
-}
-
-.icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: $color-button-icon-background;
-  position: relative;
-  display: flex;
   justify-content: center;
-  align-items: center;
-}
-
-.btn_panel .btn:nth-child(1) .icon {
-  color: $color-button-icon-green;
-}
-.btn_panel .btn:nth-child(2) .icon {
-  color: $color-button-icon-blue;
-}
-.btn_panel .btn:nth-child(3) .icon {
-  color: $color-button-icon-green;
-}
-
-.icon svg {
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  color: $color-float-icon;
+  box-shadow: $shadow-panel;
   transition: filter 0.3s cubic-bezier(0.13, 0.97, 0.27, 0.98);
+  cursor: pointer;
 }
 
-.icon:active svg {
-  // transform: scale(1.2);
-  filter: brightness(1.2);
+.float_btn:active {
+  filter: brightness(0.86);
+}
+
+.float_btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.float_share {
+  @extend .float_btn;
+  background-color: $color-share-background;
+}
+
+.float_download {
+  @extend .float_btn;
+  background-color: $color-download-background;
+  margin-top: 10px;
 }
