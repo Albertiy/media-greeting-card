@@ -134,9 +134,13 @@
             var width = 320;
             var height = 0;   // 根据输入流的width和宽高比，计算出图像的输出高度
             var streaming = false;
+            /** @type{HTMLVideoElement} */
             var video = null;
+            /** @type{HTMLCanvasElement} */
             var canvas = null;
+            /** @type{HTMLImageElement} */
             var photo = null;
+            /** @type{HTMLButtonElement} */
             var startbutton = null;
 
             function startup() {
@@ -145,7 +149,6 @@
                 photo = document.getElementById('photo')
                 startbutton = document.getElementById('startbutton')
 
-
                 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                     .then(function (stream) {
                         video.srcObject = stream;
@@ -153,6 +156,7 @@
                     })
                     .catch(function (err) {
                         console.log("An error occured: " + err);
+                        alert(err.name);
                     })
 
                 video.addEventListener('canplay', function (ev) {
