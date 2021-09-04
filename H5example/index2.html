@@ -192,6 +192,9 @@
             /** @type{HTMLParagraphElement} */
             let consoleOutput = document.getElementById('console_output');
 
+            /** @type{MediaStream} */
+            let mediaStream;
+
             /** 初始化 */
             function startup() {
                 realtimeVideo = document.getElementById('realtime_video')
@@ -205,12 +208,13 @@
 
                 if (navigator.mediaDevices != undefined)
                     navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: true })
-                        .then(function (mediaStream) {
+                        .then(function (stream) {
+                            mediaStream = stream;
                             if ('srcObject' in realtimeVideo) {
-                                realtimeVideo.srcObject = mediaStream;
+                                realtimeVideo.srcObject = stream;
                             } else {
                                 console.log('浏览器不支持srcObject')
-                                realtimeVideo.src = URL.createObjectURL(mediaStream)
+                                realtimeVideo.src = URL.createObjectURL(stream)
                             }
                             // video.play(); // 即使 video 没有播放，但内容是有的，因此可以截帧作为照片
                         })
@@ -250,12 +254,18 @@
                 }, false);
 
                 takePhotoBtn.addEventListener('click', function (ev) {
-                    drawPhoto();
+                    if (mediaStream)
+                        drawPhoto();
+                    else
+                        alert('没有媒体源')
                     ev.preventDefault();
                 }, false);
 
                 recordVideoBtn.addEventListener('click', function (ev) {
-
+                    if (mediaStream)
+                        recordVideo(mediaStream);
+                    else
+                        alert('没有媒体源')
                 }, false);
 
                 recordAudioBtn.addEventListener('click', function (ev) {
@@ -289,10 +299,10 @@
             }
 
             var videoMediaRecorder;
-            var recordedChunks = [];
+            var videoRecordedChunks = [];
             var isVideoRecording = false;
 
-            function reacordVideo(stream) {
+            function recordVideo(stream) {
                 if (!isVideoRecording) {
                     var options = {
                         mimeType: "video/mp4"
@@ -301,7 +311,7 @@
                     videoMediaRecorder.ondataavailable = function (event) {
                         console.log('video data available')
                         if (event.data.size > 0) {
-                            recordedChunks.push(event.data);
+                            videoRecordedChunks.push(event.data);
 
                             videoRecording();
                         } else {
@@ -320,7 +330,7 @@
             }
 
             function videoRecording() {
-                var blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                var blob = new Blob(videoRecordedChunks, { type: 'video/mp4' });
                 outPutToText(`${blob.size / 1024 / 1024}MB ${blob.type}`);
                 var url = URL.createObjectURL(blob);
                 outPutToText(url);
