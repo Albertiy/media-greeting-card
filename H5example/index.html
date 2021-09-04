@@ -31,6 +31,17 @@
             width: 300px;
             height: 200px;
         }
+
+        .camera {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #canvas {
+            opacity: 0;
+            display: none;
+        }
     </style>
 </head>
 
@@ -51,14 +62,16 @@
                 输出：&#13;&#10;
             </p>
         </div>
+
         <div class="camera">
-            <video id="video">Video stream is not available.</video>
-            <button id="startbutton">Take photo</button>
+            <video id="video" controls>H5视频流不可用。</video>
+            <button id="startbutton">拍照</button>
             <canvas id="canvas"></canvas>
             <div class="output">
                 <img alt="The screen capture will appear in this box." id="photo">
             </div>
         </div>
+
     </div>
 
     <script type="text/javascript">
@@ -130,6 +143,7 @@
         /** @type{HTMLParagraphElement} */
         let consoleOutput = document.getElementById('console_output');
 
+        /** WebRTC 拍照功能 */
         (function () {
             var width = 320;
             var height = 0;   // 根据输入流的width和宽高比，计算出图像的输出高度
@@ -148,10 +162,16 @@
                 canvas = document.getElementById('canvas')
                 photo = document.getElementById('photo')
                 startbutton = document.getElementById('startbutton')
+
                 if (navigator.mediaDevices != undefined)
                     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                         .then(function (stream) {
-                            video.srcObject = stream;
+                            if ('srcObject' in video) {
+                                video.srcObject = stream;
+                            } else {
+                                alert('浏览器不支持srcObject')
+                                video.src = URL.createObjectURL(stream)
+                            }
                             video.play();
                         })
                         .catch(function (err) {
@@ -159,7 +179,7 @@
                             alert(err.name);
                         })
                 else
-                    alert('非https环境无法获取权限')
+                    alert('非https环境无法获取相机与麦克风权限!')
 
                 video.addEventListener('canplay', function (ev) {
                     if (!streaming) {
@@ -204,7 +224,7 @@
             }
 
             window.addEventListener('load', function (ev) {
-                console.log('startUp!')
+                console.log('Web Camera StartUp!')
                 startup();
             })
         })()
