@@ -156,7 +156,7 @@
             <div class="photo_output">
                 <img alt="截取照片" id="photo">
             </div>
-            <p>录像结果：</p>
+            <p>录像结果：<a href="" download="record_video.mp4" id="download_video">下载</a></p>
             <video id="video_player" class="video" controls playsinline="true" webkit-playsinline="true">Video not
                 supported!</video>
             <p>录音结果：</p>
@@ -204,6 +204,8 @@
             let audioPlay = document.getElementById('audio_player');
             /** @type{HTMLVideoElement} */
             let videoPlay = document.getElementById('video_player');
+            /** @type{HTMLLinkElement} */
+            let videoDownloadBtn = document.getElementById('download_video');
 
             /** @type{HTMLParagraphElement} */
             let consoleOutput = document.getElementById('console_output');
@@ -288,6 +290,11 @@
 
                 }, false);
 
+                videoDownloadBtn.addEventListener('click', function (ev) {
+                    
+                    ev.preventDefault();
+                }, false);
+
                 initPhoto();
             }
 
@@ -318,6 +325,7 @@
             var videoRecordedChunks = [];
             var isVideoRecording = false;
 
+            /** 录像 */
             function recordVideo(stream) {
                 if (!isVideoRecording) {
                     var options = {
@@ -338,19 +346,31 @@
                     // demo: to download after 9sec
                     setTimeout(event => {
                         console.log("time up, stopping record video");
+                        isVideoRecording = false;
                         videoMediaRecorder.stop();
                     }, 9000);
                 } else {
+                    isVideoRecording = false;
                     videoMediaRecorder.stop();
                 }
             }
 
+            /** 生成url并赋值给src */
             function videoRecording() {
                 var blob = new Blob(videoRecordedChunks, { type: 'video/mp4' });
                 outPutToText(`${blob.size / 1024 / 1024}MB ${blob.type}`);
                 var url = URL.createObjectURL(blob);
                 outPutToText(url);
                 videoPlay.src = url;
+            }
+
+            /** 下载录制好的视频 */
+            function videoDownload() {
+                if (videoPlay.src) {
+
+                } else {
+                    alert('尚未录制，无法下载')
+                }
             }
 
             function onInputAudioChange(e) {
