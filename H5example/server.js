@@ -8,7 +8,7 @@ http.createServer(function (req, res) {
 }).listen(8523); // 指定监听端口
 
 function getIndex(res) {
-    fs.readFile('index.html', (err, data) => {
+    fs.readFile('index2.html', (err, data) => {
         if (err) return hadErr(err, res);
         res.writeHead(200, { 'Content-Type': 'text/html' })
         res.end(data.toString());

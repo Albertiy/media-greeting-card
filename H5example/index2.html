@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5音视频录制测试</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            place-content: center;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .camera {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .video {
+            width: 250px;
+            height: 250px;
+        }
+
+        #canvas {
+            opacity: 0;
+            display: none;
+        }
+
+        /* BEGIN：toast */
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        /* END：toast */
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="camera">
+            <p>预览：</p>
+            <video id="realtime_video" class="video" controls playsinline="true"
+                webkit-playsinline="true">视频流不可用!</video>
+
+            <div class="control_bar">
+                <button id="startstreambtn">开始</button>
+                <button id="pausestreambtn">暂停</button>
+                <button id="takephotobtn">拍照</button>
+                <button id="recordvideobtn">录像</button>
+                <button id="recordaudiobtn">录音</button>
+            </div>
+
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="row">
+            <p>拍照结果：</p>
+            <div class="output">
+                <img alt="截取照片" id="photo">
+            </div>
+            <p>录像结果：</p>
+            <video id="video_player" class="video" controls>Video not supported!</video>
+            <p>录音结果：</p>
+            <audio id="audio_player" controls>Audio not supported!</audio>
+
+        </div>
+
+        <div class="row">
+            <p id="console_output">
+                控制台输出：&#13;&#10;
+            </p>
+        </div>
+    </div>
+
+    <div id="snackbar">提示</div>
+
+    <script type="text/javascript">
+        /** WebRTC 拍照功能 */
+        (function () {
+            var width = 320;
+            var height = 0;   // 根据输入流的width和宽高比，计算出图像的输出高度
+            var streaming = false;
+
+            /** @type{HTMLVideoElement} */
+            var realtimeVideo = null;
+            /** @type{HTMLCanvasElement} */
+            var photoCanvas = null;
+
+            /** @type{HTMLButtonElement} */
+            var startStreamBtn = null;
+            /** @type{HTMLButtonElement} */
+            var pauseStreamBtn = null;
+
+            /** @type{HTMLButtonElement} */
+            var takePhotoBtn = null;
+            /** @type{HTMLButtonElement} */
+            var recordVideoBtn = null;
+            /** @type{HTMLButtonElement} */
+            var recordAudioBtn = null;
+
+            /** @type{HTMLImageElement} */
+            var capturedPhoto = null;
+
+            /** @type{HTMLAudioElement} */
+            let audioPlay = document.getElementById('audio_player');
+            /** @type{HTMLVideoElement} */
+            let videoPlay = document.getElementById('video_player');
+
+            /** @type{HTMLParagraphElement} */
+            let consoleOutput = document.getElementById('console_output');
+
+            /** 初始化 */
+            function startup() {
+                realtimeVideo = document.getElementById('video')
+                photoCanvas = document.getElementById('canvas')
+                capturedPhoto = document.getElementById('photo')
+                startStreamBtn = document.getElementById('startstreambtn')
+                pauseStreamBtn = document.getElementById('pausestreambtn')
+                takePhotoBtn = document.getElementById('takephotobtn')
+                recordVideoBtn = document.getElementById('recordvideobtn')
+                recordAudioBtn = document.getElementById('recordaudiobtn')
+
+                if (navigator.mediaDevices != undefined)
+                    navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: true })
+                        .then(function (mediaStream) {
+                            if ('srcObject' in realtimeVideo) {
+                                realtimeVideo.srcObject = mediaStream;
+                            } else {
+                                console.log('浏览器不支持srcObject')
+                                realtimeVideo.src = URL.createObjectURL(mediaStream)
+                            }
+                            // video.play(); // 即使 video 没有播放，但内容是有的，因此可以截帧作为照片
+                        })
+                        .catch(function (err) {
+                            console.log("An error occured: " + err);
+                            var info = "";
+                            switch (err.name) {
+                                case 'NotAllowedError': info = "缺少权限！"; break;
+                                case 'NotFoundError': info = "未找到可用的媒体源！"; break;
+                                case 'OverConstrainedError': info = "设备不满足约束条件！"; break;
+                                default: info = err.name; break;
+                            }
+                            alert(info);
+                        })
+                else
+                    alert('非https连接，无法获取媒体源!')
+
+                /** 按照摄像机和画板调整宽高 */
+                realtimeVideo.addEventListener('canplay', function (ev) {
+                    if (!streaming) {
+                        height = realtimeVideo.videoHeight / (realtimeVideo.videoWidth / width);
+
+                        realtimeVideo.setAttribute('width', width)
+                        realtimeVideo.setAttribute('height', height)
+                        photoCanvas.setAttribute('width', width)
+                        photoCanvas.setAttribute('height', height)
+                        streaming = true;
+                    }
+                }, false);
+
+                startStreamBtn.addEventListener('click', function (ev) {
+                    if (realtimeVideo.src || realtimeVideo.srcObject) realtimeVideo.play()
+                }, false);
+
+                pauseStreamBtn.addEventListener('click', function (ev) {
+                    realtimeVideo.pause()
+                }, false);
+
+                takePhotoBtn.addEventListener('click', function (ev) {
+                    drawPhoto();
+                    ev.preventDefault();
+                }, false);
+
+                recordVideoBtn.addEventListener('click', function (ev) {
+
+                }, false);
+
+                recordAudioBtn.addEventListener('click', function (ev) {
+
+                }, false);
+
+                initPhoto();
+            }
+
+            /** 将画板与图片填充为灰色 */
+            function initPhoto() {
+                var context = photoCanvas.getContext('2d')
+                context.fillStyle = "#AAA"
+                context.fillRect(0, 0, photoCanvas.width, photoCanvas.height)
+                var data = photoCanvas.toDataURL('image/png')
+                capturedPhoto.setAttribute('src', data)
+            }
+
+            /** 拍照 */
+            function drawPhoto() {
+                var context = photoCanvas.getContext('2d')
+                if (width && height) {
+                    photoCanvas.width = width;
+                    photoCanvas.height = height;
+                    context.drawImage(realtimeVideo, 0, 0, width, height);
+                    var data = photoCanvas.toDataURL('image/png');
+                    capturedPhoto.setAttribute('src', data);
+                } else {
+                    initPhoto();
+                }
+            }
+
+            var videoMediaRecorder;
+            var recordedChunks = [];
+            var isVideoRecording = false;
+
+            function reacordVideo(stream) {
+                if (!isVideoRecording) {
+                    var options = {
+                        mimeType: "video/mp4"
+                    }
+                    videoMediaRecorder = new MediaRecorder(stream, options);
+                    videoMediaRecorder.ondataavailable = function (event) {
+                        console.log('video data available')
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+
+                            videoRecording();
+                        } else {
+                            console.log('no data!')
+                        }
+                    };
+                    videoMediaRecorder.start();
+                    // demo: to download after 9sec
+                    setTimeout(event => {
+                        console.log("time up, stopping record video");
+                        videoMediaRecorder.stop();
+                    }, 9000);
+                } else {
+                    videoMediaRecorder.stop();
+                }
+            }
+
+            function videoRecording() {
+                var blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                outPutToText(`${blob.size / 1024 / 1024}MB ${blob.type}`);
+                var url = URL.createObjectURL(blob);
+                outPutToText(url);
+                videoPlay.src = url;
+            }
+
+            function onInputAudioChange(e) {
+                outPutToText(e)
+                let file = e.target.files[0];
+                outPutToText(`${file.name} ${file.size / 1024 / 1024}MB ${file.type}`);
+                let url = URL.createObjectURL(file);
+                outPutToText(url);
+                audioPlay.src = url;
+            }
+
+            /** 同时输出到控制台与页面元素中 */
+            function outPutToText(text) {
+                console.log(text);
+                consoleOutput.innerText += text + '\n';
+            }
+
+            window.addEventListener('load', function (ev) {
+                console.log('Web Camera StartUp!')
+                startup();
+            })
+        })()
+
+
+        window.addEventListener('load', function (ev) {
+            console.log('window.onload');
+            console.log('BrowserType: ' + myBrowser());
+            // showToast('' + myBrowser());
+        })
+
+        function myBrowser() {
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            if (userAgent.toLocaleLowerCase().indexOf("micromessenger") != -1) {
+                return "micromessenger";
+            }
+            if (userAgent.indexOf("Opera") > -1) {
+                return "Opera";
+            }; //判断是否Opera浏览器
+            if (userAgent.indexOf("Firefox") > -1) {
+                return "FF";
+            } //判断是否Firefox浏览器
+            if (userAgent.indexOf("Chrome") > -1) {
+                return "Chrome";
+            }
+            if (userAgent.indexOf("Safari") > -1) {
+                return "Safari";
+            } //判断是否Safari浏览器
+            if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera) {
+                return "IE";
+            }; //判断是否IE浏览器
+            if (userAgent.indexOf("Trident") > -1) {
+                return "Edge";
+            } //判断是否Edge浏览器
+        }
+
+        /**
+         * 显示toast
+         * @param{string} message
+         * @param{function} [callback]
+        */
+        function showToast(message, callback) {
+            let x = document.getElementById("snackbar");
+            x.className = "show";
+            x.innerText = message;
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+                if (callback) callback();
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>
