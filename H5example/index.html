@@ -64,7 +64,7 @@
         </div>
 
         <div class="camera">
-            <video id="video" controls>H5视频流不可用。</video>
+            <video id="video" playsinline="true" webkit-playsinline="true">H5视频流不可用。</video>
             <button id="startbutton">拍照</button>
             <canvas id="canvas"></canvas>
             <div class="output">
@@ -164,7 +164,7 @@
                 startbutton = document.getElementById('startbutton')
 
                 if (navigator.mediaDevices != undefined)
-                    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                    navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: true })
                         .then(function (stream) {
                             if ('srcObject' in video) {
                                 video.srcObject = stream;
