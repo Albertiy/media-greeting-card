@@ -64,8 +64,14 @@
         </div>
 
         <div class="camera">
-            <video id="video" playsinline="true" webkit-playsinline="true">H5视频流不可用。</video>
-            <button id="startbutton">拍照</button>
+            <video id="video" controls playsinline="true" webkit-playsinline="true">H5视频流不可用。</video>
+            <div class="button_bar">
+                <button id="startstreambtn">开始</button>
+                <button id="pausestreambtn">暂停</button>
+                <button id="takephotobtn">拍照</button>
+                <button id="recordvideobtn">录像</button>
+                <button id="recordaudiobtn">录音</button>
+            </div>
             <canvas id="canvas"></canvas>
             <div class="output">
                 <img alt="The screen capture will appear in this box." id="photo">
@@ -155,13 +161,21 @@
             /** @type{HTMLImageElement} */
             var photo = null;
             /** @type{HTMLButtonElement} */
-            var startbutton = null;
+            var takePhotoBtn = null;
+            var startStreamBtn = null;
+            var pauseStreamBtn = null;
+            var recordVideoBtn = null;
+            var recordAudioBtn = null;
 
             function startup() {
                 video = document.getElementById('video')
                 canvas = document.getElementById('canvas')
                 photo = document.getElementById('photo')
-                startbutton = document.getElementById('startbutton')
+                takePhotoBtn = document.getElementById('takephotobtn')
+                startStreamBtn = document.getElementById('startstreambtn')
+                pauseStreamBtn = document.getElementById('pausestreambtn')
+                recordVideoBtn = document.getElementById('recordvideobtn')
+                recordAudioBtn = document.getElementById('recordaudiobtn')
 
                 if (navigator.mediaDevices != undefined)
                     navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: true })
@@ -172,7 +186,7 @@
                                 alert('浏览器不支持srcObject')
                                 video.src = URL.createObjectURL(stream)
                             }
-                            video.play();
+                            // video.play();
                         })
                         .catch(function (err) {
                             console.log("An error occured: " + err);
@@ -193,7 +207,15 @@
                     }
                 }, false);
 
-                startbutton.addEventListener('click', function (ev) {
+                startStreamBtn.addEventListener('click', function (ev) {
+                    if (video.src || video.srcObject) video.play()
+                }, false);
+
+                pauseStreamBtn.addEventListener('click', function (ev) {
+                    video.pause()
+                }, false);
+
+                takePhotoBtn.addEventListener('click', function (ev) {
                     takepicture();
                     ev.preventDefault();
                 }, false);
