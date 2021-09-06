@@ -8,6 +8,7 @@ import { useSnackbar } from 'notistack';
 import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
 import * as Tools from "../src/tool/tools";
+import dayjs from 'dayjs';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiCamera },
@@ -23,6 +24,7 @@ const defaultMediaStream = null;
 const defaultRecordBtnState = RecordBtnStateEnum.START;
 const defaultShowVideo = false;
 const defaultTimeCount = 0;
+const defaultTimerId = -1;
 
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -40,7 +42,10 @@ function RecordVideo() {
     const [mediaStream, setMediaStream] = useState(defaultMediaStream);
     const [recordBtnState, setRecordBtnState] = useState(defaultRecordBtnState);
     const [showVideo, setShowVideo] = useState(defaultShowVideo);
-    const [timeCount, setTimeCount] = useState(defaultTimeCount);
+
+    const [timeCount, setTimeCount] = useState(defaultTimeCount); // 用来渲染的值，不适用 useRef
+    const startTime = useRef(dayjs());
+    const [timerId, setTimerId] = useState(defaultTimerId);
 
 
     useEffect(() => {
@@ -76,17 +81,37 @@ function RecordVideo() {
             })
     }
 
+    function updateTime() {
+        let tick = dayjs().diff(startTime.current, 'seconds');
+        setTimeCount(tick);
+        console.log('tick: ' + tick);   // timeCount 竟然一直是0，看来是代码复制的问题
+    }
+
     function recordStart() {
         setShowVideo(true);
         let video = videoEle.current;
         if (video) {
-            console.log('%O', video)
+            // 初始化计时器
+            setTimeCount(defaultTimeCount);
+            startTime.current = new Date();   // 这里不能用 dayjs()
+
             video.play();
             //TODO 录制开始
             setRecordBtnState(RecordBtnStateEnum.STOP);
-
+            // TODO 计时器启动
+            setTimerId(setInterval(updateTime, 1000));
         } else {
             enqueueSnackbar('video元素ref为空')
+        }
+    }
+
+    function recordStop() {
+        let video = videoEle.current;
+        console.log('timerId: %o, timeCount: %o, startTime: %o', timerId, timeCount, startTime.current);
+        if (video && timerId != defaultTimerId) {
+            video.pause();
+            setRecordBtnState(RecordBtnStateEnum.RETAKE);
+            clearInterval(timerId);
         }
     }
 
@@ -133,7 +158,7 @@ function RecordVideo() {
             }; break;
             case (RecordBtnStateEnum.STOP): {
                 // TODO 停止录制，保存为 Blob 或 File 
-                setRecordBtnState(RecordBtnStateEnum.RETAKE);
+                recordStop();
             }; break;
             case (RecordBtnStateEnum.RETAKE): {
                 // TODO 弹窗提示，是否确定要重新录制
