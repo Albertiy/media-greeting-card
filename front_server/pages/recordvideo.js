@@ -7,6 +7,7 @@ import { mdiPlay, mdiCheckBold, mdiCamera, mdiStop, mdiRefresh, mdiVideoOutline 
 import { useSnackbar } from 'notistack';
 import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
+import * as Tools from "../src/tool/tools";
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiCamera },
@@ -21,7 +22,7 @@ const defaultDialog = { open: false, title: '提示', content: '确认' };
 const defaultMediaStream = null;
 const defaultRecordBtnState = RecordBtnStateEnum.START;
 const defaultShowVideo = false;
-const defaultTimeInfo = '00:00';
+const defaultTimeCount = 0;
 
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -39,7 +40,7 @@ function RecordVideo() {
     const [mediaStream, setMediaStream] = useState(defaultMediaStream);
     const [recordBtnState, setRecordBtnState] = useState(defaultRecordBtnState);
     const [showVideo, setShowVideo] = useState(defaultShowVideo);
-    const [timeInfo, setTimeInfo] = useState(defaultTimeInfo);
+    const [timeCount, setTimeCount] = useState(defaultTimeCount);
 
 
     useEffect(() => {
@@ -164,7 +165,7 @@ function RecordVideo() {
             </header>
             <main className={styles.main}>
                 <div className={styles.cover}>
-                    <video className={styles.video} ref={videoEle} controls={true} style={showVideo ? {} : { display: 'none' }}></video>
+                    <video className={styles.video} ref={videoEle} controls={true} style={showVideo ? {} : { display: 'none' }} playsInline={true} webkit-playsinline="true"></video>
                     <div onClick={recordBtnClicked} style={showVideo ? { display: 'none' } : {}}>
                         <div>
                             <Icon className={styles.cover_icon} path={mdiVideoOutline} />
@@ -191,7 +192,7 @@ function RecordVideo() {
                     </div>
                 </div>
                 <div className={styles.info}>
-                    <div>时长：{timeInfo}</div>
+                    <div>时长：{Tools.formatDuration(timeCount)}</div>
                 </div>
             </main>
             <footer>
