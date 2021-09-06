@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,12 +9,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 /**
  * 警告对话框
- * @param {{open:boolean, title, contentText, handleClose:function}} props 
+ * @param {{open:boolean, title, content, handleClose:function}} props 
  * @returns 
  */
-export default function AlertDialog(props) {
+function AlertDialog(props) {
 
-    let { open, title, contentText, handleClose } = props;
+    let { open, title, content, handleClose } = props;
     if (!handleClose) handleClose = defaultHandleClose;
 
     return (
@@ -26,7 +27,7 @@ export default function AlertDialog(props) {
             <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    {contentText}
+                    {content}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -44,3 +45,12 @@ export default function AlertDialog(props) {
 function defaultHandleClose(val) {
     console.log('dialogClosed: ' + val)
 }
+
+AlertDialog.propTypes = {
+    open: PropTypes.bool.isRequired,
+    title: PropTypes.string,
+    content: PropTypes.string,
+    handleClose: PropTypes.func
+}
+
+export default AlertDialog;

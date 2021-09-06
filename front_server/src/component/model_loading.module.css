@@ -8,11 +8,11 @@
     align-items: center;
     justify-content: center;
     z-index: 999;
-    background-color: var(--color-background-model-opacity);
+    background-color: rgba(36, 36, 36, 0.527);
 }
 
 .loading {
     width: 2.5rem;
     height: 2.5rem;
-    color: var(--color-them-primary);
+    color: #40a9ff;
 }
