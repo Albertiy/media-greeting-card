@@ -291,7 +291,7 @@
                 }, false);
 
                 videoDownloadBtn.addEventListener('click', function (ev) {
-                    
+
                     ev.preventDefault();
                 }, false);
 
@@ -323,7 +323,7 @@
 
             var videoMediaRecorder;
             var videoRecordedChunks = [];
-            var isVideoRecording = false;
+            var isVideoRecording = false;   // 录像状态，当前是否在录像
 
             /** 录像 */
             function recordVideo(stream) {
@@ -336,22 +336,30 @@
                         console.log('video data available')
                         if (event.data.size > 0) {
                             videoRecordedChunks.push(event.data);
-
                             videoRecording();
                         } else {
                             console.log('no data!')
                         }
                     };
                     videoMediaRecorder.start();
+                    isVideoRecording = true;
                     // demo: to download after 9sec
-                    setTimeout(event => {
+                    let timeoutId = setTimeout(event => {
                         console.log("time up, stopping record video");
+                        if (isVideoRecording) {
+                            isVideoRecording = false;
+                            videoMediaRecorder.stop();
+                            showToast('录像终止')
+                        }
+
+                    }, 60000);  // 1分钟
+                } else {
+                    if (isVideoRecording) {
+                        clearTimeout(timeoutId);    // 清除计时器
                         isVideoRecording = false;
                         videoMediaRecorder.stop();
-                    }, 9000);
-                } else {
-                    isVideoRecording = false;
-                    videoMediaRecorder.stop();
+                        showToast('录像终止')
+                    }
                 }
             }
 
