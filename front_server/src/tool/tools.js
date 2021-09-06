@@ -273,3 +273,28 @@ export function getDpi() {
     return dpi;
 }
 
+/**
+ * 根据秒数得到格式化的时长 mm:ss 或 hh:mm:ss
+ * @param {number} seconds 
+ */
+export function formatDuration(seconds) {
+    if (seconds == 0) return '00:00';
+    let sign = seconds < 0 ? '-' : '';
+    let d = Math.abs(seconds);
+    let s = d % 60;
+    let ss = s.toFixed();
+    if (s < 10) ss = '0' + ss;
+    d = Math.floor(d / 60);
+    if (d == 0)
+        return sign + '00:' + ss;
+
+    let m = d % 60;
+    let mm = m.toFixed();
+    if (m < 10) mm = '0' + mm;
+    d = Math.floor(d / 60);
+    if (d == 0)
+        return sign + mm + ':' + ss;
+
+    let h = d.toFixed();
+    return sign + h + ':' + mm + ':' + ss;
+}
