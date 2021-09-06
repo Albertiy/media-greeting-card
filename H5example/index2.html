@@ -281,7 +281,7 @@
 
                 recordVideoBtn.addEventListener('click', function (ev) {
                     if (mediaStream)
-                        recordVideo(mediaStream);
+                        recordVideo();
                     else
                         alert('没有媒体源')
                 }, false);
@@ -326,12 +326,12 @@
             var isVideoRecording = false;   // 录像状态，当前是否在录像
 
             /** 录像 */
-            function recordVideo(stream) {
+            function recordVideo() {
                 if (!isVideoRecording) {
                     var options = {
                         mimeType: "video/mp4"
                     }
-                    videoMediaRecorder = new MediaRecorder(stream, options);
+                    videoMediaRecorder = new MediaRecorder(mediaStream, options);
                     videoMediaRecorder.ondataavailable = function (event) {
                         console.log('video data available')
                         if (event.data.size > 0) {
