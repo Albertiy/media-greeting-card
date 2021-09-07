@@ -68,6 +68,7 @@ function RecordVideo() {
         let constraints = { audio: true, video: { width: 1024, height: 720 } }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
+                enqueueSnackbar('stream: ' + stream.toString(), { variant: 'success', autoHideDuration: 6000 })
                 setMediaStream(stream);
                 setVideoSource(stream);
             })
@@ -98,9 +99,12 @@ function RecordVideo() {
                     console.log('浏览器不支持srcObject，使用src和url')
                     video.src = URL.createObjectURL(stream)
                 }
-            } else {
+            } else if (stream) {
                 video.srcObject = null;
                 video.src = stream;
+            } else {
+                video.src = defaultFileURL;
+                console.log('null video source')
             }
         } else {
             console.log('video 元素尚未加载')
