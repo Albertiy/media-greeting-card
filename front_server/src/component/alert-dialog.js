@@ -49,7 +49,7 @@ function defaultHandleClose(val) {
 AlertDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     title: PropTypes.string,
-    content: PropTypes.string,
+    content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     handleClose: PropTypes.func
 }
 

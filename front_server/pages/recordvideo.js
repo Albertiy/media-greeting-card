@@ -65,16 +65,16 @@ function RecordVideo() {
      * 初始化媒体源和video标签
      */
     function initMediaSource() {
-        let constraints = { audio: true, video: { width: 1024, height: 720 } }
+        let constraints = { audio: true, video: { width: 800, height: 800 } }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
-                alert('success get media stream')
+                // alert('success get media stream')
                 enqueueSnackbar('stream: ' + stream.toString(), { variant: 'success', autoHideDuration: 6000 })
                 setMediaStream(stream);
                 setVideoSource(stream);
             })
             .catch(function (err) {
-                alert('fail to get media stream: ' + err.toString());
+                // alert('fail to get media stream: ' + err.toString());
                 console.log(err.name + ": " + err.message);
                 if (err.name == 'NotFoundError')
                     enqueueSnackbar('当前设备缺少麦克风或摄像头', { variant: 'error', autoHideDuration: 10000 })
@@ -83,6 +83,8 @@ function RecordVideo() {
                 else {
                     enqueueSnackbar('' + err.name, { variant: 'error', autoHideDuration: 10000 })
                 }
+            }).finally(function () {
+                // alert('get media stream done!')
             })
     }
 
@@ -264,9 +266,11 @@ function RecordVideo() {
     function downloadBtnClicked() {
         if (fileURL) {
             if (Tools.myBrowser() == "Safari") {
+                console.log('Safari，弹窗')
                 enqueueSnackbar('iphone无法直接下载，请使用电脑或安卓设备打开链接')
-                showAlertDialog('', fileURL.toString())
+                showAlertDialog('请复制文件网址并到电脑端浏览器打开以下载', <input readOnly style={{ width: '100%' }} value={fileURL}></input>)
             } else {
+                console.log('非 Safari，直接下载')
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.download = FILE_NAME;
