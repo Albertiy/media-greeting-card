@@ -30,7 +30,7 @@ const defaultMediaRecorder = null;
 const mediaRecorderOptions = { mimeType: "video/mp4" }
 const MAX_RECORD_DURATION = 10; // 10s 最大录制时长
 const defaultFileURL = '';
-const FILE_NAME = '我的祝福.mp4';
+const FILE_NAME = 'greeting.mp4';
 
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -254,13 +254,18 @@ function RecordVideo() {
 
     function downloadBtnClicked() {
         if (fileURL) {
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.download = FILE_NAME;
-            a.href = fileURL;
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
+            if (Tools.myBrowser() == "Safari") {
+                enqueueSnackbar('iphone无法直接下载，请使用电脑或安卓设备打开链接')
+                showAlertDialog('', fileURL.toString())
+            } else {
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.download = FILE_NAME;
+                a.href = fileURL;
+                document.body.appendChild(a)
+                a.click()
+                document.body.removeChild(a)
+            }
         } else {
             console.log('文件不存在，未下载')
             enqueueSnackbar('文件不存在，未下载', { variant: 'warning', autoHideDuration: 2000 })
