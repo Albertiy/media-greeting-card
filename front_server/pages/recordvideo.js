@@ -65,6 +65,7 @@ function RecordVideo() {
      * 初始化媒体源和video标签
      */
     function initMediaSource() {
+        alert('hello!')
         let constraints = { audio: true, video: { width: 1024, height: 720 } }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
