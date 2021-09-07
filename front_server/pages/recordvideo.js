@@ -82,6 +82,7 @@ function RecordVideo() {
      * @param {MediaStream | string} stream 
      */
     function setVideoSource(stream) {
+        console.log('videoSource: %o', stream);
         let video = videoEle.current;
         if (video) {
             if (stream instanceof MediaStream) {
@@ -92,7 +93,6 @@ function RecordVideo() {
                     video.src = URL.createObjectURL(stream)
                 }
             } else {
-                alert(stream);
                 video.srcObject = null;
                 video.src = stream;
             }
@@ -143,8 +143,7 @@ function RecordVideo() {
             let chunks = [];
             if (event.data.size > 0) {
                 chunks.push(event.data);
-                let url = generateFile(chunks);
-                setVideoSource(url);
+                setVideoSource(generateFile(chunks));
             } else {
                 console.log('no data!')
             }
@@ -188,7 +187,9 @@ function RecordVideo() {
      */
     function generateFile(chunks) {
         let blob = new Blob(chunks, { type: mediaRecorderOptions.mimeType });
-        console.log(`类型：${blob.type}，大小：${Tools.returnFileSize(blob.size)}`)
+        let fileInfo = `类型：${blob.type}，大小：${Tools.returnFileSize(blob.size)}`;
+        console.log(fileInfo)
+        enqueueSnackbar('录制成功！' + fileInfo, { variant: 'success', autoHideDuration: 3000 })
         let url = URL.createObjectURL(blob);
         console.log('url: ' + url);
         return url;
