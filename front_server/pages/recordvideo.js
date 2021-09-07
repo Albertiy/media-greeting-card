@@ -25,6 +25,10 @@ const defaultRecordBtnState = RecordBtnStateEnum.START;
 const defaultShowVideo = false;
 const defaultTimeCount = 0;
 const defaultTimerId = -1;
+/** @type { MediaRecorder } */
+const defaultMediaRecorder = null;
+const mediaRecorderOptions = { mimeType: "video/mp4" }
+const MAX_RECORD_DURATION = 10; // 10s 最大录制时长
 
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -47,30 +51,22 @@ function RecordVideo() {
     const startTime = useRef(dayjs());
     const [timerId, setTimerId] = useState(defaultTimerId);
 
+    const [mediaRecorder, setMediaRecorder] = useState(defaultMediaRecorder);
+
 
     useEffect(() => {
         initMediaSource();
     }, []);
 
+    /**
+     * 初始化媒体源和video标签
+     */
     function initMediaSource() {
         let constraints = { audio: true, video: { width: 1024, height: 720 } }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
                 setMediaStream(stream);
-                let video = videoEle.current;
-                if (video) {
-                    if ('srcObject' in video) {
-                        video.srcObject = stream;
-                    } else {
-                        console.log('浏览器不支持srcObject，使用src和url')
-                        video.src = URL.createObjectURL(stream)
-                    }
-                    // video.onloadedmetadata = function (e) {
-                    //     video.play();
-                    // };
-                } else {
-                    console.log('video 元素尚未加载')
-                }
+                setVideoSource(stream);
             })
             .catch(function (err) {
                 console.log(err.name + ": " + err.message);
@@ -81,13 +77,42 @@ function RecordVideo() {
             })
     }
 
+    /**
+     * 
+     * @param {MediaStream | string} stream 
+     */
+    function setVideoSource(stream) {
+        let video = videoEle.current;
+        if (video) {
+            if (stream instanceof MediaStream) {
+                if ('srcObject' in video) {
+                    video.srcObject = stream;
+                } else {
+                    console.log('浏览器不支持srcObject，使用src和url')
+                    video.src = URL.createObjectURL(stream)
+                }
+            } else {
+                video.src = stream;
+            }
+        } else {
+            console.log('video 元素尚未加载')
+        }
+    }
+
+    /**
+     * 计时累加器
+     */
     function updateTime() {
         let tick = dayjs().diff(startTime.current, 'seconds');
         setTimeCount(tick);
         console.log('tick: ' + tick);   // timeCount 竟然一直是0，看来是代码复制的问题
     }
 
+    /**
+     * 开始录制
+     */
     function recordStart() {
+        setVideoSource(mediaStream);   // 重置video媒体源为mediaStream
         setShowVideo(true);
         let video = videoEle.current;
         if (video) {
@@ -97,6 +122,7 @@ function RecordVideo() {
 
             video.play();
             //TODO 录制开始
+            recording();
             setRecordBtnState(RecordBtnStateEnum.STOP);
             // TODO 计时器启动
             setTimerId(setInterval(updateTime, 1000));
@@ -105,14 +131,65 @@ function RecordVideo() {
         }
     }
 
+    /**
+     * 初始化录制器
+     */
+    function initMediaRecorder() {
+        let recorder = new MediaRecorder(mediaStream, mediaRecorderOptions);
+        recorder.ondataavailable = function (event) {
+            console.log('video data available')
+            let chunks = [];
+            if (event.data.size > 0) {
+                chunks.push(event.data);
+                let url = generateFile(chunks);
+                setVideoSource(url);
+            } else {
+                console.log('no data!')
+            }
+        };
+        setMediaRecorder(recorder);
+        return recorder;
+    }
+
+    /**
+     * 录制中
+     */
+    function recording() {
+        if (mediaStream) {
+            let recorder = mediaRecorder ? mediaRecorder : initMediaRecorder();
+            recorder.start();
+        } else {
+            enqueueSnackbar('无效的媒体源，无法录制!', { variant: 'error', autoHideDuration: 2000 })
+        }
+    }
+
+    /**
+     * 录制停止
+     */
     function recordStop() {
         let video = videoEle.current;
         console.log('timerId: %o, timeCount: %o, startTime: %o', timerId, timeCount, startTime.current);
         if (video && timerId != defaultTimerId) {
             video.pause();
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+            }
             setRecordBtnState(RecordBtnStateEnum.RETAKE);
             clearInterval(timerId);
         }
+    }
+
+    /**
+     * 获取文件URL
+     * @param {Blob[]} chunks 
+     * @returns 
+     */
+    function generateFile(chunks) {
+        let blob = new Blob(chunks, { type: mediaRecorderOptions.mimeType });
+        console.log(`类型：${blob.type}，大小：${Tools.returnFileSize(blob.size)}`)
+        let url = URL.createObjectURL(blob);
+        console.log('url: ' + url);
+        return url;
     }
 
     /**
