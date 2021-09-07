@@ -27,10 +27,24 @@ const defaultTimeCount = 0;
 const defaultTimerId = -1;
 /** @type { MediaRecorder } */
 const defaultMediaRecorder = null;
-const mediaRecorderOptions = { mimeType: "video/mp4" }
+const mediaRecorderOptions = {
+    mimeType: "video/mp4",
+    audioBitsPerSecond: 128000,
+    videoBitsPerSecond: 2500000,
+}
 const MAX_RECORD_DURATION = 10; // 10s 最大录制时长
 const defaultFileURL = '';
-const FILE_NAME = 'greeting.mp4';
+const FILE_NAME = 'greeting';
+const mimeList = [
+    {
+        mime: '.mp4',
+        mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
+    }, {
+        mime: '.webm',
+        mimeType: 'video/webm; codecs=vp9'
+    }
+];
+let selectedMime = mimeList[0];
 
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -58,8 +72,21 @@ function RecordVideo() {
 
 
     useEffect(() => {
+        testRecorderType();
         initMediaSource();
     }, []);
+
+    function testRecorderType() {
+        mimeList.forEach(ele => {
+            let ok = MediaRecorder.isTypeSupported(ele.mimeType);
+            if (ok) {
+                mediaRecorderOptions.mimeType = ele.mimeType;
+                selectedMime = ele;
+            }
+            alert(`${ele.mimeType} : ${ok}`)
+        });
+        alert('最终格式：' + mediaRecorderOptions.mimeType);
+    }
 
     /**
      * 初始化媒体源和video标签
@@ -152,7 +179,7 @@ function RecordVideo() {
      */
     function initMediaRecorder() {
         let recorder = new MediaRecorder(mediaStream, mediaRecorderOptions);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        // recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.ondataavailable = function (event) {
             console.log('video data available')
             let chunks = [];
@@ -266,15 +293,15 @@ function RecordVideo() {
 
     function downloadBtnClicked() {
         if (fileURL) {
-            if (Tools.myBrowser() == "Safari") {
+            if ("Safari" == Tools.myBrowser()) {
                 console.log('Safari，弹窗')
-                enqueueSnackbar('iphone无法直接下载，请使用电脑或安卓设备打开链接')
+                enqueueSnackbar('iphone无法直接下载，请使用电脑或安卓设备打开链接', { variant: 'info', autoHideDuration: 3000 })
                 showAlertDialog('请复制文件网址并到电脑端浏览器打开以下载', <input readOnly style={{ width: '100%' }} value={fileURL}></input>)
             } else {
                 console.log('非 Safari，直接下载')
                 const a = document.createElement('a');
                 a.style.display = 'none';
-                a.download = FILE_NAME;
+                a.download = FILE_NAME + selectedMime.mime;
                 a.href = fileURL;
                 document.body.appendChild(a)
                 a.click()

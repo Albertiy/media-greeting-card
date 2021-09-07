@@ -175,7 +175,7 @@ export function readFile(f) {
 }
 
 /**
- * 判断浏览器类型
+ * 判断浏览器类型，神奇的是都有Safari，但有先后顺序可排序，可能是兼容版本的意思。
  * @returns {string} 浏览器名称
  */
 export function myBrowser() {
