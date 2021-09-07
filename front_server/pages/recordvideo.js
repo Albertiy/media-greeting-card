@@ -42,7 +42,7 @@ const mimeList = [
         fileMime: 'video/mp4',
     }, {
         mime: '.webm',
-        mimeType: 'video/webm; codecs=vp9',
+        mimeType: 'video/webm;', // codecs=vp9
         fileMime: 'video/webm',
     }
 ];
