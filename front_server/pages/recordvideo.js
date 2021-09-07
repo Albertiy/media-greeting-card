@@ -29,24 +29,30 @@ const defaultTimerId = -1;
 const defaultMediaRecorder = null;
 const mediaRecorderOptions = {
     mimeType: "video/mp4",
-    audioBitsPerSecond: 128000,
-    videoBitsPerSecond: 2500000,
+    // audioBitsPerSecond: 128000,
+    // videoBitsPerSecond: 2500000,
 }
 const MAX_RECORD_DURATION = 10; // 10s 最大录制时长
 const defaultFileURL = '';
 const FILE_NAME = 'greeting';
-const mimeList = [
+const videoMimeList = [
     {
+        mime: '.ogg',
+        mimeType: 'video/ogg',
+        fileMime: 'video/ogg',
+    },
+    { // H.264 + ER AAC LC ，理应是最兼容的格式
         mime: '.mp4',
-        mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"',
+        mimeType: 'video/mp4; codecs="avc1.4d002a, mp4a.40.2"', // avc1.424028
         fileMime: 'video/mp4',
-    }, {
+    },
+    {
         mime: '.webm',
-        mimeType: 'video/webm;', // codecs=vp9
+        mimeType: 'video/webm; codecs="vp8, opus"', // codecs=vp9 vp9 依赖于硬件解码。
         fileMime: 'video/webm',
     }
 ];
-let selectedMime = mimeList[0];
+let selectedMime = videoMimeList[0];
 
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -79,16 +85,16 @@ function RecordVideo() {
     }, []);
 
     function testRecorderType() {
-        for (let i = 0; i < mimeList.length; i++) {
-            let ok = MediaRecorder.isTypeSupported(mimeList[i].mimeType);
-            alert(`${mimeList[i].mimeType} : ${ok}`)
+        for (let i = 0; i < videoMimeList.length; i++) {
+            let ok = MediaRecorder.isTypeSupported(videoMimeList[i].mimeType);
+            alert(`${videoMimeList[i].mimeType} : ${ok}`)
             if (ok) {
-                mediaRecorderOptions.mimeType = mimeList[i].mimeType;
-                selectedMime = mimeList[i];
+                mediaRecorderOptions.mimeType = videoMimeList[i].mimeType;
+                selectedMime = videoMimeList[i];
                 break;
             }
         }
-        alert('最终格式：' + mediaRecorderOptions.mimeType);
+        // alert('最终格式：' + mediaRecorderOptions.mimeType);
     }
 
     /**
@@ -281,7 +287,6 @@ function RecordVideo() {
     function reTakeBtnClicked(ev) {
         switch (recordBtnState) {
             case (RecordBtnStateEnum.START): {
-                enqueueSnackbar('开始录制', { variant: 'info', autoHideDuration: 1000 })
                 recordStart();
             }; break;
             case (RecordBtnStateEnum.STOP): {
