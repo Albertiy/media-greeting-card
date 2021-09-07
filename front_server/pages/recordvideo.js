@@ -92,6 +92,8 @@ function RecordVideo() {
                     video.src = URL.createObjectURL(stream)
                 }
             } else {
+                alert(stream);
+                video.srcObject = null;
                 video.src = stream;
             }
         } else {
