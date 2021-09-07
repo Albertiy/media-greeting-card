@@ -152,6 +152,7 @@ function RecordVideo() {
      */
     function initMediaRecorder() {
         let recorder = new MediaRecorder(mediaStream, mediaRecorderOptions);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.ondataavailable = function (event) {
             console.log('video data available')
             let chunks = [];
