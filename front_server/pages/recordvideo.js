@@ -38,10 +38,12 @@ const FILE_NAME = 'greeting';
 const mimeList = [
     {
         mime: '.mp4',
-        mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"'
+        mimeType: 'video/mp4; codecs="avc1.424028, mp4a.40.2"',
+        fileMime: 'video/mp4',
     }, {
         mime: '.webm',
-        mimeType: 'video/webm; codecs=vp9'
+        mimeType: 'video/webm; codecs=vp9',
+        fileMime: 'video/webm',
     }
 ];
 let selectedMime = mimeList[0];
@@ -77,14 +79,15 @@ function RecordVideo() {
     }, []);
 
     function testRecorderType() {
-        mimeList.forEach(ele => {
-            let ok = MediaRecorder.isTypeSupported(ele.mimeType);
+        for (let i = 0; i < mimeList.length; i++) {
+            let ok = MediaRecorder.isTypeSupported(mimeList[i].mimeType);
+            alert(`${mimeList[i].mimeType} : ${ok}`)
             if (ok) {
-                mediaRecorderOptions.mimeType = ele.mimeType;
-                selectedMime = ele;
+                mediaRecorderOptions.mimeType = mimeList[i].mimeType;
+                selectedMime = mimeList[i];
+                break;
             }
-            alert(`${ele.mimeType} : ${ok}`)
-        });
+        }
         alert('最终格式：' + mediaRecorderOptions.mimeType);
     }
 
@@ -203,6 +206,7 @@ function RecordVideo() {
         if (mediaStream) {
             let recorder = mediaRecorder ? mediaRecorder : initMediaRecorder();
             recorder.start();
+            enqueueSnackbar('开始录制', { variant: 'info', autoHideDuration: 1000 })
         } else {
             enqueueSnackbar('无效的媒体源，无法录制!', { variant: 'error', autoHideDuration: 2000 })
         }
@@ -230,7 +234,7 @@ function RecordVideo() {
      * @returns 
      */
     function generateFile(chunks) {
-        let blob = new Blob(chunks, { type: mediaRecorderOptions.mimeType });
+        let blob = new Blob(chunks, { type: selectedMime.fileMime });
         let fileInfo = `类型：${blob.type}，大小：${Tools.returnFileSize(blob.size)}`;
         console.log(fileInfo)
         enqueueSnackbar('录制成功！' + fileInfo, { variant: 'success', autoHideDuration: 3000 })
