@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import TitleBar from "../src/component/title_bar";
 import styles from '../styles/recordvideo.module.scss'
 import Icon from "@mdi/react";
-import { mdiPlay, mdiCheckBold, mdiCamera, mdiStop, mdiRefresh, mdiVideoOutline } from '@mdi/js';
+import { mdiPlay, mdiCheckBold, mdiCamera, mdiStop, mdiRefresh, mdiVideoOutline, mdiDownload } from '@mdi/js';
 import { useSnackbar } from 'notistack';
 import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
@@ -29,6 +29,8 @@ const defaultTimerId = -1;
 const defaultMediaRecorder = null;
 const mediaRecorderOptions = { mimeType: "video/mp4" }
 const MAX_RECORD_DURATION = 10; // 10s 最大录制时长
+const defaultFileURL = '';
+const FILE_NAME = '我的祝福.mp4';
 
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -52,6 +54,7 @@ function RecordVideo() {
     const [timerId, setTimerId] = useState(defaultTimerId);
 
     const [mediaRecorder, setMediaRecorder] = useState(defaultMediaRecorder);
+    const [fileURL, setFileURL] = useState(defaultFileURL);
 
 
     useEffect(() => {
@@ -143,7 +146,9 @@ function RecordVideo() {
             let chunks = [];
             if (event.data.size > 0) {
                 chunks.push(event.data);
-                setVideoSource(generateFile(chunks));
+                let url = generateFile(chunks);
+                setFileURL(url);
+                setVideoSource(url);
             } else {
                 console.log('no data!')
             }
@@ -245,7 +250,21 @@ function RecordVideo() {
                 showAlertDialog('警告', '将清除原先录制的内容，确定要重新录制吗？', handleReTakeOk);
             }; break;
         }
+    }
 
+    function downloadBtnClicked() {
+        if (fileURL) {
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.download = FILE_NAME;
+            a.href = fileURL;
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+        } else {
+            console.log('文件不存在，未下载')
+            enqueueSnackbar('文件不存在，未下载', { variant: 'warning', autoHideDuration: 2000 })
+        }
     }
 
     function previewBtnClicked(ev) {
@@ -298,6 +317,11 @@ function RecordVideo() {
                 </div>
                 <div className={styles.info}>
                     <div>时长：{Tools.formatDuration(timeCount)}</div>
+                </div>
+                <div className={styles.float_bar}>
+                    {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
+                        <Icon path={mdiDownload} size={1}></Icon>
+                    </div>}
                 </div>
             </main>
             <footer>
