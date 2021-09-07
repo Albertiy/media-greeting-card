@@ -77,6 +77,9 @@ function RecordVideo() {
                     enqueueSnackbar('当前设备缺少麦克风或摄像头', { variant: 'error', autoHideDuration: 10000 })
                 else if (err.name == 'NotAllowedError')
                     enqueueSnackbar('请授权当前浏览器或应用录音与录像权限', { variant: 'error', autoHideDuration: 2000 })
+                else {
+                    enqueueSnackbar('' + err.name, { variant: 'error', autoHideDuration: 10000 })
+                }
             })
     }
 
