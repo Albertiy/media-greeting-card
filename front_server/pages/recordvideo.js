@@ -68,12 +68,13 @@ function RecordVideo() {
         let constraints = { audio: true, video: { width: 1024, height: 720 } }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
-                alert('hello')
+                alert('success get media stream')
                 enqueueSnackbar('stream: ' + stream.toString(), { variant: 'success', autoHideDuration: 6000 })
                 setMediaStream(stream);
                 setVideoSource(stream);
             })
             .catch(function (err) {
+                alert('fail to get media stream: ' + err.toString());
                 console.log(err.name + ": " + err.message);
                 if (err.name == 'NotFoundError')
                     enqueueSnackbar('当前设备缺少麦克风或摄像头', { variant: 'error', autoHideDuration: 10000 })
