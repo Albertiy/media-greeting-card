@@ -134,6 +134,9 @@ function RecordVideo() {
     function setVideoSource(stream) {
         console.log('videoSource: %o', stream);
         let video = videoEle.current;
+        video.oncanplay = () => {
+            alert('视频时长：' + video.duration + '秒');
+        }
         if (video) {
             if (stream instanceof MediaStream) {
                 if ('srcObject' in video) {
