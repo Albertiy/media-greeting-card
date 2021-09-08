@@ -9,7 +9,7 @@ import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
 import * as Tools from "../src/tool/tools";
 import dayjs from 'dayjs';
-import * as EBMLUtil from '../src/tool/ebml.util';
+// import * as EBMLUtil from '../src/tool/ebml.util';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiCamera },
