@@ -1,4 +1,4 @@
-import { Decoder, tools, Reader } from './EBML.js'
+import { Decoder, tools, Reader } from 'ebml'
 
 /**
  * @param {Blob} file - File or Blob object.

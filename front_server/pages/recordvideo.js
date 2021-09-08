@@ -9,6 +9,7 @@ import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
 import * as Tools from "../src/tool/tools";
 import dayjs from 'dayjs';
+import * as EBMLUtil from '../src/tool/ebml.util';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiCamera },
@@ -115,7 +116,9 @@ function RecordVideo() {
                 if (err.name == 'NotFoundError')
                     enqueueSnackbar('当前设备缺少麦克风或摄像头', { variant: 'error', autoHideDuration: 10000 })
                 else if (err.name == 'NotAllowedError')
-                    enqueueSnackbar('请授权当前浏览器或应用录音与录像权限', { variant: 'error', autoHideDuration: 2000 })
+                    enqueueSnackbar('请授权当前页面录音与录像权限', { variant: 'error', autoHideDuration: 2000 })
+                else if (err.name == 'NotReadableError')
+                    enqueueSnackbar('摄像头与麦克风可能被其他应用占用，请更换浏览器', { variant: 'error', autoHideDuration: 2000 })
                 else {
                     enqueueSnackbar('' + err.name, { variant: 'error', autoHideDuration: 10000 })
                 }
@@ -194,9 +197,12 @@ function RecordVideo() {
             let chunks = [];
             if (event.data.size > 0) {
                 chunks.push(event.data);
-                let url = generateFile(chunks);
-                setFileURL(url);
-                setVideoSource(url);
+                generateFile(chunks).then((url) => {
+                    setFileURL(url);
+                    setVideoSource(url);
+                }).catch((err) => {
+                    console.log(err)
+                })
             } else {
                 console.log('no data!')
             }
@@ -235,14 +241,33 @@ function RecordVideo() {
     }
 
     /**
-     * 获取文件URL
+     * 获取文件URL，改为异步
      * @param {Blob[]} chunks 
      * @returns 
      */
     function generateFile(chunks) {
-        let blob = new Blob(chunks, { type: selectedMime.fileMime });
+        return new Promise((resolve, reject) => {
+            let blob = new Blob(chunks, { type: selectedMime.fileMime });
+            // TODO WebM 格式需要通过 EMBL 转化以获得元数据
+            if (selectedMime.fileMime == '.webm') {
+                // 这个是异步的
+                EBMLUtil.getSeekableBlob(blob, (seekableBlob) => {
+                    resolve(getBlobUrl(seekableBlob));
+                })
+            } else {
+                resolve(getBlobUrl(blob));
+            }
+        })
+    }
+
+    /**
+     * 
+     * @param {Blob} blob 
+     * @returns 
+     */
+    function getBlobUrl(blob) {
         let fileInfo = `类型：${blob.type}，大小：${Tools.returnFileSize(blob.size)}`;
-        console.log(fileInfo)
+        console.log(fileInfo);
         enqueueSnackbar('录制成功！' + fileInfo, { variant: 'success', autoHideDuration: 3000 })
         let url = URL.createObjectURL(blob);
         console.log('url: ' + url);
