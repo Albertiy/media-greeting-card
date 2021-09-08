@@ -135,7 +135,7 @@ function RecordVideo() {
         console.log('videoSource: %o', stream);
         let video = videoEle.current;
         video.oncanplay = () => {
-            alert('视频时长：' + video.duration + '秒');
+            enqueueSnackbar('视频时长：' + video.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
         }
         if (video) {
             if (stream instanceof MediaStream) {
@@ -252,14 +252,14 @@ function RecordVideo() {
         return new Promise((resolve, reject) => {
             let blob = new Blob(chunks, { type: selectedMime.fileMime });
             // TODO WebM 格式需要通过 EMBL 转化以获得元数据
-            if (selectedMime.fileMime == '.webm') {
-                // 这个是异步的
-                EBMLUtil.getSeekableBlob(blob, (seekableBlob) => {
-                    resolve(getBlobUrl(seekableBlob));
-                })
-            } else {
+            // if (selectedMime.fileMime == '.webm') {
+            //     // 这个是异步的
+            //     EBMLUtil.getSeekableBlob(blob, (seekableBlob) => {
+            //         resolve(getBlobUrl(seekableBlob));
+            //     })
+            // } else
                 resolve(getBlobUrl(blob));
-            }
+
         })
     }
 
