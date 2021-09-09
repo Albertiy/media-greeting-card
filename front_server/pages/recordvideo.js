@@ -10,6 +10,8 @@ import ModelLoading from "../src/component/model_loading";
 import * as Tools from "../src/tool/tools";
 import dayjs from 'dayjs';
 // import * as EBMLUtil from '../src/tool/ebml.util';
+import { LinearProgress } from '@material-ui/core';
+import * as FileService from '../src/service/file_service';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiCamera },
@@ -17,7 +19,7 @@ const RecordBtnStateEnum = {
     RETAKE: { title: '重录', icon: mdiRefresh }
 }
 
-const defaultLoading = false;
+const defaultLoading = true;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
 
 /** @type{MediaStream} */
@@ -55,6 +57,8 @@ const videoMimeList = [
 ];
 let selectedMime = videoMimeList[0];
 
+const defaultProgressValue = 0;
+
 function RecordVideo() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -78,6 +82,8 @@ function RecordVideo() {
 
     const [mediaRecorder, setMediaRecorder] = useState(defaultMediaRecorder);
     const [fileURL, setFileURL] = useState(defaultFileURL);
+
+    const [progressValue, setProgressValue] = useState(defaultProgressValue);
 
 
     useEffect(() => {
@@ -258,7 +264,7 @@ function RecordVideo() {
             //         resolve(getBlobUrl(seekableBlob));
             //     })
             // } else
-                resolve(getBlobUrl(blob));
+            resolve(getBlobUrl(blob));
 
         })
     }
@@ -356,8 +362,32 @@ function RecordVideo() {
     }
 
     function finishBtnClicked() {
-        // TODO
-        enqueueSnackbar('完成', { variant: 'success', autoHideDuration: 2000 })
+        // TODO 上传视频，并弹窗提示
+        FileService.uploadGreetings(videoFile, audioFile, progressUpload).then((result) => {
+            setProgressValue(1);
+            setTimeout(() => {
+                setLoading(false);
+                enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
+            }, 500);
+        }).catch((err) => {
+            console.log(err)
+            enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+            setProgressValue(defaultProgressValue);
+        }).finally(() => {
+
+        });
+    }
+
+    function progressUpload(progressEvent) {
+        console.log(progressEvent);
+        try {
+            let now = progressEvent.loaded / progressEvent.total;
+            now = now > 1 ? 1 : now;
+            now = now < 0 ? 0 : now;
+            setProgressValue(now);
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     return (
@@ -410,7 +440,10 @@ function RecordVideo() {
             <footer>
             </footer>
             <AlertDialog open={showDialog} title={dialogTitle} content={dialogContent} handleClose={dialogHandleClose} />
-            {loading && <ModelLoading />}
+            {loading && <ModelLoading>
+                <LinearProgress variant="determinate" value={progressValue * 100} style={{ width: "80%", margin: "20px 0 20px" }} />
+                <span style={{ color: '#fff' }}>{(progressValue * 100).toFixed(2) + '%'}</span>
+            </ModelLoading>}
         </div>
     )
 }
