@@ -366,13 +366,13 @@ function RecordVideo() {
     }
 
     function finishBtnClicked() {
-        if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile) {
+        if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile != null) {
             // TODO 上传视频，并弹窗提示
+            setLoading(true);
             FileService.uploadGreetings(videoFile, null, progressUpload).then((result) => {
                 setProgressValue(1);
-                setTimeout(() => {
-                    enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
-                }, 500);
+                // enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
+                showAlertDialog('提示', '完成！', (ok) => { console.log(ok) })
             }).catch((err) => {
                 console.log(err)
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
@@ -380,9 +380,15 @@ function RecordVideo() {
             }).finally(() => {
                 setLoading(false);
             });
+        } else {
+            enqueueSnackbar('请等待当前录制完成', { variant: 'warning', autoHideDuration: 1000 })
         }
     }
 
+    /**
+     * axios 进度回调函数
+     * @param {*} progressEvent 
+     */
     function progressUpload(progressEvent) {
         console.log(progressEvent);
         try {
