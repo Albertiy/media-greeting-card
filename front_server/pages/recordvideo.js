@@ -19,7 +19,7 @@ const RecordBtnStateEnum = {
     RETAKE: { title: '重录', icon: mdiRefresh }
 }
 
-const defaultLoading = true;
+const defaultLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
 
 /** @type{MediaStream} */
@@ -366,7 +366,6 @@ function RecordVideo() {
         FileService.uploadGreetings(videoFile, audioFile, progressUpload).then((result) => {
             setProgressValue(1);
             setTimeout(() => {
-                setLoading(false);
                 enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
             }, 500);
         }).catch((err) => {
@@ -374,7 +373,7 @@ function RecordVideo() {
             enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
             setProgressValue(defaultProgressValue);
         }).finally(() => {
-
+            setLoading(false);
         });
     }
 
