@@ -37,6 +37,8 @@ const mediaRecorderOptions = {
 }
 const MAX_RECORD_DURATION = 10; // 10s 最大录制时长
 const defaultFileURL = '';
+/** @type {File} */
+const defaultVideoFile = null;
 const FILE_NAME = 'greeting';
 const videoMimeList = [
     {
@@ -82,6 +84,7 @@ function RecordVideo() {
 
     const [mediaRecorder, setMediaRecorder] = useState(defaultMediaRecorder);
     const [fileURL, setFileURL] = useState(defaultFileURL);
+    const [videoFile, setVideoFile] = useState(defaultVideoFile);
 
     const [progressValue, setProgressValue] = useState(defaultProgressValue);
 
@@ -206,7 +209,7 @@ function RecordVideo() {
             let chunks = [];
             if (event.data.size > 0) {
                 chunks.push(event.data);
-                generateFile(chunks).then((url) => {
+                generateSrcUrl(chunks).then((url) => {
                     setFileURL(url);
                     setVideoSource(url);
                 }).catch((err) => {
@@ -254,7 +257,7 @@ function RecordVideo() {
      * @param {Blob[]} chunks 
      * @returns 
      */
-    function generateFile(chunks) {
+    function generateSrcUrl(chunks) {
         return new Promise((resolve, reject) => {
             let blob = new Blob(chunks, { type: selectedMime.fileMime });
             // TODO WebM 格式需要通过 EMBL 转化以获得元数据
@@ -264,6 +267,7 @@ function RecordVideo() {
             //         resolve(getBlobUrl(seekableBlob));
             //     })
             // } else
+            setVideoFile(new File([blob], FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime })); // 用来上传的文件
             resolve(getBlobUrl(blob));
 
         })
@@ -335,7 +339,7 @@ function RecordVideo() {
     }
 
     function downloadBtnClicked() {
-        if (fileURL) {
+        if (recordBtnState == RecordBtnStateEnum.RETAKE && fileURL) {
             if ("Safari" == Tools.myBrowser()) {
                 console.log('Safari，弹窗')
                 enqueueSnackbar('iphone无法直接下载，请使用电脑或安卓设备打开链接', { variant: 'info', autoHideDuration: 3000 })
@@ -362,19 +366,21 @@ function RecordVideo() {
     }
 
     function finishBtnClicked() {
-        // TODO 上传视频，并弹窗提示
-        FileService.uploadGreetings(videoFile, audioFile, progressUpload).then((result) => {
-            setProgressValue(1);
-            setTimeout(() => {
-                enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
-            }, 500);
-        }).catch((err) => {
-            console.log(err)
-            enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
-            setProgressValue(defaultProgressValue);
-        }).finally(() => {
-            setLoading(false);
-        });
+        if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile) {
+            // TODO 上传视频，并弹窗提示
+            FileService.uploadGreetings(videoFile, null, progressUpload).then((result) => {
+                setProgressValue(1);
+                setTimeout(() => {
+                    enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
+                }, 500);
+            }).catch((err) => {
+                console.log(err)
+                enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+                setProgressValue(defaultProgressValue);
+            }).finally(() => {
+                setLoading(false);
+            });
+        }
     }
 
     function progressUpload(progressEvent) {
