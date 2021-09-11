@@ -267,7 +267,8 @@ function RecordVideo() {
             //         resolve(getBlobUrl(seekableBlob));
             //     })
             // } else
-            setVideoFile(new File([blob], FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime })); // 用来上传的文件
+            let file = new File([blob], FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime });
+            setVideoFile(file); // 用来上传的文件
             resolve(getBlobUrl(blob));
 
         })
@@ -369,6 +370,7 @@ function RecordVideo() {
         if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile != null) {
             // TODO 上传视频，并弹窗提示
             setLoading(true);
+            enqueueSnackbar('待上传的文件:' + videoFile.size, { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(videoFile, null, progressUpload).then((result) => {
                 setProgressValue(1);
                 // enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
