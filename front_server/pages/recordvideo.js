@@ -111,7 +111,12 @@ function RecordVideo() {
      * 初始化媒体源和video标签
      */
     function initMediaSource() {
-        let constraints = { audio: true, video: { width: 800, height: 800 } }
+        let constraints = {
+            audio: {
+                noiseSuppression: true,
+                echoCancellation: true
+            }, video: { width: 800, height: 800 }
+        }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
                 // alert('success get media stream')
@@ -292,7 +297,7 @@ function RecordVideo() {
      * 显示弹窗
      * @param {string} title 
      * @param {string} content 
-     * @param {function} handleClose 
+     * @param {function} [handleClose] 
      */
     function showAlertDialog(title, content, handleClose) {
         console.log(title)
@@ -374,7 +379,7 @@ function RecordVideo() {
             FileService.uploadGreetings(videoFile, null, progressUpload).then((result) => {
                 setProgressValue(1);
                 // enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
-                showAlertDialog('提示', '完成！', (ok) => { console.log(ok) })
+                showAlertDialog('提示', '完成！')
             }).catch((err) => {
                 console.log(err)
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
