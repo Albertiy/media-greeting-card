@@ -61,10 +61,9 @@ function genQrFiles(links) {
             links.forEach((ele, idx) => {
                 /** 图片文件名：序号_code.jpg */
                 let filePath = path.resolve(absQrDirPath, (idx + 1) + '-' + ele.code + '.jpg');
-                promList.push(qr.toFile(filePath, ele.link));
+                promList.push(qr.toFile(filePath, ele.link).then((result) => { /*console.log(filePath)*/ }).catch((err) => { console.log(err) }));
             });
             Promise.all(promList).then(val => {
-                console.log('val: %o', val)
                 getArchiver(absQrDirPath).then((res) => {
                     let absZipPath = res;
                     let relativeZipPath = path.relative(path.resolve(fileService.getFileRoot()), absZipPath);
