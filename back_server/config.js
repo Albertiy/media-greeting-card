@@ -8,10 +8,14 @@ const fs = require('fs');
  * staticPath: string,
  * frontAddress: string, 
  * logDirectory: string,
+ * fileRoot: string,
  * exampleMode: boolean,
  * tokenSecret: string,
  * tokenExpires: number,
  * qrEntryUrl: string,
+ *  videoFileRoot: string,
+ *  audioFileRoot: string,
+ *  qrFileRoot: string,
  * }}
  */
 exports.application = function () {

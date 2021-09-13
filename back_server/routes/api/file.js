@@ -10,6 +10,10 @@ const fileService = require('../../src/service/file_service');
 const tools = require('../../src/tool/tools');
 var ReqBody = require('../../src/model/req_body');
 
+const appConfig = require('../../config.js').application();
+const VIDEO_ROOT = appConfig.videoFileRoot;
+const AUDIO_ROOT = appConfig.audioFileRoot;
+
 // router.get('/uploadGreetingFiles', function (req, res, next) {
 //     res.send({ ok: 1 })
 // })
@@ -85,9 +89,8 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                 console.log(audioFile);
                                 if (audioFile && audioFile.size > 0) {
                                     console.log('|| 临时路径:' + audioFile.path);
-                                    let audioRelPath = (tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)) + '-' + uuidV1();
-                                    audioRelPath += tools.getExtName(audioFile.name)
-                                    let audioAbsPath = path.resolve(rootUrl, audioRelPath)
+                                    let audioRelPath = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + uuidV1());
+                                    let audioAbsPath = path.resolve(rootUrl, AUDIO_ROOT, audioRelPath)
                                     console.log('|| 存储路径:' + audioAbsPath)
                                     fs.renameSync(audioFile.path, audioAbsPath);
                                 }
@@ -114,7 +117,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                     console.log('|| 临时路径:' + videoFile.path);
                                     let videoRelPath = (tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)) + '-' + uuidV1();
                                     videoRelPath += tools.getExtName(videoFile.name)
-                                    let videoAbsPath = path.resolve(rootUrl, videoRelPath)
+                                    let videoAbsPath = path.resolve(rootUrl, VIDEO_ROOT, videoRelPath)
                                     console.log('|| 存储路径:' + videoAbsPath)
                                     fs.renameSync(videoFile.path, videoAbsPath);
                                 }
@@ -131,6 +134,20 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
         console.log(error);
         res.send(new ReqBody(0, null, error))
     }
+});
+
+/**
+ * 获取文件
+ * 参数：文件相对于根文件夹的路径
+ * 文件名不作为路径的参数，而是作为path的一部分。可能需要 uldecode 解码。
+ */
+router.get('/file/*', function (req, res, next) {
+    // let { thumb } = req.query;  // 也可以有额外的参数
+    /** @type{string} */
+    let filePath = req.params[0];
+    let absoluteFilePath = path.join(fileService.getFileRoot(), filePath);
+    console.log('file: %s', absoluteFilePath);
+    res.sendFile(absoluteFilePath); // 传输为字节流文件
 });
 
 module.exports = router;

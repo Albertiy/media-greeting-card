@@ -4,8 +4,11 @@
   "staticPath": "./public",
   "frontAddress": "http://localhost:8521",
   "logDirectory": "log",
-  "fileRoot": "../uploadFiles",
+  "fileRoot": "../storageFiles",
   "tokenSecret": "it's fine if you no more love me",
   "tokenExpires": 86400,
-  "qrEntryUrl": "https://heka.neiguiyin.com/index"
+  "qrEntryUrl": "https://heka.neiguiyin.com/entry",
+  "videoFileRoot": "./video",
+  "audioFileRoot": "./audio",
+  "qrFileRoot": "./qr"
 }

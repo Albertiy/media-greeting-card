@@ -1,4 +1,5 @@
 /uploadFiles
+/storageFiles
 **/node_modules
 **/log
 *.log
