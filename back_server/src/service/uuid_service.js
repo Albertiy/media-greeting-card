@@ -1,6 +1,7 @@
-const { v4: uuidv4 } = require('uuid');
+const { v1: uuidV1 } = require('uuid');
 
 const MAX_GEN = 5000;
+const MIN_GEN = 1;
 
 
 /**
@@ -8,11 +9,13 @@ const MAX_GEN = 5000;
  * @param {number} count default:1
  * @returns 
  */
-function getBatchUUID(count = 1) {
+function getBatchUUID(count = MIN_GEN) {
+    count = count > MAX_GEN ? MAX_GEN : count;
+    count = count < MIN_GEN ? MIN_GEN : count;
     let i = 0;
     let batch = [];
     for (i; i < count; i++) {
-        batch.push(uuidv4());
+        batch.push(uuidV1());
     }
     return batch;
 }
