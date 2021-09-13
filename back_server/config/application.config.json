@@ -6,5 +6,6 @@
   "logDirectory": "log",
   "fileRoot": "../uploadFiles",
   "tokenSecret": "it's fine if you no more love me",
-  "tokenExpires": 86400
+  "tokenExpires": 86400,
+  "qrEntryUrl": "https://heka.neiguiyin.com/index"
 }

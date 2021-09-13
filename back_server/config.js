@@ -11,6 +11,7 @@ const fs = require('fs');
  * exampleMode: boolean,
  * tokenSecret: string,
  * tokenExpires: number,
+ * qrEntryUrl: string,
  * }}
  */
 exports.application = function () {
@@ -23,7 +24,13 @@ exports.application = function () {
 
 /**
  * 获取 database.config.json
- * @returns {{}}
+ * @returns {{
+ *  host: string,
+ *  port: string,
+ *  user: string,
+ *  password: string,
+ *  database: string,
+ * }}
  */
 exports.database = function () {
     try {
