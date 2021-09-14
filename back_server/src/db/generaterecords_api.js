@@ -2,6 +2,8 @@ const ConnPool = require('./conn_pool')
 const pool = ConnPool.getPool();
 
 const addSql = 'insert into generaterecords(count, first, latest, filePath) values (?,?,?,?)';
+const getSql = 'select * from heka.generaterecords where id = ?';
+const getByTimeSql = 'select * from heka.generaterecords where create_time between ? and ?';
 
 /**
  * 
@@ -29,6 +31,48 @@ function add(count, first, latest, filePath) {
     }
 }
 
+/**
+ * 通过id查询
+ * @param {number} id 
+ * @returns 
+ */
+function get(id) {
+    try {
+        return new Promise((resolve, reject) => {
+            pool.query(getSql, [id], (err, res, fields) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(res)
+                }
+            })
+        })
+    } catch (e) {
+
+    }
+}
+
+/**
+ * 通过时间段查询
+ * @param {string} startTime 
+ * @param {string} endTime 
+ */
+function getByTime(startTime, endTime) {
+    return new Promise((resolve, reject) => {
+        pool.query(getByTimeSql, [startTime, endTime], (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
+
 module.exports = {
     add,
+    get,
+    getByTime,
 }

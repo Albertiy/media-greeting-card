@@ -68,8 +68,32 @@ function insertGenerateRecord(count, first, latest, filePath) {
 
 }
 
+/**
+ * 通过id或时间获取记录数组
+ * @param {{id: number, startTime: string, endTime: string}} params 
+ * @returns 
+ */
+function getRecords({ id, startTime, endTime }) {
+    return new Promise((resolve, reject) => {
+        if (id) {
+            GeneraterecordsAPI.get(id).then((result) => {
+                resolve(result)
+            }).catch((err) => {
+                reject(err)
+            });
+        } else if (startTime && endTime) {
+            GeneraterecordsAPI.getByTime(startTime, endTime).then((result) => {
+                resolve(result)
+            }).catch((err) => {
+                reject(err)
+            });
+        }
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
     insertCodesAndRecord,
+    getRecords,
 }

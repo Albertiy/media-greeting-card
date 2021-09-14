@@ -22,12 +22,14 @@ class ConnPool {
         this.user = dbConfig && dbConfig['user'] ? dbConfig['user'] : 'root';
         this.password = dbConfig && dbConfig['password'] ? dbConfig['password'] : '123456';
         this.database = dbConfig && dbConfig['database'] ? dbConfig['database'] : 'yilabaodb';
+        this.timezone = "08:00";    // 默认 local，所以我认为无需加上。
         this.pool = mysql.createPool({
             host: this.host,
             port: this.port,
             user: this.user,
             password: this.password,
             database: this.database,
+            // timezone: this.timezone,
         });
     }
 

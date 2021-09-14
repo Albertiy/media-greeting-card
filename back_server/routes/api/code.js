@@ -37,4 +37,41 @@ router.post('/generateCode', function (req, res, next) {
     }
 })
 
+router.get('/record', (req, res, next) => {
+    let { id } = req.query;
+    if (id) {
+        id = parseInt(id);
+        dbService.getRecords({ id }).then((result) => {
+            // console.log("result: %o", result[0]);
+            if (result.length > 0)
+                res.send(new ReqBody(1, result[0]))
+            else
+                res.send(new ReqBody(0, null, '未查询到对应记录'))
+        }).catch((err) => {
+            res.send(new ReqBody(0, null, err))
+        });
+    } else {
+        res.send(new ReqBody(0, null, '缺少必要参数'))
+    }
+})
+
+router.get('/records', function (req, res, next) {
+    let { id, startTime, endTime } = req.query;
+    if (id || startTime || endTime) {
+        if (id) id = parseInt(id);
+        dbService.getRecords({ id, startTime, endTime }).then((result) => {
+            if (id || startTime || endTime) {
+                if (id) id = parseInt(id);
+                dbService.getRecords({ id, startTime, endTime }).then((result) => {
+                    res.send(new ReqBody(1, result))
+                }).catch((err) => {
+                    res.send(new ReqBody(0, null, err))
+                });
+            } else {
+                res.send(new ReqBody(0, null, '缺少必要参数'))
+            }
+        })
+    }
+})
+
 module.exports = router;
