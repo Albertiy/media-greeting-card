@@ -13,22 +13,18 @@ function insertCodesAndRecord(codes, zipFilePath) {
             let count = codes.length;
             let first = codes[0];
             let latest = codes[codes.length - 1];
-            let promList = [];
-            promList.push(UploadfilesAPI.addMultiple(codes).then((result) => {
-                console.log('[insertCodes] result: %o', result)
-            }).catch((err) => {
-                reject(err)
-            }));
-            promList.push(GeneraterecordsAPI.add(count, first, latest, zipFilePath).then((result) => {
+            GeneraterecordsAPI.add(count, first, latest, zipFilePath).then((result) => {
+                let recordId = result.insertId;
                 console.log('[insertGenerateRecord] result: %o', result)
+                UploadfilesAPI.addMultiple(codes, recordId).then((result) => {
+                    console.log('[insertCodes] result: %o', result)
+                    resolve(true);
+                }).catch((err) => {
+                    reject(err)
+                })
             }).catch((err) => {
                 reject(err)
-            }));
-            Promise.all(promList).then((result) => {
-                resolve(true);
-            }).catch((err) => {
-                reject(err)
-            });
+            })
         } else {
             reject('生成的二维码为空')
         }

@@ -1,9 +1,14 @@
 SELECT * FROM heka.uploadfiles;
+-- select UUID();
+-- insert into uploadfiles(uuid) values (uuid()),(uuid());
 
-delete from heka.uploadfiles where id;
+select * from heka.generaterecords;
 
-select UUID();
+insert into uploadfiles(uuid, record_id) values (?, ?);
 
-insert into uploadfiles(uuid) values (uuid()),(uuid());
+delete from heka.uploadfiles where id>0;
 
-select * from generaterecords;
+delete from heka.generaterecords where id>0;
+
+ALTER TABLE `heka`.`uploadfiles` 
+DROP FOREIGN KEY `FK_uploadfiles_record_id_idx`;

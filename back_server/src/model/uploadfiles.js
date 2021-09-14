@@ -1,6 +1,7 @@
 class Uploadfiles {
     id;
     uuid;
+    record_id;
     videoPath;
     audioPath;
     isLocked;
@@ -15,9 +16,10 @@ class Uploadfiles {
      * @param {boolean} isLocked 
      * @param {boolean} isDeleted 
      */
-    constructor(id, uuid, videoPath, audioPath, isLocked, isDeleted) {
+    constructor(id, uuid, record_id, videoPath, audioPath, isLocked, isDeleted) {
         this.id = id;
         this.uuid = uuid;
+        this.record_id = record_id;
         this.videoPath = videoPath;
         this.audioPath = audioPath;
         this.isLocked = isLocked;

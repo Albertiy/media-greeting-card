@@ -53,6 +53,35 @@ class ConnPool {
         })
     }
 
+    /**
+     * 事务查询，目前只能执行一条查询语句，会回滚或提交。
+     * @param {string|mysql.QueryOptions} sql 查询语句
+     * @param {*} data 
+     * @param {mysql.queryCallback} callback 
+     */
+    static execTrans(sql, data, callback) {
+        ConnPool.getPool().getConnection((err, conn) => {
+            conn.beginTransaction(err => {
+                if (err) {
+                    return '开启事务失败'
+                } else {
+                    conn.query(sql, data, (err, res, fields) => {   // 将conn传入回调函数，或许可以使用bind？
+                        try {
+                            if (err) {
+                                conn.rollback((err) => { if (err) console.log('回滚事务失败：%o', err); else console.log('回滚事务') })
+                            } else {
+                                conn.commit((err) => { if (err) console.log('提交事务失败：%o', err); else console.log('提交事务') })
+                            }
+                            callback(err, res, fields)
+                        } finally {
+                            conn.release();
+                        }
+                    })
+                }
+            })
+
+        })
+    }
 };
 
 module.exports = ConnPool;
