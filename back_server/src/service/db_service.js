@@ -91,9 +91,29 @@ function getRecords({ id, startTime, endTime }) {
     })
 }
 
+/**
+ * 设置上锁状态
+ * @param {number} id 
+ * @param {boolean} lock 
+ * @returns 
+ */
+function setLock(id, lock) {
+    return new Promise((resolve, reject) => {
+        UploadfilesAPI.setLock(id, lock).then((result) => {
+            if (result.affectedRows > 0)
+                resolve(result)
+            else
+                reject('无效的id')
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
     insertCodesAndRecord,
     getRecords,
+    setLock,
 }
