@@ -12,18 +12,21 @@ const addSql = 'insert into generaterecords(count, first, latest, filePath) valu
  * @returns 
  */
 function add(count, first, latest, filePath) {
-    let values = [count, first, latest, filePath];
-    return new Promise((resolve, reject) => {
-        pool.query(addSql, values, (err, res, fields) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(res)
-            }
+    try {
+        let values = [count, first, latest, filePath];
+        return new Promise((resolve, reject) => {
+            pool.query(addSql, values, (err, res, fields) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve(res)
+                }
+            })
         })
-    })
-
+    } catch (e) {
+        return new Promise((resolve, reject) => { reject(e) })
+    }
 }
 
 module.exports = {

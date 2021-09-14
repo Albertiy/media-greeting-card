@@ -43,11 +43,11 @@ function getBatchQrLink(codes) {
 }
 
 /**
- * 批量生成二维码图片。
+ * 批量生成二维码图片；并且压缩成zip包。
  * 文件名采用从1开始的自增编号，拼接 uuid，不按照数据库的id（可能有间隔）。win10按名称排序无需补0.
  * 文件夹名要加上生成的时间，方便区分。
  * @param {Array<{code:string, link:string}>} links 
- * @returns {Promise<string>} 文件夹相对路径名
+ * @returns {Promise<string>} 压缩文件的相对FileRoot路径
  */
 function genQrFiles(links) {
     return new Promise((resolve, reject) => {
@@ -66,7 +66,7 @@ function genQrFiles(links) {
             Promise.all(promList).then(val => {
                 getArchiver(absQrDirPath).then((res) => {
                     let absZipPath = res;
-                    let relativeZipPath = path.relative(path.resolve(fileService.getFileRoot()), absZipPath);
+                    let relativeZipPath = path.relative(path.resolve(fileService.getFileRoot()), absZipPath);   // 获取相对路径
                     console.log('relativeZipPath: ' + relativeZipPath);
                     resolve(relativeZipPath);
                 }).catch((err) => {
@@ -84,13 +84,12 @@ function genQrFiles(links) {
 /**
  * 压缩文件夹
  * @param {string} dirPath 
- * @returns 压缩后的文件路径
+ * @returns 压缩文件的绝对路径
  */
 function getArchiver(dirPath) {
     return new Promise((resolve, reject) => {
         let zipFilePath = dirPath + '.zip';
         const output = fs.createWriteStream(dirPath + '.zip');
-        console.log('output: ' + output);
         const archive = archiver('zip', {
             zlib: { level: 9 }  // 压缩等级
         });
