@@ -23,7 +23,7 @@
   background-color: $color-button-panel;
   border: 1px solid $color-border;
   box-shadow: $shadow-panel;
-  margin-bottom: 30%;
+  margin-bottom: 10%;
   text-align: center;
   display: grid;
   justify-items: center;
@@ -35,7 +35,16 @@
   height: 250px;
 }
 
+.audio_block {
+  width: 250px;
+}
+
+.audio {
+  width: 100%;
+}
+
 .btn_panel {
+  margin-top: 20%;
   width: 250px;
   height: 60px;
   border-radius: 50px;
@@ -113,4 +122,41 @@
 .icon:active svg {
   // transform: scale(1.2);
   filter: brightness(1.2);
+}
+
+.float_bar {
+  position: fixed;
+  top: 55%;
+  right: 1.25rem;
+  align-self: flex-end;
+}
+
+.float_btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  color: $color-float-icon;
+  box-shadow: $shadow-panel;
+  transition: filter 0.3s cubic-bezier(0.13, 0.97, 0.27, 0.98);
+  cursor: pointer;
+}
+
+.float_btn:active {
+  filter: brightness(0.86);
+}
+
+.float_btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.float_download {
+  @extend .float_btn;
+  background-color: $color-download-background;
+  margin-top: 10px;
 }
