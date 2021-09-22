@@ -54,7 +54,12 @@ const audioMimeList = [
     },
     {
         mime: '.mp3',
-        mimeType: 'audio/mpeg;codecs=mp4a.40.2"',
+        mimeType: 'audio/mp4',  //;codecs=mp4a.40.2
+        fileMime: 'audio/mp4',
+    },
+    {
+        mime: '.mp3',
+        mimeType: 'audio/mpeg;codecs=mp4a.40.2',
         fileMime: 'audio/mpeg',
     },
     {
