@@ -373,7 +373,7 @@ function RecordVideo() {
 
     function finishBtnClicked() {
         if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile != null) {
-            // TODO 上传视频，并弹窗提示
+            // 上传视频，并弹窗提示
             setLoading(true);
             enqueueSnackbar('待上传的文件:' + videoFile.size, { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(videoFile, null, progressUpload).then((result) => {

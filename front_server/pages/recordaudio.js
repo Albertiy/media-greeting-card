@@ -111,11 +111,11 @@ function RecordAudio() {
     function testRecorderType() {
         for (let i = 0; i < audioMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(audioMimeList[i].mimeType);
-            alert(`${audioMimeList[i].mimeType} : ${ok}`)
+            console.log(`${audioMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = audioMimeList[i].mimeType;
                 selectedMime = audioMimeList[i];
-                // break;
+                break;
             }
         }
     }
@@ -133,7 +133,8 @@ function RecordAudio() {
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
                 // alert('success get media stream')
-                enqueueSnackbar('stream: ' + stream.toString(), { variant: 'success', autoHideDuration: 6000 })
+                // stream:+ stream.toString()
+                enqueueSnackbar('成功获取媒体源', { variant: 'success', autoHideDuration: 6000 })
                 setMediaStream(stream);
                 setAudioSource(stream);
             })
@@ -155,14 +156,15 @@ function RecordAudio() {
     }
 
     /**
-     * 
+     * 设置audio媒体源
      * @param {MediaStream | string} stream 
      */
     function setAudioSource(stream) {
         console.log('audioSource: %o', stream);
         let audio = audioEle.current;
         audio.oncanplay = () => {
-            enqueueSnackbar('音频时长：' + audio.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
+            if (audio.src || !audio.srcObject)
+                enqueueSnackbar('音频时长：' + audio.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
         }
         if (audio) {
             if (stream instanceof MediaStream) {
@@ -217,7 +219,7 @@ function RecordAudio() {
     }
 
     /**
-     * 初始化录制器
+     * 初始化录制器，包括回调函数
      */
     function initMediaRecorder() {
         let recorder = new MediaRecorder(mediaStream, mediaRecorderOptions);
@@ -226,6 +228,7 @@ function RecordAudio() {
             let chunks = [];
             if (event.data.size > 0) {
                 chunks.push(event.data);
+                console.log(event.data);
                 generateSrcUrl(chunks).then((url) => {
                     setFileURL(url);
                     setAudioSource(url);
@@ -276,26 +279,29 @@ function RecordAudio() {
      */
     function generateSrcUrl(chunks) {
         return new Promise((resolve, reject) => {
-            let blob = new Blob(chunks, { type: selectedMime.fileMime });
-            let file = new File([blob], FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime });
-            file.duration = 13;
-            blob.duration = 13;
+            let file = new File(chunks, FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime });
+            console.log('Gened File: %o', file);
             setAudioFile(file); // 用来上传的文件
-            resolve(getBlobUrl(blob));
+            resolve(getObjectUrl(file));
         })
     }
 
     /**
-     * 获取文件Blob URL
-     * @param {Blob} blob 
+     * 获取文件URL
+     * @param {Blob} file 
      * @returns 
      */
-    function getBlobUrl(blob) {
-        let fileInfo = `类型：${blob.type}，大小：${Tools.returnFileSize(blob.size)}`;
+    function getObjectUrl(file) {
+        let fileInfo = `类型：${file.type}，大小：${Tools.returnFileSize(file.size)}`;
         console.log(fileInfo);
         enqueueSnackbar('录制成功！' + fileInfo, { variant: 'success', autoHideDuration: 3000 })
-        let url = URL.createObjectURL(blob);
+        let url = URL.createObjectURL(file);
         console.log('url: ' + url);
+        let audio = new Audio();
+        audio.addEventListener('loadedmetadata', (ev) => {
+            console.log('audio.duration: ' + audio.duration);
+        })
+        audio.src = url;
         return url;
     }
 
@@ -380,7 +386,23 @@ function RecordAudio() {
      * 点击完成
      */
     function finishBtnClicked() {
-
+        if (recordBtnState == RecordBtnStateEnum.RETAKE && audioFile != null) {
+            // 上传音频文件，并弹窗提示
+            setLoading(true);
+            enqueueSnackbar('待上传的文件:' + audioFile.size, { variant: 'info', autoHideDuration: 2000 });
+            FileService.uploadGreetings(null, audioFile, progressUpload).then((result) => {
+                setProgressValue(1);
+                showAlertDialog('提示', '完成！')
+            }).catch((err) => {
+                console.log(err)
+                enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+                setProgressValue(defaultProgressValue);
+            }).finally(() => {
+                setLoading(false);
+            });
+        } else {
+            enqueueSnackbar('请等待当前录制完成', { variant: 'warning', autoHideDuration: 1000 })
+        }
     }
 
     /**

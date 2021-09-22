@@ -86,12 +86,13 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                             // 音频
                             if (audioFileIdx != -1) {
                                 let audioFile = files[keys[audioFileIdx]];
-                                console.log(audioFile);
+                                console.log(`|| 文件信息：${audioFile.name} ${audioFile.type} ${audioFile.size} ${audioFile.lastModifiedDate}`);
                                 if (audioFile && audioFile.size > 0) {
                                     console.log('|| 临时路径:' + audioFile.path);
                                     let audioRelPath = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + uuidV1());
                                     let audioAbsPath = path.resolve(rootUrl, AUDIO_ROOT, audioRelPath)
                                     console.log('|| 存储路径:' + audioAbsPath)
+                                    fileService.mkdirsSync(path.dirname(audioAbsPath));   // 若目录不存在，创建之
                                     fs.renameSync(audioFile.path, audioAbsPath);
                                 }
 
@@ -119,6 +120,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                     videoRelPath += tools.getExtName(videoFile.name)
                                     let videoAbsPath = path.resolve(rootUrl, VIDEO_ROOT, videoRelPath)
                                     console.log('|| 存储路径:' + videoAbsPath)
+                                    fileService.mkdirsSync(path.dirname(videoAbsPath));   // 若目录不存在，创建之
                                     fs.renameSync(videoFile.path, videoAbsPath);
                                 }
                             }

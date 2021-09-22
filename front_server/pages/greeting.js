@@ -43,6 +43,7 @@ function GreetingPage(props) {
         outPutToText(e)
         if (e.target.files && e.target.files.length > 0) {
             let file = e.target.files[0];
+            console.log('上传的视频：%o', file);
             setVideoFile(file);
             outPutToText(`${file.name} ${tools.returnFileSize(file.size)} ${file.type}`);
             let url = URL.createObjectURL(file);
@@ -56,6 +57,7 @@ function GreetingPage(props) {
         outPutToText(e)
         if (e.target.files && e.target.files.length > 0) {
             let file = e.target.files[0];
+            console.log('上传的音频：%o', file);
             setAudioFile(file);
             outPutToText(`${file.name} ${tools.returnFileSize(file.size)} ${file.type}`);
             let url = URL.createObjectURL(file);
