@@ -94,10 +94,11 @@ function RecordVideo() {
         initMediaSource();
     }, []);
 
+    /** 测试当前设备MediaRecorder可用的类型 */
     function testRecorderType() {
         for (let i = 0; i < videoMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(videoMimeList[i].mimeType);
-            alert(`${videoMimeList[i].mimeType} : ${ok}`)
+            console.log(`${videoMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = videoMimeList[i].mimeType;
                 selectedMime = videoMimeList[i];
@@ -108,19 +109,20 @@ function RecordVideo() {
     }
 
     /**
-     * 初始化媒体源和video标签
+     * 初始化媒体源和录制功能
      */
     function initMediaSource() {
         let constraints = {
             audio: {
                 noiseSuppression: true,
                 echoCancellation: true
-            }, video: { width: 800, height: 800 }
+            },
+            video: { width: 800, height: 800 }
         }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {
                 // alert('success get media stream')
-                enqueueSnackbar('stream: ' + stream.toString(), { variant: 'success', autoHideDuration: 6000 })
+                enqueueSnackbar('成功获取媒体源', { variant: 'success', autoHideDuration: 850 })
                 setMediaStream(stream);
                 setVideoSource(stream);
             })
@@ -142,14 +144,16 @@ function RecordVideo() {
     }
 
     /**
-     * 
+     * 设置video媒体源
      * @param {MediaStream | string} stream 
      */
     function setVideoSource(stream) {
         console.log('videoSource: %o', stream);
         let video = videoEle.current;
         video.oncanplay = () => {
-            enqueueSnackbar('视频时长：' + video.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
+            if (video.src) {
+                enqueueSnackbar('视频时长：' + video.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
+            }
         }
         if (video) {
             if (stream instanceof MediaStream) {
@@ -193,10 +197,10 @@ function RecordVideo() {
             startTime.current = new Date();   // 这里不能用 dayjs()
 
             video.play();
-            //TODO 录制开始
+            //录制开始
             recording();
             setRecordBtnState(RecordBtnStateEnum.STOP);
-            // TODO 计时器启动
+            // 计时器启动
             setTimerId(setInterval(updateTime, 1000));
         } else {
             enqueueSnackbar('video元素ref为空')
@@ -204,7 +208,7 @@ function RecordVideo() {
     }
 
     /**
-     * 初始化录制器
+     * 初始化录制器，包括录制结束时的回调函数
      */
     function initMediaRecorder() {
         let recorder = new MediaRecorder(mediaStream, mediaRecorderOptions);
@@ -229,7 +233,7 @@ function RecordVideo() {
     }
 
     /**
-     * 录制中
+     * 开始录制
      */
     function recording() {
         if (mediaStream) {
@@ -264,62 +268,41 @@ function RecordVideo() {
      */
     function generateSrcUrl(chunks) {
         return new Promise((resolve, reject) => {
-            let blob = new Blob(chunks, { type: selectedMime.fileMime });
-            // TODO WebM 格式需要通过 EMBL 转化以获得元数据
-            // if (selectedMime.fileMime == '.webm') {
-            //     // 这个是异步的
-            //     EBMLUtil.getSeekableBlob(blob, (seekableBlob) => {
-            //         resolve(getBlobUrl(seekableBlob));
-            //     })
-            // } else
-            let file = new File([blob], FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime });
+            // TODO 文件缺少时长元数据，目前尚无办法解决
+            let file = new File(chunks, FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime });
+            console.log('Gened File: %o', file);
             setVideoFile(file); // 用来上传的文件
-            resolve(getBlobUrl(blob));
-
+            resolve(getObjectUrl(file));
         })
     }
 
     /**
-     * 
-     * @param {Blob} blob 
+     * 获取文件URL
+     * @param {File} file 
      * @returns 
      */
-    function getBlobUrl(blob) {
-        let fileInfo = `类型：${blob.type}，大小：${Tools.returnFileSize(blob.size)}`;
+    function getObjectUrl(file) {
+        let fileInfo = `类型：${file.type}，大小：${Tools.returnFileSize(file.size)}`;
         console.log(fileInfo);
         enqueueSnackbar('录制成功！' + fileInfo, { variant: 'success', autoHideDuration: 3000 })
-        let url = URL.createObjectURL(blob);
+        let url = URL.createObjectURL(file);
         console.log('url: ' + url);
         return url;
     }
 
     /**
-     * 显示弹窗
-     * @param {string} title 
-     * @param {string} content 
-     * @param {function} [handleClose] 
+     * 点击录制按钮（图片按钮）
+     * @param {*} ev 
      */
-    function showAlertDialog(title, content, handleClose) {
-        console.log(title)
-        console.log(content)
-        console.log(handleClose)
-
-        setDialogTitle(value => title || defaultDialog.title)
-        setDialogContent(value => content || defaultDialog.content)
-        setDialogHandleClose(value => handleClose || defaultHandleClose)
-        setShowDialog(true)
-
-        console.log(dialogTitle)
-        console.log(dialogContent)
-        console.log(dialogHandleClose)
-
-    }
-
     function recordBtnClicked(ev) {
         enqueueSnackbar('显示video元素', { variant: 'info', autoHideDuration: 1000 })
         recordStart();
     }
 
+    /**
+     * 关闭重录对话框
+     * @param {boolean} ok 
+     */
     let handleReTakeOk = function (ok) {
         console.log('result: ' + ok)
         if (ok) {
@@ -328,22 +311,32 @@ function RecordVideo() {
         setShowDialog(false)
     }
 
+    /**
+     * 点击重录
+     * @param {*} ev 
+     */
     function reTakeBtnClicked(ev) {
         switch (recordBtnState) {
             case (RecordBtnStateEnum.START): {
+                console.log('点击了开始录制按钮')
                 recordStart();
             }; break;
             case (RecordBtnStateEnum.STOP): {
-                // TODO 停止录制，保存为 Blob 或 File 
+                console.log('点击了停止录制按钮')
+                // 停止录制，保存为 Blob 或 File 
                 recordStop();
             }; break;
             case (RecordBtnStateEnum.RETAKE): {
-                // TODO 弹窗提示，是否确定要重新录制
+                console.log('点击了重新录制按钮')
+                // 弹窗提示，是否确定要重新录制
                 showAlertDialog('警告', '将清除原先录制的内容，确定要重新录制吗？', handleReTakeOk);
             }; break;
         }
     }
 
+    /**
+     * 点击下载
+     */
     function downloadBtnClicked() {
         if (recordBtnState == RecordBtnStateEnum.RETAKE && fileURL) {
             if ("Safari" == Tools.myBrowser()) {
@@ -366,11 +359,18 @@ function RecordVideo() {
         }
     }
 
+    /**
+     * 点击预览
+     * @param {Event} ev 
+     */
     function previewBtnClicked(ev) {
-        // TODO
+        // TODO 此按钮最好去掉，或者换成播放页面内媒体
         enqueueSnackbar('跳转到预览', { variant: 'info', autoHideDuration: 2000 })
     }
 
+    /**
+     * 点击完成
+     */
     function finishBtnClicked() {
         if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile != null) {
             // 上传视频，并弹窗提示
@@ -406,6 +406,28 @@ function RecordVideo() {
         } catch (e) {
             console.log(e)
         }
+    }
+
+    /**
+     * 显示弹窗
+     * @param {string} title 
+     * @param {string} content 
+     * @param {function} [handleClose] 
+     */
+    function showAlertDialog(title, content, handleClose) {
+        console.log(title)
+        console.log(content)
+        console.log(handleClose)
+
+        setDialogTitle(value => title || defaultDialog.title)
+        setDialogContent(value => content || defaultDialog.content)
+        setDialogHandleClose(value => handleClose || defaultHandleClose)
+        setShowDialog(true)
+
+        console.log(dialogTitle)
+        console.log(dialogContent)
+        console.log(dialogHandleClose)
+
     }
 
     return (

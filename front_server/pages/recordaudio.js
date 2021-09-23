@@ -134,7 +134,7 @@ function RecordAudio() {
             .then(function (stream) {
                 // alert('success get media stream')
                 // stream:+ stream.toString()
-                enqueueSnackbar('成功获取媒体源', { variant: 'success', autoHideDuration: 6000 })
+                enqueueSnackbar('成功获取媒体源', { variant: 'success', autoHideDuration: 850 })
                 setMediaStream(stream);
                 setAudioSource(stream);
             })
@@ -163,8 +163,10 @@ function RecordAudio() {
         console.log('audioSource: %o', stream);
         let audio = audioEle.current;
         audio.oncanplay = () => {
-            if (audio.src || !audio.srcObject)
+            if (audio.src) {    // audio.srcObject 无需提示时长（总是 Inf）
                 enqueueSnackbar('音频时长：' + audio.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
+            }
+
         }
         if (audio) {
             if (stream instanceof MediaStream) {
@@ -182,7 +184,7 @@ function RecordAudio() {
                 console.log('null video source')
             }
         } else {
-            console.log('video 元素尚未加载')
+            console.log('audio 元素尚未加载')
         }
     }
 
@@ -219,7 +221,7 @@ function RecordAudio() {
     }
 
     /**
-     * 初始化录制器，包括回调函数
+     * 初始化录制器，包括录制结束时的回调函数
      */
     function initMediaRecorder() {
         let recorder = new MediaRecorder(mediaStream, mediaRecorderOptions);
@@ -273,7 +275,7 @@ function RecordAudio() {
     }
 
     /**
-     * 生成文件，返回URL
+     * 获取文件URL，改为异步
      * @param {Blob[]} chunks 
      * @returns {string} 本地URL
      */
@@ -288,7 +290,7 @@ function RecordAudio() {
 
     /**
      * 获取文件URL
-     * @param {Blob} file 
+     * @param {File} file 
      * @returns 
      */
     function getObjectUrl(file) {
@@ -297,11 +299,11 @@ function RecordAudio() {
         enqueueSnackbar('录制成功！' + fileInfo, { variant: 'success', autoHideDuration: 3000 })
         let url = URL.createObjectURL(file);
         console.log('url: ' + url);
-        let audio = new Audio();
-        audio.addEventListener('loadedmetadata', (ev) => {
-            console.log('audio.duration: ' + audio.duration);
-        })
-        audio.src = url;
+        // let audio = new Audio();
+        // audio.addEventListener('loadedmetadata', (ev) => {
+        //     console.log('audio.duration: ' + audio.duration);
+        // })
+        // audio.src = url;
         return url;
     }
 
@@ -379,6 +381,7 @@ function RecordAudio() {
      * @param {Event} ev 
      */
     function previewBtnClicked(ev) {
+        // TODO 此按钮最好去掉，或者换成播放页面内媒体
         enqueueSnackbar('跳转到预览', { variant: 'info', autoHideDuration: 2000 })
     }
 
