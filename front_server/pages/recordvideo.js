@@ -9,7 +9,6 @@ import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
 import * as Tools from "../src/tool/tools";
 import dayjs from 'dayjs';
-// import * as EBMLUtil from '../src/tool/ebml.util';
 import { LinearProgress } from '@material-ui/core';
 import * as FileService from '../src/service/file_service';
 
@@ -35,33 +34,37 @@ const mediaRecorderOptions = {
     // audioBitsPerSecond: 128000,
     // videoBitsPerSecond: 2500000,
 }
-const MAX_RECORD_DURATION = 10; // 10s 最大录制时长
+const MAX_RECORD_DURATION = 20; // 20s 最大录制时长
 const defaultFileURL = '';
 /** @type {File} */
 const defaultVideoFile = null;
 const FILE_NAME = 'greeting';
+
+/** 视频MIME类型列表 */
 const videoMimeList = [
     {
-        mime: '.ogg',
-        mimeType: 'video/ogg',
-        fileMime: 'video/ogg',
+        mime: '.webm',
+        mimeType: 'video/webm; codecs="vp8, opus"', // codecs=vp9 vp9 依赖于硬件解码。
+        fileMime: 'video/webm',
     },
     { // H.264 + ER AAC LC ，理应是最兼容的格式
         mime: '.mp4',
         mimeType: 'video/mp4; codecs="avc1.4d002a, mp4a.40.2"', // avc1.424028
         fileMime: 'video/mp4',
     },
-    {
-        mime: '.webm',
-        mimeType: 'video/webm; codecs="vp8, opus"', // codecs=vp9 vp9 依赖于硬件解码。
-        fileMime: 'video/webm',
-    }
 ];
 let selectedMime = videoMimeList[0];
 
 const defaultProgressValue = 0;
 
-function RecordVideo() {
+/**
+ * Ref模仿State的回调函数
+ * @callback setRefCallback
+ * @param {*} value
+ * @returns {*}
+ */
+
+function RecordVideoPage() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     /** @type {{current: HTMLVideoElement}} */
@@ -79,15 +82,30 @@ function RecordVideo() {
     const [showVideo, setShowVideo] = useState(defaultShowVideo);
 
     const [timeCount, setTimeCount] = useState(defaultTimeCount); // 用来渲染的值，不适用 useRef
-    const startTime = useRef(dayjs());
-    const [timerId, setTimerId] = useState(defaultTimerId);
+    const timeCountRef = useRef(defaultTimeCount);
 
-    const [mediaRecorder, setMediaRecorder] = useState(defaultMediaRecorder);
+    const startTime = useRef(dayjs());
+    const timerIdRef = useRef(defaultTimerId);
+    /** @param {number|setRefCallback} value */
+    const setTimerId = (value) => {
+        if (typeof value == 'function')
+            timerIdRef.current = value(timerIdRef.current)
+        else
+            timerIdRef.current = value
+    }
+    const mediaRecorder = useRef(defaultMediaRecorder);
+    /** @param {MediaRecorder|setRefCallback} value */
+    const setMediaRecorder = (value) => {
+        if (typeof value == 'function')
+            mediaRecorder.current = value(mediaRecorder.current)
+        else
+            mediaRecorder.current = value
+    }
+
     const [fileURL, setFileURL] = useState(defaultFileURL);
     const [videoFile, setVideoFile] = useState(defaultVideoFile);
 
     const [progressValue, setProgressValue] = useState(defaultProgressValue);
-
 
     useEffect(() => {
         testRecorderType();
@@ -105,7 +123,6 @@ function RecordVideo() {
                 break;
             }
         }
-        // alert('最终格式：' + mediaRecorderOptions.mimeType);
     }
 
     /**
@@ -151,7 +168,7 @@ function RecordVideo() {
         console.log('videoSource: %o', stream);
         let video = videoEle.current;
         video.oncanplay = () => {
-            if (video.src) {
+            if (video.src && !video.srcObject) {
                 enqueueSnackbar('视频时长：' + video.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
             }
         }
@@ -180,8 +197,9 @@ function RecordVideo() {
      */
     function updateTime() {
         let tick = dayjs().diff(startTime.current, 'seconds');
-        setTimeCount(tick);
+        setTimeCount(value => { timeCountRef.current = tick; return tick });
         console.log('tick: ' + tick);   // timeCount 竟然一直是0，看来是代码复制的问题
+        if (tick >= MAX_RECORD_DURATION) recordStop();
     }
 
     /**
@@ -193,7 +211,7 @@ function RecordVideo() {
         let video = videoEle.current;
         if (video) {
             // 初始化计时器
-            setTimeCount(defaultTimeCount);
+            setTimeCount(value => { timeCountRef.current = defaultTimeCount; return defaultTimeCount });
             startTime.current = new Date();   // 这里不能用 dayjs()
 
             video.play();
@@ -201,7 +219,9 @@ function RecordVideo() {
             recording();
             setRecordBtnState(RecordBtnStateEnum.STOP);
             // 计时器启动
-            setTimerId(setInterval(updateTime, 1000));
+            let id = setInterval(updateTime, 1000);
+            console.log('计时器启动：id = ' + id)
+            setTimerId(id);
         } else {
             enqueueSnackbar('video元素ref为空')
         }
@@ -212,12 +232,12 @@ function RecordVideo() {
      */
     function initMediaRecorder() {
         let recorder = new MediaRecorder(mediaStream, mediaRecorderOptions);
-        // recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.ondataavailable = function (event) {
             console.log('video data available')
             let chunks = [];
             if (event.data.size > 0) {
                 chunks.push(event.data);
+                console.log(event.data);
                 generateSrcUrl(chunks).then((url) => {
                     setFileURL(url);
                     setVideoSource(url);
@@ -251,20 +271,21 @@ function RecordVideo() {
     function recordStop() {
         let video = videoEle.current;
         console.log('timerId: %o, timeCount: %o, startTime: %o', timerId, timeCount, startTime.current);
-        if (video && timerId != defaultTimerId) {
+        if (video && timerIdRef.current != defaultTimerId) {
+            console.log('停止计时')
             video.pause();
-            if (mediaRecorder) {
-                mediaRecorder.stop();
+            if (mediaRecorder.current) {
+                mediaRecorder.current.stop();
             }
             setRecordBtnState(RecordBtnStateEnum.RETAKE);
-            clearInterval(timerId);
+            clearInterval(timerIdRef.current);
         }
     }
 
     /**
      * 获取文件URL，改为异步
      * @param {Blob[]} chunks 
-     * @returns 
+     * @returns {Promise<string>} 本地URL
      */
     function generateSrcUrl(chunks) {
         return new Promise((resolve, reject) => {
@@ -378,8 +399,7 @@ function RecordVideo() {
             enqueueSnackbar('待上传的文件:' + videoFile.size, { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(videoFile, null, progressUpload).then((result) => {
                 setProgressValue(1);
-                // enqueueSnackbar('上传成功', { variant: 'success', autoHideDuration: 2000 })
-                showAlertDialog('提示', '完成！')
+                showAlertDialog('提示', '上传成功！')
             }).catch((err) => {
                 console.log(err)
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
@@ -415,18 +435,18 @@ function RecordVideo() {
      * @param {function} [handleClose] 
      */
     function showAlertDialog(title, content, handleClose) {
-        console.log(title)
-        console.log(content)
-        console.log(handleClose)
+        // console.log(title)
+        // console.log(content)
+        // console.log(handleClose)
 
         setDialogTitle(value => title || defaultDialog.title)
         setDialogContent(value => content || defaultDialog.content)
         setDialogHandleClose(value => handleClose || defaultHandleClose)
         setShowDialog(true)
 
-        console.log(dialogTitle)
-        console.log(dialogContent)
-        console.log(dialogHandleClose)
+        // console.log(dialogTitle)
+        // console.log(dialogContent)
+        // console.log(dialogHandleClose)
 
     }
 
@@ -469,7 +489,7 @@ function RecordVideo() {
                     </div>
                 </div>
                 <div className={styles.info}>
-                    <div>时长：{Tools.formatDuration(timeCount)}</div>
+                    <div>时长：{Tools.formatDuration(timeCount) + '/' + Tools.formatDuration(MAX_RECORD_DURATION)}</div>
                 </div>
                 <div className={styles.float_bar}>
                     {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
@@ -490,4 +510,4 @@ function RecordVideo() {
         </div>
     )
 }
-export default RecordVideo;
+export default RecordVideoPage;

@@ -34,7 +34,7 @@ const mediaRecorderOptions = {
     // audioBitsPerSecond: 128000,
     // videoBitsPerSecond: 2500000,
 }
-const MAX_RECORD_DURATION = 30; // 30s 最大录制时长
+const MAX_RECORD_DURATION = 60; // 60s 最大录制时长
 const defaultFileURL = '';
 /** @type {File} */
 const defualtAudioFile = null;
@@ -42,11 +42,6 @@ const FILE_NAME = 'greeting';
 
 /** 音频MIME类型列表 */
 const audioMimeList = [
-    {
-        mime: '.ogg',
-        mimeType: 'audio/ogg;codecs=opus',
-        fileMime: 'audio/ogg',
-    },
     {
         mime: '.webm',
         mimeType: 'audio/webm;codecs=opus', // codecs=vp9 vp9 依赖于硬件解码。
@@ -57,25 +52,19 @@ const audioMimeList = [
         mimeType: 'audio/mp4',  //;codecs=mp4a.40.2
         fileMime: 'audio/mp4',
     },
-    {
-        mime: '.mp3',
-        mimeType: 'audio/mpeg;codecs=mp4a.40.2',
-        fileMime: 'audio/mpeg',
-    },
-    {
-        mime: '.wav',
-        mimeType: 'audio/wav',
-        fileMime: 'audio/wav',
-    }, {
-        mime: '.aac',
-        mimeType: 'audio/aac',
-        fileMime: 'audio/aac',
-    }
 ];
 let selectedMime = audioMimeList[0];
+
 const defaultProgressValue = 0;
 
-function RecordAudio() {
+/**
+ * Ref模仿State的回调函数
+ * @callback setRefCallback
+ * @param {*} value
+ * @returns {*}
+ */
+
+function RecordAudioPage() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     /** @type {{current: HTMLAudioElement}} */
@@ -93,10 +82,26 @@ function RecordAudio() {
     const [showAudio, setShowAudio] = useState(defaultShowAudio);
 
     const [timeCount, setTimeCount] = useState(defaultTimeCount); // 用来渲染的值，不适用 useRef
-    const startTime = useRef(dayjs());
-    const [timerId, setTimerId] = useState(defaultTimerId);
+    const timeCountRef = useRef(defaultTimeCount);
 
-    const [mediaRecorder, setMediaRecorder] = useState(defaultMediaRecorder);
+    const startTime = useRef(dayjs());
+    const timerIdRef = useRef(defaultTimerId);
+    /** @param {number|setRefCallback} value */
+    const setTimerId = (value) => {
+        if (typeof value == 'function')
+            timerIdRef.current = value(timerIdRef.current)
+        else
+            timerIdRef.current = value
+    }
+    const mediaRecorder = useRef(defaultMediaRecorder);
+    /** @param {MediaRecorder|setRefCallback} value */
+    const setMediaRecorder = (value) => {
+        if (typeof value == 'function')
+            mediaRecorder.current = value(mediaRecorder.current)
+        else
+            mediaRecorder.current = value
+    }
+
     const [fileURL, setFileURL] = useState(defaultFileURL);
     const [audioFile, setAudioFile] = useState(defualtAudioFile);
 
@@ -157,16 +162,16 @@ function RecordAudio() {
 
     /**
      * 设置audio媒体源
-     * @param {MediaStream | string} stream 
+     * @param {MediaStream | string} stream 流或者文件URL
      */
     function setAudioSource(stream) {
         console.log('audioSource: %o', stream);
         let audio = audioEle.current;
         audio.oncanplay = () => {
-            if (audio.src) {    // audio.srcObject 无需提示时长（总是 Inf）
+            if (audio.src && !audio.srcObject) {    // audio.srcObject 无需提示时长（总是 Inf）
+                console.log('时长：' + audio.duration)
                 enqueueSnackbar('音频时长：' + audio.duration + '秒', { variant: 'info', autoHideDuration: 1000 });
             }
-
         }
         if (audio) {
             if (stream instanceof MediaStream) {
@@ -193,8 +198,9 @@ function RecordAudio() {
      */
     function updateTime() {
         let tick = dayjs().diff(startTime.current, 'seconds');
-        setTimeCount(tick);
+        setTimeCount(value => { timeCountRef.current = tick; return tick });
         console.log('tick: ' + tick);   // timeCount 竟然一直是0，看来是代码复制的问题
+        if (tick >= MAX_RECORD_DURATION) recordStop();
     }
 
     /**
@@ -206,7 +212,7 @@ function RecordAudio() {
         let audio = audioEle.current;
         if (audio) {
             // 初始化计时器
-            setTimeCount(defaultTimeCount);
+            setTimeCount(value => { timeCountRef.current = defaultTimeCount; return defaultTimeCount });
             startTime.current = new Date();   // 这里不能用 dayjs()
 
             audio.play();
@@ -214,7 +220,9 @@ function RecordAudio() {
             recording();
             setRecordBtnState(RecordBtnStateEnum.STOP);
             // 计时器启动
-            setTimerId(setInterval(updateTime, 1000));
+            let id = setInterval(updateTime, 1000);
+            console.log('计时器启动：id = ' + id)
+            setTimerId(id);
         } else {
             enqueueSnackbar('audio元素ref为空')
         }
@@ -250,7 +258,7 @@ function RecordAudio() {
      */
     function recording() {
         if (mediaStream) {
-            let recorder = mediaRecorder ? mediaRecorder : initMediaRecorder();
+            let recorder = mediaRecorder.current ? mediaRecorder.current : initMediaRecorder();
             recorder.start();
             enqueueSnackbar('开始录制', { variant: 'info', autoHideDuration: 1000 })
         } else {
@@ -263,21 +271,25 @@ function RecordAudio() {
      */
     function recordStop() {
         let audio = audioEle.current;
-        console.log('timerId: %o, timeCount: %o, startTime: %o', timerId, timeCount, startTime.current);
-        if (audio && timerId != defaultTimerId) {
+        console.log('timerId: %o, timeCount: %o, startTime: %o', timerIdRef.current, timeCountRef.current, startTime.current);
+        console.log('audio元素是否存在：%O', audio)
+        console.log('当前定时器是否有效：' + timerIdRef.current + ' / ' + defaultTimerId)
+        if (audio && timerIdRef.current != defaultTimerId) {
+            console.log('停止计时')
             audio.pause();
-            if (mediaRecorder) {
-                mediaRecorder.stop();
+            console.log('录制器是否有效: %o', mediaRecorder.current);
+            if (mediaRecorder.current) {
+                mediaRecorder.current.stop();
             }
             setRecordBtnState(RecordBtnStateEnum.RETAKE);
-            clearInterval(timerId);
+            clearInterval(timerIdRef.current);
         }
     }
 
     /**
      * 获取文件URL，改为异步
      * @param {Blob[]} chunks 
-     * @returns {string} 本地URL
+     * @returns {Promise<string>} 本地URL
      */
     function generateSrcUrl(chunks) {
         return new Promise((resolve, reject) => {
@@ -395,7 +407,7 @@ function RecordAudio() {
             enqueueSnackbar('待上传的文件:' + audioFile.size, { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(null, audioFile, progressUpload).then((result) => {
                 setProgressValue(1);
-                showAlertDialog('提示', '完成！')
+                showAlertDialog('提示', '上传成功！')
             }).catch((err) => {
                 console.log(err)
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
@@ -431,18 +443,18 @@ function RecordAudio() {
      * @param {function} [handleClose] 
      */
     function showAlertDialog(title, content, handleClose) {
-        console.log(title)
-        console.log(content)
-        console.log(handleClose)
+        // console.log(title)
+        // console.log(content)
+        // console.log(handleClose)
 
         setDialogTitle(value => title || defaultDialog.title)
         setDialogContent(value => content || defaultDialog.content)
         setDialogHandleClose(value => handleClose || defaultHandleClose)
         setShowDialog(true)
 
-        console.log(dialogTitle)
-        console.log(dialogContent)
-        console.log(dialogHandleClose)
+        // console.log(dialogTitle)
+        // console.log(dialogContent)
+        // console.log(dialogHandleClose)
     }
 
     return (
@@ -480,7 +492,7 @@ function RecordAudio() {
                     </div>
                 </div>
                 <div className={styles.info}>
-                    <div>时长：{Tools.formatDuration(timeCount)}</div>
+                    <div>时长：{Tools.formatDuration(timeCount) + '/' + Tools.formatDuration(MAX_RECORD_DURATION)}</div>
                 </div>
                 <div className={styles.float_bar}>
                     {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
@@ -501,4 +513,4 @@ function RecordAudio() {
         </div>
     )
 }
-export default RecordAudio;
+export default RecordAudioPage;
