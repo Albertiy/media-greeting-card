@@ -492,8 +492,11 @@ function RecordAudio() {
             </footer>
             <AlertDialog open={showDialog} title={dialogTitle} content={dialogContent} handleClose={dialogHandleClose} />
             {loading && <ModelLoading>
-                <LinearProgress variant="determinate" value={progressValue * 100} style={{ width: "80%", margin: "20px 0 20px" }} />
+                <LinearProgress variant="determinate" value={progressValue * 100} style={{ width: "80%", margin: "60px 0 20px" }} />
                 <span style={{ color: '#fff' }}>{(progressValue * 100).toFixed(2) + '%'}</span>
+                <p style={{ color: '#CCFFFF', marginTop: "40px" }}>请注意：
+                    <br />上传过程中请不要隐藏或关闭页面，
+                    <br />否则上传将中断</p>
             </ModelLoading>}
         </div>
     )
