@@ -27,7 +27,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
         console.log('tempPath: %o', tempPath);
         let rootUrl = fileService.getFileRoot();
         fileService.mkdirsSync(tempPath);
-        let maxFileSize = 60 * 1024 * 1024;
+        let maxFileSize = 100 * 1024 * 1024;
 
         let form = new formidable.IncomingForm({
             uploadDir: tempPath,
