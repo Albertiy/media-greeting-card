@@ -298,3 +298,17 @@ export function formatDuration(seconds) {
     let h = d.toFixed();
     return sign + h + ':' + mm + ':' + ss;
 }
+
+/**
+ * 后台直接下载文件，IOS 无效
+ * @param {string} url 下载链接
+ */
+export function download(url, fileName) {
+    let a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    a.remove();
+}
