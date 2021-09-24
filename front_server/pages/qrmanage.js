@@ -1,6 +1,6 @@
 import { mdiDownload } from '@mdi/js';
 import Icon from "@mdi/react";
-import { DatePicker as AntDatePicker, Table as AntTable, Button } from 'antd';
+import { Button, DatePicker as AntDatePicker, Table as AntTable } from 'antd';
 import dayjs from 'dayjs';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import AlertDialog from '../src/component/alert-dialog';
 import ModelLoading from '../src/component/model_loading';
 import GenerateRecords from '../src/model/generaterecords';
+import * as RecordsService from '../src/service/records_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/qrmanage.module.scss';
 const { RangePicker } = AntDatePicker;
@@ -19,6 +20,7 @@ const { RangePicker } = AntDatePicker;
 const defaultRecordsList = [];
 const defaultRangeEndTime = new Date();
 const defaultRangeStartTime = new Date().setDate(defaultRangeEndTime.getDate() - 30);
+const defaultQueryId = '';
 const defaultIsLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
 
@@ -28,6 +30,7 @@ function QrManagePage(props) {
 
     const [rangeStartTime, setRangeStartTime] = useState(defaultRangeStartTime);
     const [rangeEndTime, setRangeEndTime] = useState(defaultRangeEndTime);
+    const [queryId, setQueryId] = useState(defaultQueryId);
     const [recordsList, setRecordsList] = useState(defaultRecordsList);
     const [isLoading, setIsLoading] = useState(defaultIsLoading);
     const [showDialog, setShowDialog] = useState(defaultDialog.open);
@@ -46,6 +49,12 @@ function QrManagePage(props) {
             width: 1,
             align: 'center',
             render: (text, record, index) => `${index + 1}`,
+        }, {
+            title: '编号',
+            dataIndex: 'id',
+            key: 'id',
+            width: 50,
+            align: 'center',
         }, {
             title: '创建时间',
             dataIndex: 'create_time',
@@ -117,14 +126,7 @@ function QrManagePage(props) {
      * 初始化方法
      */
     function init() {
-        const mockData = [
-            new GenerateRecords(1, 199, 'xxxxxxx-1-199-1', 'xxxxxxx-1-199-199', '/api/axxds/dfasf', new Date()),
-            new GenerateRecords(2, 199, 'xxxxxxx-1-199-1', 'xxxxxxx-1-199-199', '/api/axxds/dfasf', new Date()),
-            new GenerateRecords(3, 199, 'xxxxxxx-1-199-1', 'xxxxxxx-1-199-199', '/api/axxds/dfasf', new Date()),
-            new GenerateRecords(4, 199, 'xxxxxxx-1-199-1', 'xxxxxxx-1-199-199', '/api/axxds/dfasf', new Date()),
-            new GenerateRecords(5, 199, 'xxxxxxx-1-199-1', 'xxxxxxx-1-199-199', '/api/axxds/dfasf', new Date()),
-        ];
-        setRecordsList(mockData);
+        queryRecords();
     }
 
     useEffect(() => {
@@ -134,6 +136,14 @@ function QrManagePage(props) {
     useEffect(() => {
 
     }, [rangeStartTime, rangeEndTime])
+
+    function queryRecords() {
+        RecordsService.getRecords(rangeStartTime, rangeEndTime, queryId).then((result) => {
+            setRecordsList(result);
+        }).catch((err) => {
+            enqueueSnackbar('获取二维码生成记录失败！ERROR:' + err.toString(), { 'variant': 'error', autoHideDuration: 2000 })
+        });
+    }
 
     /**
      * 显示弹窗

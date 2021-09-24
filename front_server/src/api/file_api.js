@@ -1,4 +1,5 @@
 import axios from 'axios';
+import ReqBody from '../model/req_body';
 
 const uploadGreetingFilesUrl = '/api/uploadGreetingFiles';
 
