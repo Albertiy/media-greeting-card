@@ -325,5 +325,5 @@ export function getFileName(filePath) {
     let j = filePath.indexOf('/');
     let k = i > j ? i : j;
     if (k == -1) return filePath;
-    else return filePath.slice(k);
+    else return filePath.slice(k + 1);
 }

@@ -1,6 +1,15 @@
 import * as FileAPI from '../api/file_api';
 
 /**
+ * 获取文件可用路径
+ * @param {string} url 
+ * @returns 
+ */
+export function getFile(url) {
+    return '/api/file/' + url;
+}
+
+/**
  * 
  * @param {File} videoFile 
  * @param {File} audioFile 

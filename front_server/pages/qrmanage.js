@@ -1,6 +1,6 @@
 import { mdiDownload } from '@mdi/js';
 import Icon from "@mdi/react";
-import { Button, DatePicker as AntDatePicker, Input, Table as AntTable, Modal as AntModal, Select as AntSelect, InputNumber } from 'antd';
+import { Button, DatePicker as AntDatePicker, Input, Table as AntTable, Modal as AntModal, Select as AntSelect, InputNumber, DatePicker } from 'antd';
 const { Option: AntOption } = AntSelect;
 import dayjs from 'dayjs';
 import moment from 'moment';
@@ -13,6 +13,7 @@ import AlertDialog from '../src/component/alert-dialog';
 import ModelLoading from '../src/component/model_loading';
 import GenerateRecords from '../src/model/generaterecords';
 import * as RecordsService from '../src/service/records_service';
+import * as FileService from '../src/service/file_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/qrmanage.module.scss';
 import * as Tools from '../src/tool/tools';
@@ -20,8 +21,12 @@ const { RangePicker } = AntDatePicker;
 
 /** @type{GenerateRecords[]} */
 const defaultRecordsList = [];
-const defaultRangeEndTime = new Date();
-const defaultRangeStartTime = new Date().setDate(defaultRangeEndTime.getDate() - 30);
+let time1 = new Date();
+time1.setDate(time1.getDate() + 1);
+let time2 = new Date();
+time2.setDate(time2.getDate() - 30);
+const defaultRangeEndTime = time1;
+const defaultRangeStartTime = time2;
 const defaultQueryId = '';
 const defaultIsLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
@@ -100,6 +105,8 @@ function QrManagePage(props) {
                 return (
                     <div className={styles.button_bar}>
                         <Button type="primary" shape="round" size='middle' onClick={() => {
+                            let filePath = value.filePath;
+                            Tools.download(FileService.getFile(filePath), Tools.getFileName(filePath));
                             enqueueSnackbar('下载', { variant: 'info', autoHideDuration: 2000 })
                         }}><div className={styles.button}><Icon path={mdiDownload} size={0.75}></Icon>下载</div></Button>
                     </div>
@@ -148,6 +155,9 @@ function QrManagePage(props) {
         queryRecords();
     }, [rangeStartTime, rangeEndTime, queryId])
 
+    /**
+     * 查询记录
+     */
     function queryRecords() {
         RecordsService.getRecords(rangeStartTime, rangeEndTime, queryId).then((result) => {
             setRecordsList(result);
@@ -156,19 +166,26 @@ function QrManagePage(props) {
         });
     }
 
+    /**
+     * 当用户在模态对话框中输入count并确定，批量生成二维码
+     */
     function createQRBatch() {
-        // TODO 模态框弹出，可下拉框选择或手动输入要生成的数量，用户点击确定后生成
-        enqueueSnackbar('号的！')
-        setConfirmLoading(true)
-        setTimeout(() => {
-            setConfirmLoading(false)
-            setAntModalVisible(false)
-            enqueueSnackbar('生成成功！', { variant: 'success', autoHideDuration: 2000 })
-            queryRecords(); // 重新查询
-            // 下载文件：
-            // Tools.download(url, Tools.getFileName(url));
-        }, 2000)
-        // generateCode
+        if (generateCount && !countInputError) {
+            enqueueSnackbar('生成二维码中~', { variant: 'info', autoHideDuration: 800 })
+            setConfirmLoading(true)
+            RecordsService.generateCode(generateCount).then((result) => {
+                console.log('url: ' + result);
+                enqueueSnackbar('生成成功！', { variant: "success", autoHideDuration: 2000 })
+                Tools.download(FileService.getFile(result), Tools.getFileName(result));
+                queryRecords();
+            }).catch((err) => {
+                console.log(err);
+                enqueueSnackbar('ERROR: ' + err.toString(), { variant: 'error', autoHideDuration: 2000 })
+            }).finally(() => {
+                setConfirmLoading(false)
+                setAntModalVisible(false)
+            });
+        }
     }
 
     function downloadQrBatch() {
@@ -197,6 +214,7 @@ function QrManagePage(props) {
     function onCountInputChange(value) {
         console.log(value)
         if (value) {
+            setGenerateCount(value);
             console.log(value);
             setCountInputError(false)
         } else {
