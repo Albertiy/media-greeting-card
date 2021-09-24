@@ -302,6 +302,7 @@ export function formatDuration(seconds) {
 /**
  * 后台直接下载文件，IOS 无效
  * @param {string} url 下载链接
+ * @param {string} fileName 文件名
  */
 export function download(url, fileName) {
     let a = document.createElement("a");
@@ -311,4 +312,18 @@ export function download(url, fileName) {
     a.download = fileName;
     a.click();
     a.remove();
+}
+
+/**
+ * 从文件路径中获取文件名
+ * @param {string} filePath 
+ * @returns {string} 若文件路径trim后为空，则返回空串，若路径没有斜杠和反斜杠，则返回完整文件名，否则返回最后一个斜杠或反斜杠后的内容。
+ */
+export function getFileName(filePath) {
+    if (!filePath || !filePath.trim()) return '';
+    let i = filePath.indexOf('\\');
+    let j = filePath.indexOf('/');
+    let k = i > j ? i : j;
+    if (k == -1) return filePath;
+    else return filePath.slice(k);
 }
