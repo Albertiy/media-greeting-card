@@ -4,6 +4,7 @@ import ReqBody from '../model/req_body';
 import GenerateRecords from '../model/generaterecords';
 
 const getRecordsUrl = '/api/records';
+const generateCodeUrl = "/api/generateCode";
 
 /**
  * 获取二维码生成记录
@@ -24,5 +25,22 @@ export function getRecords(params = {}) {
             reject(err)
         });
     })
+}
 
+/**
+ * 批量生成二维码
+ * @param {number} count 要生成的数量
+ * @returns {Promise<string>} 返回生成的二维码包的路径
+ */
+export function generateCode(count) {
+    return new Promise((resolve, reject) => {
+        let data = { count }
+        axios.post(generateCodeUrl, data).then((result) => {
+            let res = result.data;
+            if (res.state) resolve(res.data)
+            else reject(res.error)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
 }

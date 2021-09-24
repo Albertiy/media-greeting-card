@@ -23,3 +23,18 @@ export function getRecords(startTime, endTime, id) {
         })
     })
 }
+
+/**
+ * 批量生成二维码
+ * @param {number} count 要生成的数量
+ * @returns {Promsise<string>} 返回生成的二维码包的路径
+ */
+export function generateCode(count) {
+    return new Promise((resolve, reject) => {
+        RecordsAPI.generateCode(count).then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}

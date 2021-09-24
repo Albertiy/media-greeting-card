@@ -148,7 +148,8 @@ function QrManagePage(props) {
     }
 
     function showCreateQRBatch() {
-        
+        // TODO 模态框弹出，可下拉框选择或手动输入要生成的数量，用户点击确定后生成
+        // generateCode
     }
 
     /**
