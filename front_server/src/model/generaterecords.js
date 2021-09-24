@@ -1,4 +1,4 @@
-class Generagerecords {
+export default class Generagerecords {
     id;
     count;
     first;

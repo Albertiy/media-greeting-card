@@ -17,6 +17,10 @@
   justify-content: space-between;
 }
 
+.controlRow {
+  margin-right: 20px;
+}
+
 .tableContainer {
   flex: 1;
   margin: 5px 20px 5px;
@@ -30,4 +34,16 @@
   position: relative;
   overflow-x: auto;
   overflow-y: auto;
+}
+
+.button_bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
