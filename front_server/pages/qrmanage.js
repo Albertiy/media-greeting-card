@@ -147,6 +147,10 @@ function QrManagePage(props) {
         });
     }
 
+    function showCreateQRBatch() {
+        
+    }
+
     /**
      * 显示弹窗
      * @param {string} title 
@@ -166,7 +170,8 @@ function QrManagePage(props) {
             <meta charSet='utf-8' />
             <link rel="icon" href="/favicon.ico" />
         </Head>
-        <header>
+        <header className={styles.header}>
+            <span className={styles.title}>二维码生成记录</span>
         </header>
         <main>
             <div className={styles.container}>
@@ -210,11 +215,14 @@ function QrManagePage(props) {
                     <AntTable className={styles.table} rowKey="id" columns={tableColumns} dataSource={recordsList} loading={isLoading} content pagination={{ ...tablePagination }} />
                 </div>
             </div>
-        </main>
-        <footer>
+        </main >
+        <footer className={styles.footer}>
+            <div className={styles.footerPanel}>
+                <Button type="primary" onClick={() => { showCreateQRBatch() }}>批量创建新二维码</Button>
+            </div>
         </footer>
         {isLoading && <ModelLoading />}
-    </div>;
+    </div >;
 }
 
 export default QrManagePage;
