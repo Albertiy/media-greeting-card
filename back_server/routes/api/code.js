@@ -57,21 +57,12 @@ router.get('/record', (req, res, next) => {
 
 router.get('/records', function (req, res, next) {
     let { id, startTime, endTime } = req.query;
-    if (id || startTime || endTime) {
-        if (id) id = parseInt(id);
-        dbService.getRecords({ id, startTime, endTime }).then((result) => {
-            if (id || startTime || endTime) {
-                if (id) id = parseInt(id);
-                dbService.getRecords({ id, startTime, endTime }).then((result) => {
-                    res.send(new ReqBody(1, result))
-                }).catch((err) => {
-                    res.send(new ReqBody(0, null, err))
-                });
-            } else {
-                res.send(new ReqBody(0, null, '缺少必要参数'))
-            }
-        })
-    }
+    if (id) id = parseInt(id);
+    dbService.getRecords({ id, startTime, endTime }).then((result) => {
+        res.send(new ReqBody(1, result))
+    }).catch((err) => {
+        res.send(new ReqBody(0, null, err))
+    });
 })
 
 router.post('/lock', function (req, res, next) {

@@ -73,7 +73,9 @@ function insertGenerateRecord(count, first, latest, filePath) {
  * @param {{id: number, startTime: string, endTime: string}} params 
  * @returns 
  */
-function getRecords({ id, startTime, endTime }) {
+function getRecords(params) {
+    let { id, startTime, endTime } = params;
+    console.log('params: %o', params);
     return new Promise((resolve, reject) => {
         if (id) {
             GeneraterecordsAPI.get(id).then((result) => {
@@ -81,7 +83,8 @@ function getRecords({ id, startTime, endTime }) {
             }).catch((err) => {
                 reject(err)
             });
-        } else if (startTime && endTime) {
+        } else // if (startTime && endTime) {
+        {
             GeneraterecordsAPI.getByTime(startTime, endTime).then((result) => {
                 resolve(result)
             }).catch((err) => {

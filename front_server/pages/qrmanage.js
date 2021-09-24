@@ -90,7 +90,7 @@ function QrManagePage(props) {
                     <div className={styles.button_bar}>
                         <Button type="primary" shape="round" size='middle' onClick={() => {
                             enqueueSnackbar('下载', { variant: 'info', autoHideDuration: 2000 })
-                        }}><div className={styles.button}><Icon path={mdiDownload} size={0.75}></Icon>修改</div></Button>
+                        }}><div className={styles.button}><Icon path={mdiDownload} size={0.75}></Icon>下载</div></Button>
                     </div>
                 )
             }
@@ -134,7 +134,7 @@ function QrManagePage(props) {
     }, [])
 
     useEffect(() => {
-
+        queryRecords();
     }, [rangeStartTime, rangeEndTime])
 
     function queryRecords() {

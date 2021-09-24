@@ -3,7 +3,7 @@ const pool = ConnPool.getPool();
 
 const addSql = 'insert into generaterecords(count, first, latest, filePath) values (?,?,?,?)';
 const getSql = 'select * from heka.generaterecords where id = ?';
-const getByTimeSql = 'select * from heka.generaterecords where create_time between ? and ?';
+const getByTimeSql = 'select * from heka.generaterecords';
 
 /**
  * 
@@ -59,8 +59,16 @@ function get(id) {
  * @param {string} endTime 
  */
 function getByTime(startTime, endTime) {
+    let query = getByTimeSql;
+    let params = [];
+    if (startTime || endTime) {
+        query += ' where ';
+        if (startTime) { query += 'create_time > ?'; params.push(startTime) }
+        if (startTime && endTime) { query += ' and ' }
+        if (endTime) { query += 'create_time < ?'; params.push(endTime) }
+    }
     return new Promise((resolve, reject) => {
-        pool.query(getByTimeSql, [startTime, endTime], (err, res, fields) => {
+        pool.query(query, params, (err, res, fields) => {
             if (err) {
                 console.log(err)
                 reject(err)

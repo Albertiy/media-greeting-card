@@ -13,6 +13,7 @@ const getRecordsUrl = '/api/records';
 export function getRecords(params = {}) {
     if (params.startTime) params.startTime = dayjs(params.startTime).format('YYYY-MM-DD HH:mm:ss');
     if (params.endTime) params.endTime = dayjs(params.endTime).format('YYYY-MM-DD HH:mm:ss');
+    console.log('【获取二维码生成记录】 params: %o', params)
     return new Promise((resolve, reject) => {
         axios.get(getRecordsUrl, { params: params }).then((result) => {
             /** @type {ReqBody} */
