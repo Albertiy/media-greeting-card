@@ -1,6 +1,7 @@
 import { mdiDownload } from '@mdi/js';
 import Icon from "@mdi/react";
-import { Button, DatePicker as AntDatePicker, Input, Table as AntTable } from 'antd';
+import { Button, DatePicker as AntDatePicker, Input, Table as AntTable, Modal as AntModal, Select as AntSelect, InputNumber } from 'antd';
+const { Option: AntOption } = AntSelect;
 import dayjs from 'dayjs';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -14,6 +15,7 @@ import GenerateRecords from '../src/model/generaterecords';
 import * as RecordsService from '../src/service/records_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/qrmanage.module.scss';
+import * as Tools from '../src/tool/tools';
 const { RangePicker } = AntDatePicker;
 
 /** @type{GenerateRecords[]} */
@@ -24,6 +26,9 @@ const defaultQueryId = '';
 const defaultIsLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
 const defaultQueryIdError = false;
+const defaultAntModalVisible = true;
+const defaultConfirmLoading = false;
+const defaultGenerateCount = 20;
 
 
 
@@ -41,6 +46,10 @@ function QrManagePage(props) {
     let defaultHandleClose = function (ok) { setShowDialog(false) };
     const [dialogHandleClose, setDialogHandleClose] = useState(defaultHandleClose);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [antModalvisible, setAntModalVisible] = useState(defaultAntModalVisible);
+    const [confirmLoading, setConfirmLoading] = useState(defaultConfirmLoading);
+    const [generateCount, setGenerateCount] = useState(defaultGenerateCount);
+    const [countInputError, setCountInputError] = useState(false);
     const router = useRouter();
 
 
@@ -147,9 +156,52 @@ function QrManagePage(props) {
         });
     }
 
-    function showCreateQRBatch() {
+    function createQRBatch() {
         // TODO 模态框弹出，可下拉框选择或手动输入要生成的数量，用户点击确定后生成
+        enqueueSnackbar('号的！')
+        setConfirmLoading(true)
+        setTimeout(() => {
+            setConfirmLoading(false)
+            setAntModalVisible(false)
+            enqueueSnackbar('生成成功！', { variant: 'success', autoHideDuration: 2000 })
+            queryRecords(); // 重新查询
+            // 下载文件：
+            // Tools.download(url, Tools.getFileName(url));
+        }, 2000)
         // generateCode
+    }
+
+    function downloadQrBatch() {
+
+    }
+
+    function onIdInputChange(ev) {
+        let value = ev.target.value;
+        if (value) {
+            value = value.trim();
+            let pattern = /^\d*$/;  // 纯数字检验正则表达式
+            let result = value.match(pattern);
+            if (result) {
+                setQueryId(value)
+                setQueryIdError(false)
+            }
+            else {
+                setQueryIdError(true)
+            }
+        } else {
+            setQueryId(defaultQueryId)
+            setQueryIdError(false)
+        }
+    }
+
+    function onCountInputChange(value) {
+        console.log(value)
+        if (value) {
+            console.log(value);
+            setCountInputError(false)
+        } else {
+            setCountInputError(true)
+        }
     }
 
     /**
@@ -191,24 +243,7 @@ function QrManagePage(props) {
                             }} />
                         </div>
                         <div className={styles.controlBlock}>
-                            <label>编号：</label><Input allowClear placeholder="输入纯数字记录编号(id)" maxLength={20} style={{ width: '200px' }} onChange={(ev) => {
-                                let value = ev.target.value;
-                                if (value) {
-                                    value = value.trim();
-                                    let pattern = /^\d*$/;  // 纯数字检验正则表达式
-                                    let result = value.match(pattern);
-                                    if (result) {
-                                        setQueryId(value)
-                                        setQueryIdError(false)
-                                    }
-                                    else {
-                                        setQueryIdError(true)
-                                    }
-                                } else {
-                                    setQueryId(defaultQueryId)
-                                    setQueryIdError(false)
-                                }
-                            }} className={queryIdError ? styles.errorInput : null} />
+                            <label>编号：</label><Input allowClear placeholder="输入纯数字记录编号(id)" maxLength={20} style={{ width: '200px' }} onChange={onIdInputChange} className={queryIdError ? styles.errorInput : null} />
                         </div>
                     </div>
                 </div>
@@ -219,11 +254,22 @@ function QrManagePage(props) {
         </main >
         <footer className={styles.footer}>
             <div className={styles.footerPanel}>
-                <Button type="primary" onClick={() => { showCreateQRBatch() }}>批量创建新二维码</Button>
+                <Button type="primary" onClick={() => { setAntModalVisible(true); }}>批量创建新二维码</Button>
             </div>
         </footer>
+        <AlertDialog open={showDialog} title={dialogTitle} content={dialogContent} handleClose={dialogHandleClose} />
         {isLoading && <ModelLoading />}
-    </div >;
+        {/* AntModel会导致Next报错，忽略 */}
+        <AntModal centered title="生成二维码" visible={antModalvisible} onOk={createQRBatch} confirmLoading={confirmLoading} onCancel={() => {
+            console.log('取消')
+            setAntModalVisible(false);
+        }}>
+            <div className={styles.modalPanel}>
+                <label>数量：</label>
+                <InputNumber min={1} max={2000} defaultValue={defaultGenerateCount} maxLength={4} onChange={onCountInputChange} className={countInputError ? styles.errorInput : null} /><label style={{ marginLeft: "20px", color: '#f46' }}>* 范围 1-2000</label>
+            </div>
+        </AntModal>
+    </div>;
 }
 
 export default QrManagePage;
