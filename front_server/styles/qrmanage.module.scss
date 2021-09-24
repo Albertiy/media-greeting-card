@@ -18,6 +18,10 @@
 }
 
 .controlRow {
+}
+
+.controlBlock {
+  display: inline;
   margin-right: 20px;
 }
 
@@ -46,4 +50,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.errorInput {
+  border-color: red;
 }

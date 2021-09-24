@@ -1,6 +1,6 @@
 import { mdiDownload } from '@mdi/js';
 import Icon from "@mdi/react";
-import { Button, DatePicker as AntDatePicker, Table as AntTable } from 'antd';
+import { Button, DatePicker as AntDatePicker, Input, Table as AntTable } from 'antd';
 import dayjs from 'dayjs';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -23,6 +23,7 @@ const defaultRangeStartTime = new Date().setDate(defaultRangeEndTime.getDate() -
 const defaultQueryId = '';
 const defaultIsLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
+const defaultQueryIdError = false;
 
 
 
@@ -31,6 +32,7 @@ function QrManagePage(props) {
     const [rangeStartTime, setRangeStartTime] = useState(defaultRangeStartTime);
     const [rangeEndTime, setRangeEndTime] = useState(defaultRangeEndTime);
     const [queryId, setQueryId] = useState(defaultQueryId);
+    const [queryIdError, setQueryIdError] = useState(defaultQueryIdError);
     const [recordsList, setRecordsList] = useState(defaultRecordsList);
     const [isLoading, setIsLoading] = useState(defaultIsLoading);
     const [showDialog, setShowDialog] = useState(defaultDialog.open);
@@ -135,7 +137,7 @@ function QrManagePage(props) {
 
     useEffect(() => {
         queryRecords();
-    }, [rangeStartTime, rangeEndTime])
+    }, [rangeStartTime, rangeEndTime, queryId])
 
     function queryRecords() {
         RecordsService.getRecords(rangeStartTime, rangeEndTime, queryId).then((result) => {
@@ -170,16 +172,38 @@ function QrManagePage(props) {
             <div className={styles.container}>
                 <div className={styles.controlPanel}>
                     <div className={styles.controlRow}>
-                        <label>时间：</label><RangePicker id="timeFilter" showTime value={[rangeStartTime ? moment(rangeStartTime) : null, rangeEndTime ? moment(rangeEndTime) : null]} onChange={(dates, dateStrings) => {
-                            console.log('时间选择器： dates: %o dateStrings: %o', dates, dateStrings)
-                            if (dates) {
-                                setRangeStartTime(dates[0].toDate())
-                                setRangeEndTime(dates[1].toDate())
-                            } else {
-                                setRangeStartTime(null)
-                                setRangeEndTime(null)
-                            }
-                        }} />
+                        <div className={styles.controlBlock}>
+                            <label>时间：</label><RangePicker id="timeFilter" showTime value={[rangeStartTime ? moment(rangeStartTime) : null, rangeEndTime ? moment(rangeEndTime) : null]} onChange={(dates, dateStrings) => {
+                                console.log('时间选择器： dates: %o dateStrings: %o', dates, dateStrings)
+                                if (dates) {
+                                    setRangeStartTime(dates[0].toDate())
+                                    setRangeEndTime(dates[1].toDate())
+                                } else {
+                                    setRangeStartTime(null)
+                                    setRangeEndTime(null)
+                                }
+                            }} />
+                        </div>
+                        <div className={styles.controlBlock}>
+                            <label>编号：</label><Input allowClear placeholder="输入纯数字记录编号(id)" maxLength={20} style={{ width: '200px' }} onChange={(ev) => {
+                                let value = ev.target.value;
+                                if (value) {
+                                    value = value.trim();
+                                    let pattern = /^\d*$/;  // 纯数字检验正则表达式
+                                    let result = value.match(pattern);
+                                    if (result) {
+                                        setQueryId(value)
+                                        setQueryIdError(false)
+                                    }
+                                    else {
+                                        setQueryIdError(true)
+                                    }
+                                } else {
+                                    setQueryId(defaultQueryId)
+                                    setQueryIdError(false)
+                                }
+                            }} className={queryIdError ? styles.errorInput : null} />
+                        </div>
                     </div>
                 </div>
                 <div className={styles.tableContainer}>
