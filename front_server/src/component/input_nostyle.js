@@ -8,13 +8,24 @@ import PropTypes from 'prop-types'
  * @returns 
  */
 function NoStyleInput(props) {
-    const { className, defaultValue = '', placeholder = '', onChange = () => { }, ...other } = props;
+    const { className, defaultValue = '', placeholder = '', onChange = () => { }, parentRef, ...other } = props;
     const ele = useRef(null);
     useEffect(() => {
-        if (ele.current) {
-            ele.current.value = defaultValue;
-        }
+        setValue(defaultValue);
+        parentRef.current = setValue;
     }, []);
+
+    /**
+     * 提供给父组件调用以直接设置值
+     * @param {*} value 
+     */
+    function setValue(value) {
+        // console.log(value);
+        if (value && ele.current) {
+            ele.current.value = value;
+        }
+    }
+
     return (<input ref={ele} className={[styles.input, className].join(' ')} placeholder={placeholder} onChange={(event) => { onChange(event.target) }} {...other}></input>)
 }
 
@@ -22,6 +33,7 @@ NoStyleInput.propTypes = {
     defaultValue: PropTypes.string,
     placeholder: PropTypes.string,
     onchange: PropTypes.func,
+    parentRef: PropTypes.any,
 }
 
 export default NoStyleInput;

@@ -28,3 +28,5 @@ update heka.uploadfiles set isLocked = true where id = 1087;
 SELECT * FROM heka.generaterecords where create_time > '2021-09-01' and create_time < '2021-09-30';
 
 SELECT * FROM heka.uploadfiles where uuid = '6ee23255-151f-11ec-9fd8-7fbca34d1aa1';
+
+update heka.`uploadfiles` set text_from='王中王', text_to='我最强' where uuid = '6ee23255-151f-11ec-9fd8-7fbca34d1aa12';
