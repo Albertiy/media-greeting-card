@@ -7,6 +7,7 @@ var formidable = require('formidable');
 var uuidV1 = require('uuid').v1;
 
 const fileService = require('../../src/service/file_service');
+const dbService = require('../../src/service/db_service');
 const tools = require('../../src/tool/tools');
 var ReqBody = require('../../src/model/req_body');
 
@@ -136,6 +137,20 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
         console.log(error);
         res.send(new ReqBody(0, null, error))
     }
+});
+
+/**
+ * 读取上传信息
+ */
+router.post('/getGreetingFiles', function (req, res, next) {
+    let { code } = req.body;
+    console.log('code: ' + code)
+    if (!code) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
+    dbService.getUploadInfo(code).then((result) => {
+        res.send(new ReqBody(1, result))
+    }).catch((err) => {
+        res.send(new ReqBody(0, null, err))
+    });
 });
 
 /**

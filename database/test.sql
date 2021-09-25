@@ -22,3 +22,9 @@ select date_add(now(),interval 31 day);
 select date_add(now(), interval 20 hour); -- add 1 hour
 
 select date_add(now(), interval 20 hour); -- add 1 hour
+
+update heka.uploadfiles set isLocked = true where id = 1087;
+
+SELECT * FROM heka.generaterecords where create_time > '2021-09-01' and create_time < '2021-09-30';
+
+SELECT * FROM heka.uploadfiles where uuid = '6ee23255-151f-11ec-9fd8-7fbca34d1aa1';

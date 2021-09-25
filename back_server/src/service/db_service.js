@@ -1,5 +1,6 @@
 const UploadfilesAPI = require('../db/uploadfiles_api');
 const GeneraterecordsAPI = require('../db/generaterecords_api');
+const Uploadfiles = require('../model/uploadfiles');
 
 /**
  * 合并批量插入二维码与插入生成记录服务
@@ -113,10 +114,30 @@ function setLock(id, lock) {
     })
 }
 
+/**
+ * 获取上传信息
+ * @param {string} code 页面的上传参数
+ * @returns {Promise<Uploadfiles>}
+ */
+function getUploadInfo(code) {
+    return new Promise((resolve, reject) => {
+        if (!code) { reject('缺少必要参数'); return; }
+        UploadfilesAPI.getByCode(code).then((result) => {
+            if (result && result.length > 0)
+                resolve(result[0])
+            else
+                reject('无效的code')
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
     insertCodesAndRecord,
     getRecords,
     setLock,
+    getUploadInfo,
 }

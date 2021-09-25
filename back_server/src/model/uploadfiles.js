@@ -26,3 +26,5 @@ class Uploadfiles {
         this.isDeleted = isDeleted;
     }
 }
+
+module.exports = Uploadfiles;

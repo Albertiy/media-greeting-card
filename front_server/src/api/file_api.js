@@ -24,3 +24,10 @@ export function uploadGreetingFiles(formData, uploadProgressCallback) {
     })
 
 }
+
+
+export function getGreetingFiles(code) {
+    return new Promise((resolve, reject) => {
+
+    })
+}
