@@ -23,15 +23,15 @@ const defaultNoStyleInput = null;
 
 export default function MessagePage() {
 
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const router = useRouter();
     const routerRefreshCount = useRef(0);
-    const [textFrom, setTextFrom] = useState(defaultTextFrom);
-    const [textTo, setTextTo] = useState(defaultTextTo);
     const [routerLoaded, setRouterLoaded] = useState(defaultRouterLoaded);
     const [code, setCode] = useState(null);
     const [uploadInfo, setUploadInfo] = useState(defaultUploadInfo);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [infoType, setInfoType] = useState(defaultInfoType);
+    const [textFrom, setTextFrom] = useState(defaultTextFrom);
+    const [textTo, setTextTo] = useState(defaultTextTo);
     const textFromInput = useRef(defaultNoStyleInput);
     const textToInput = useRef(defaultNoStyleInput);
 
