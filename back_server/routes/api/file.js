@@ -70,8 +70,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
         })
         // 没有作用？
         form.on('data', data => {
-            console.log('data: ')
-            console.log(data.name)
+            console.log('data: ' + data.name)
         })
 
         form.parse(req, (err, fields, files) => {
@@ -81,72 +80,75 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
             } else {
                 console.log(fields);
                 console.log('上传文件数：%o', Object.keys(files).length);
-                let { } = fields;
-                if (false) {
+                let { code } = fields;
+                if (!code) {
                     res.send(new ReqBody(0, null, '缺少必要的参数'))
                 } else {
                     try {
+                        dbService.getUploadInfo(code).then((result) => {
+                            console.log('是有效的code!')
+                            let oldAudioPath = result.audioPath;    // 用于删除旧文件
+                            let oldVideoPath = result.videoPath;    // 用于删除旧文件
 
+                            if (Object.keys(files).length > 0) {
+                                let keys = [];
+                                Object.keys(files).forEach(key => {
+                                    keys.push(key);
+                                });
+                                console.log(keys);
+                                let audioFileIdx = keys.findIndex(value => value == 'audioFile')
+                                let videoFileIdx = keys.findIndex(value => value == 'videoFile')
+                                if (audioFileIdx == -1 && videoFileIdx == -1) {
+                                    res.send(new ReqBody(0, null, '文件为空'))
+                                } else {
+                                    let dbAudioPath, dbVideoPath;   // 用于存储到数据库
+                                    // 音频
+                                    if (audioFileIdx != -1) {
+                                        let audioFile = files[keys[audioFileIdx]];
+                                        console.log(`|| 文件信息：${audioFile.name} ${audioFile.type} ${audioFile.size} ${audioFile.lastModifiedDate}`);
+                                        if (audioFile && audioFile.size > 0) {  // 保存音频文件
+                                            console.log('|| 临时路径:' + audioFile.path);
+                                            let audioRelPath = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + uuidV1());
+                                            dbAudioPath = path.join(AUDIO_ROOT, audioRelPath);
+                                            console.log('|| 数据库存储路径:' + dbAudioPath);
+                                            let audioAbsPath = path.resolve(rootUrl, AUDIO_ROOT, audioRelPath)
+                                            console.log('|| 存储路径:' + audioAbsPath)
+                                            fileService.mkdirsSync(path.dirname(audioAbsPath));   // 若目录不存在，创建之
+                                            fs.renameSync(audioFile.path, audioAbsPath);
+                                        }
+                                    }
+                                    // 视频
+                                    if (videoFileIdx != -1) {
+                                        let videoFile = files[keys[videoFileIdx]];
+                                        console.log(videoFile);
+                                        if (videoFile && videoFile.size > 0) {  // 保存视频文件
+                                            console.log('|| 临时路径:' + videoFile.path);
+                                            let videoRelPath = (tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)) + '-' + uuidV1();
+                                            videoRelPath += tools.getExtName(videoFile.name)
+                                            dbVideoPath = path.join(AUDIO_ROOT, audioRelPath);
+                                            console.log('|| 数据库存储路径:' + dbVideoPath);
+                                            let videoAbsPath = path.resolve(rootUrl, VIDEO_ROOT, videoRelPath)
+                                            console.log('|| 存储路径:' + videoAbsPath)
+                                            fileService.mkdirsSync(path.dirname(videoAbsPath));   // 若目录不存在，创建之
+                                            fs.renameSync(videoFile.path, videoAbsPath);
+                                        }
+                                    }
+                                    dbService.updateGreetingFiles(code, dbVideoPath, dbAudioPath).then((result) => {
+                                        // TODO 删除旧文件
+                                        res.send(new ReqBody(1, "上传成功"));
+                                    }).catch((err) => {
+                                        res.send(new ReqBody(0, null, err));
+                                    });
+                                }
+                            } else {
+                                res.send(new ReqBody(0, null, '文件上传失败'))
+                            }
+                        }).catch((err) => {
+                            res.send(new ReqBody(0, null, err))
+                        });
                     } catch (e) {
                         res.send(new ReqBody(0, null, '参数格式错误'))
                         return;
-                    }
-                    if (Object.keys(files).length > 0) {
-                        let keys = [];
-                        Object.keys(files).forEach(key => {
-                            keys.push(key);
-                        });
-                        console.log(keys);
-                        let audioFileIdx = keys.findIndex(value => value == 'audioFile')
-                        let videoFileIdx = keys.findIndex(value => value == 'videoFile')
-                        if (audioFileIdx == -1 && videoFileIdx == -1) {
-                            res.send(new ReqBody(0, null, '文件为空'))
-                        } else {
-                            // 音频
-                            if (audioFileIdx != -1) {
-                                let audioFile = files[keys[audioFileIdx]];
-                                console.log(`|| 文件信息：${audioFile.name} ${audioFile.type} ${audioFile.size} ${audioFile.lastModifiedDate}`);
-                                if (audioFile && audioFile.size > 0) {
-                                    console.log('|| 临时路径:' + audioFile.path);
-                                    let audioRelPath = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + uuidV1());
-                                    let audioAbsPath = path.resolve(rootUrl, AUDIO_ROOT, audioRelPath)
-                                    console.log('|| 存储路径:' + audioAbsPath)
-                                    fileService.mkdirsSync(path.dirname(audioAbsPath));   // 若目录不存在，创建之
-                                    fs.renameSync(audioFile.path, audioAbsPath);
-                                }
-
-                                // dbService.addProductItem(name, product, categories, audioRelPath, linkUrl).then(val => {
-                                //       // 确保写入数据库后再移动文件，若记录创建失败则文件待在临时文件夹中，便于区分
-                                //     if (thumbPicIdx != -1) {
-                                //         let thumbPic = files[keys[thumbPicIdx]]
-                                //         fs.renameSync(thumbPic.path, thumbAbsolutePath)
-                                //         console.log('thumbPic 存储路径:' + thumbAbsolutePath)
-                                //     } else {
-                                //         console.log('没有上传缩略图')
-                                //     }
-                                //     res.send(new ReqBody(1, val))
-                                // }).catch(err => {
-                                //     res.send(new ReqBody(0, null, err))
-                                // })
-                            }
-                            // 视频
-                            if (videoFileIdx != -1) {
-                                let videoFile = files[keys[videoFileIdx]];
-                                console.log(videoFile);
-                                if (videoFile && videoFile.size > 0) {
-                                    console.log('|| 临时路径:' + videoFile.path);
-                                    let videoRelPath = (tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)) + '-' + uuidV1();
-                                    videoRelPath += tools.getExtName(videoFile.name)
-                                    let videoAbsPath = path.resolve(rootUrl, VIDEO_ROOT, videoRelPath)
-                                    console.log('|| 存储路径:' + videoAbsPath)
-                                    fileService.mkdirsSync(path.dirname(videoAbsPath));   // 若目录不存在，创建之
-                                    fs.renameSync(videoFile.path, videoAbsPath);
-                                }
-                            }
-                            res.send(new ReqBody(1, "上传成功"))
-                        }
-                    } else {
-                        res.send(new ReqBody(0, null, '文件上传失败'))
                     }
                 }
             }

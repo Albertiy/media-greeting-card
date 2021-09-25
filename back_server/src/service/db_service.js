@@ -152,6 +152,19 @@ function updateGreetingText(params) {
     })
 }
 
+/**
+ * 
+ * @param {{code:string, dbVideoPath:string, dbAudioPath: string}} params 
+ * @returns 
+ */
+function updateGreetingFiles(params) {
+    return new Promise((resolve, reject) => {
+        let { code, dbVideoPath: videoPath, dbAudioPath: audioPath } = params;
+        if (!code || (!videoPath && !audioPath)) { }
+    })
+
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -160,4 +173,5 @@ module.exports = {
     setLock,
     getUploadInfo,
     updateGreetingText,
+    updateGreetingFiles,
 }

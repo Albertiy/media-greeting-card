@@ -1,22 +1,28 @@
-import Head from "next/head";
-import { useEffect, useState, useRef } from "react";
-import TitleBar from "../src/component/title_bar";
-import styles from '../styles/recordaudio.module.scss'
+import { LinearProgress } from '@material-ui/core';
+import { mdiCheckBold, mdiDownload, mdiMicrophone, mdiPlay, mdiRefresh, mdiStop } from '@mdi/js';
 import Icon from "@mdi/react";
-import { mdiPlay, mdiCheckBold, mdiMicrophone, mdiStop, mdiRefresh, mdiDownload } from '@mdi/js';
+import dayjs from 'dayjs';
+import Head from "next/head";
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import { useEffect, useRef, useState } from "react";
 import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
-import { LinearProgress } from '@material-ui/core';
-import dayjs from 'dayjs';
-import * as Tools from "../src/tool/tools";
+import TitleBar from "../src/component/title_bar";
 import * as FileService from '../src/service/file_service';
+import * as Tools from "../src/tool/tools";
+import styles from '../styles/recordaudio.module.scss';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiMicrophone },
     STOP: { title: '停止', icon: mdiStop },
     RETAKE: { title: '重录', icon: mdiRefresh }
 }
+
+const defaultRouterLoaded = false;
+const defaultCode = null;
+/** @type{Uploadfiles} */
+const defaultUploadInfo = null;
 
 const defaultLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
@@ -66,6 +72,11 @@ const defaultProgressValue = 0;
 
 function RecordAudioPage() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const router = useRouter();
+    const routerRefreshCount = useRef(0);
+    const [routerLoaded, setRouterLoaded] = useState(defaultRouterLoaded);
+    const [code, setCode] = useState(null);
+    const [uploadInfo, setUploadInfo] = useState(defaultUploadInfo);
 
     /** @type {{current: HTMLAudioElement}} */
     const audioEle = useRef(null);
@@ -106,6 +117,48 @@ function RecordAudioPage() {
     const [audioFile, setAudioFile] = useState(defualtAudioFile);
 
     const [progressValue, setProgressValue] = useState(defaultProgressValue);
+
+    useEffect(() => {
+        console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
+        let params = router.query;
+        console.log('params: %o', params)
+        if (params && params.code) {
+            let code = params.code;
+            enqueueSnackbar('code: ' + code, { variant: 'info', autoHideDuration: 1000 })
+            setCode(code);
+            getInfoByCode(code);
+        }
+        return () => {
+            if (routerRefreshCount.current > 0) setRouterLoaded(true);
+            routerRefreshCount.current += 1;
+        }
+    }, [router.query])
+
+    /**
+     * 加载现有数据
+     * @param {string} code 
+     */
+    function getInfoByCode(code) {
+        // 判断code加载数据
+        FileService.getUploadInfo(code).then((result) => {
+            console.log('结果：%o', result);
+            setUploadInfo(result);
+            if (result.audioPath) {
+                initRemoteAudio(FileService.getFile(result.audioPath));
+            }
+        }).catch((err) => { // 说明code无效，此时UploadInfo为空
+            enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
+        });
+    }
+
+    /**
+     * 当加载到远程已有的文件url，将其设置为播放器的源
+     * @param {string} remoteUrl 
+     */
+    function initRemoteAudio(remoteUrl) {
+        setRecordBtnState(RecordBtnStateEnum.RETAKE);
+        setAudioSource(remoteUrl);
+    }
 
     useEffect(() => {
         testRecorderType();
@@ -405,7 +458,7 @@ function RecordAudioPage() {
             // 上传音频文件，并弹窗提示
             setLoading(true);
             enqueueSnackbar('待上传的文件:' + audioFile.size, { variant: 'info', autoHideDuration: 2000 });
-            FileService.uploadGreetings(null, audioFile, progressUpload).then((result) => {
+            FileService.uploadGreetings(code, null, audioFile, progressUpload).then((result) => {
                 setProgressValue(1);
                 showAlertDialog('提示', '上传成功！')
             }).catch((err) => {
