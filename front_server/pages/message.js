@@ -1,8 +1,16 @@
-import Head from 'next/head'
-import LabelInput from '../src/component/label_input'
-import NoStyleInput from '../src/component/input_nostyle'
-import TitleBar from '../src/component/title_bar'
-import styles from '../styles/message.module.scss'
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import { useEffect, useRef, useState } from 'react';
+import NoStyleInput from '../src/component/input_nostyle';
+import LabelInput from '../src/component/label_input';
+import TitleBar from '../src/component/title_bar';
+import * as FileService from '../src/service/file_service';
+import GlobalSettings from '../src/setting/global';
+import styles from '../styles/message.module.scss';
+
+const defaultTextFrom = '';
+const defaultTextTo = '';
 
 export default function MessagePage() {
     return (
