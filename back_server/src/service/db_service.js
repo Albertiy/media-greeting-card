@@ -133,6 +133,25 @@ function getUploadInfo(code) {
     })
 }
 
+/**
+ * 更新祝福文字相关内容
+ * @param {{code:string, textFrom:string, textTo:string}} params 
+ */
+function updateGreetingText(params) {
+    return new Promise((resolve, reject) => {
+        let { code, textFrom, textTo } = params;
+        if (!code) { reject('缺少必要参数'); return; }
+        UploadfilesAPI.updateText(code, textFrom, textTo).then((result) => {
+            if (result.affectedRows > 0)
+                resolve('成功上传文本')
+            else
+                reject('无效的code')
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -140,4 +159,5 @@ module.exports = {
     getRecords,
     setLock,
     getUploadInfo,
+    updateGreetingText,
 }

@@ -5,6 +5,7 @@ const pool = ConnPool.getPool();
 const addMultipleSql = 'insert into uploadfiles(uuid, record_id) values ?';
 const setLockSql = 'update uploadfiles set isLocked = ? where id = ?';
 const getByCodeSql = 'SELECT * FROM heka.uploadfiles where uuid = ?';
+const updateTextSql = 'update heka.`uploadfiles` set `text_from`=?, `text_to`=? where `uuid` = ?';
 
 /**
  * 新增多条数据
@@ -67,9 +68,30 @@ function getByCode(code) {
 
 }
 
+/**
+ * 
+ * @param {string} code 
+ * @param {string} textFrom 
+ * @param {string} textTo 
+ * @returns 
+ */
+function updateText(code, textFrom, textTo) {
+    return new Promise((resolve, reject) => {
+        pool.query(updateTextSql, [textFrom, textTo, code], (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
+
 
 module.exports = {
     addMultiple,
     setLock,
     getByCode,
+    updateText,
 }

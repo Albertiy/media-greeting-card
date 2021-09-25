@@ -15,9 +15,27 @@ const appConfig = require('../../config.js').application();
 const VIDEO_ROOT = appConfig.videoFileRoot;
 const AUDIO_ROOT = appConfig.audioFileRoot;
 
-// router.get('/uploadGreetingFiles', function (req, res, next) {
-//     res.send({ ok: 1 })
-// })
+/**
+ * 更新祝福文本
+ */
+router.post('/uploadGreetingText', function (req, res, next) {
+    try {
+        let data = req.body;
+        console.log('data: %o', data);
+        let { code, textFrom, textTo } = data;
+        if (!code || (!textFrom && !textTo)) { res.send(new ReqBody(0, null, '缺少必要参数！')) }
+        else {
+            // 更新数据
+            dbService.updateGreetingText(data).then((result) => {
+                res.send(new ReqBody(1, result))
+            }).catch((err) => {
+                res.send(new ReqBody(0, null, err))
+            });
+        }
+    } catch (e) {
+        res.send(new ReqBody(0, null, e))
+    }
+})
 
 /**
  * 上传音频和视频
