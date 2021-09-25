@@ -1,7 +1,9 @@
 import axios from 'axios';
 import ReqBody from '../model/req_body';
+import Uploadfiles from '../model/uploadfiles';
 
 const uploadGreetingFilesUrl = '/api/uploadGreetingFiles';
+const getUploadInfoUrl = '/api/getGreetingFiles';
 
 /**
  * 
@@ -25,9 +27,20 @@ export function uploadGreetingFiles(formData, uploadProgressCallback) {
 
 }
 
-
-export function getGreetingFiles(code) {
+/**
+ * 
+ * @param {string} code 
+ * @returns {Promise<Uploadfiles>}
+ */
+export function getUploadInfo(code) {
     return new Promise((resolve, reject) => {
-
+        axios.post(getUploadInfoUrl, { code }).then((result) => {
+            /** @type {ReqBody} */
+            let res = result.data;
+            if (res.state) resolve(res.data);
+            else reject(res.error)
+        }).catch((err) => {
+            reject(err)
+        });
     })
 }

@@ -1,4 +1,5 @@
 import * as FileAPI from '../api/file_api';
+import Uploadfiles from '../model/uploadfiles';
 
 /**
  * 获取文件可用路径
@@ -29,6 +30,24 @@ export function uploadGreetings(videoFile, audioFile, uploadProgressCallback) {
             }).catch(err => {
                 reject(err)
             })
+        }
+    })
+}
+
+/**
+ * 
+ * @param {string} code 
+ * @returns {Promise<Uploadfiles>}
+ */
+export function getUploadInfo(code) {
+    return new Promise((resolve, reject) => {
+        if (!code) { reject('code不能为空') }
+        else {
+            FileAPI.getUploadInfo(code).then((result) => {
+                resolve(result)
+            }).catch((err) => {
+                reject(err)
+            });
         }
     })
 }
