@@ -51,3 +51,24 @@ export function getUploadInfo(code) {
         }
     })
 }
+
+/**
+ * 上传文本信息
+ * @param {string} code
+ * @param {string} textFrom 
+ * @param {string} textTo 
+ */
+export function uploadGreetingText(code, textFrom, textTo) {
+    return new Promise((resolve, reject) => {
+        if (!code) { reject('code不能为空') }
+        else if (!textFrom || !textTo) { reject('文本不能为空') }
+        else {
+            FileAPI.uploadGreetingText(code, textFrom, textTo).then((result) => {
+                resolve(result)
+            }).catch((err) => {
+                reject(err)
+            });
+        }
+    })
+
+}

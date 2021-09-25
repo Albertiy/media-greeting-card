@@ -34,16 +34,21 @@
 }
 
 .message_btn {
+  margin-top: 20%;
   text-align: center;
   color: $color-label-bluePurple;
   font-size: 1.25rem;
   font-weight: 500;
+  transition: transform 0.7s cubic-bezier(0.19, 1.04, 0.43, 0.98);
 }
 
 .logo2 {
-  margin-top: 20%;
   background-image: url("../public/img/mail.png");
   width: 6.875rem;
   height: 6.875rem;
   background-size: contain;
+}
+
+.message_btn:active {
+  transform: scale(1.2);
 }
