@@ -160,9 +160,14 @@ function updateGreetingText(params) {
 function updateGreetingFiles(params) {
     return new Promise((resolve, reject) => {
         let { code, dbVideoPath: videoPath, dbAudioPath: audioPath } = params;
-        if (!code || (!videoPath && !audioPath)) { }
+        if (!code || (!videoPath && !audioPath)) { reject('缺少必要参数'); return; }
+        UploadfilesAPI.updateFile(code, videoPath, audioPath).then((result) => {
+            if (result.affectedRows > 0)
+                resolve('成功将文件路径写入数据库')
+        }).catch((err) => {
+            reject('无效的code')
+        });
     })
-
 }
 
 module.exports = {

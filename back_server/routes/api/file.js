@@ -134,7 +134,9 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         }
                                     }
                                     dbService.updateGreetingFiles(code, dbVideoPath, dbAudioPath).then((result) => {
-                                        // TODO 删除旧文件
+                                        // 删除旧文件
+                                        if (oldAudioPath) fs.rmSync(oldAudioPath, { force: true });
+                                        if (oldVideoPath) fs.rmSync(oldVideoPath, { force: true });
                                         res.send(new ReqBody(1, "上传成功"));
                                     }).catch((err) => {
                                         res.send(new ReqBody(0, null, err));
