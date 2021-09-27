@@ -9,11 +9,10 @@ import { useEffect, useRef, useState } from "react";
 import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
 import TitleBar from "../src/component/title_bar";
+import Uploadfiles from '../src/model/uploadfiles';
 import * as FileService from '../src/service/file_service';
 import * as Tools from "../src/tool/tools";
 import styles from '../styles/recordaudio.module.scss';
-import Uploadfiles from '../src/model/uploadfiles';
-import { route } from 'next/dist/server/router';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiMicrophone },
@@ -22,6 +21,7 @@ const RecordBtnStateEnum = {
 }
 
 const defaultRouterLoaded = false;
+/** @type{string} */
 const defaultCode = null;
 /** @type{Uploadfiles} */
 const defaultUploadInfo = null;
@@ -78,7 +78,7 @@ function RecordAudioPage() {
     const router = useRouter();
     const routerRefreshCount = useRef(0);
     const [routerLoaded, setRouterLoaded] = useState(defaultRouterLoaded);
-    const [code, setCode] = useState(null);
+    const [code, setCode] = useState(defaultCode);
     const [uploadInfo, setUploadInfo] = useState(defaultUploadInfo);
 
     /** @type {{current: HTMLAudioElement}} */
@@ -149,6 +149,8 @@ function RecordAudioPage() {
             setUploadInfo(result);
             if (result.audioPath) {
                 initRemoteAudio(FileService.getFile(result.audioPath));
+            } else {
+                console.log('当前尚未上传过音频文件')
             }
         }).catch((err) => { // 说明code无效，此时UploadInfo为空
             enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
@@ -451,7 +453,7 @@ function RecordAudioPage() {
      * @param {Event} ev 
      */
     function previewBtnClicked(ev) {
-        // 此按钮最好去掉，或者换成播放页面内媒体
+        //// 此按钮最好去掉，或者换成播放页面内媒体
         if (uploadInfo.audioPath) {
             if (waitForUpload) {
                 showAlertDialog('提示', '当前新录制的文件尚未上传，是否确认放弃内容进入预览页？可先点击完成按钮，上传内容', (ok) => {
@@ -490,7 +492,7 @@ function RecordAudioPage() {
                 setLoading(false);
             });
         } else {
-            enqueueSnackbar('尚未录制，或等待或者点击停止按钮以结束当前录制，', { variant: 'warning', autoHideDuration: 2000 })
+            enqueueSnackbar('尚未录制，或等待或者点击停止按钮以结束当前录制', { variant: 'warning', autoHideDuration: 2000 })
         }
     }
 

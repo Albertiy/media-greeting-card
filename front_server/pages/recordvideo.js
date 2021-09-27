@@ -1,22 +1,30 @@
-import Head from "next/head";
-import { useState, useEffect, useRef } from "react";
-import TitleBar from "../src/component/title_bar";
-import styles from '../styles/recordvideo.module.scss'
+import { LinearProgress } from '@material-ui/core';
+import { mdiCamera, mdiCheckBold, mdiDownload, mdiPlay, mdiRefresh, mdiStop, mdiVideoOutline } from '@mdi/js';
 import Icon from "@mdi/react";
-import { mdiPlay, mdiCheckBold, mdiCamera, mdiStop, mdiRefresh, mdiVideoOutline, mdiDownload } from '@mdi/js';
+import dayjs from 'dayjs';
+import Head from "next/head";
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import { useEffect, useRef, useState } from "react";
 import AlertDialog from "../src/component/alert-dialog";
 import ModelLoading from "../src/component/model_loading";
-import * as Tools from "../src/tool/tools";
-import dayjs from 'dayjs';
-import { LinearProgress } from '@material-ui/core';
+import TitleBar from "../src/component/title_bar";
+import Uploadfiles from '../src/model/uploadfiles';
 import * as FileService from '../src/service/file_service';
+import * as Tools from "../src/tool/tools";
+import styles from '../styles/recordvideo.module.scss';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiCamera },
     STOP: { title: '停止', icon: mdiStop },
     RETAKE: { title: '重录', icon: mdiRefresh }
 }
+
+const defaultRouterLoaded = false;
+/** @type{string} */
+const defaultCode = null;
+/** @type{Uploadfiles} */
+const defaultUploadInfo = null;
 
 const defaultLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
@@ -56,6 +64,7 @@ const videoMimeList = [
 let selectedMime = videoMimeList[0];
 
 const defaultProgressValue = 0;
+const defaultWaitForUpload = false;
 
 /**
  * Ref模仿State的回调函数
@@ -66,6 +75,11 @@ const defaultProgressValue = 0;
 
 function RecordVideoPage() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const router = useRouter();
+    const routerRefreshCount = useRef(0);
+    const [routerLoaded, setRouterLoaded] = useState(defaultRouterLoaded);
+    const [code, setCode] = useState(defaultCode);
+    const [uploadInfo, setUploadInfo] = useState(defaultUploadInfo);
 
     /** @type {{current: HTMLVideoElement}} */
     const videoEle = useRef(null);
@@ -106,6 +120,51 @@ function RecordVideoPage() {
     const [videoFile, setVideoFile] = useState(defaultVideoFile);
 
     const [progressValue, setProgressValue] = useState(defaultProgressValue);
+    const [waitForUpload, setWaitForUpload] = useState(defaultWaitForUpload);
+
+    useEffect(() => {
+        console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
+        let params = router.query;
+        console.log('params: %o', params)
+        if (params && params.code) {
+            let code = params.code;
+            enqueueSnackbar('code: ' + code, { variant: 'info', autoHideDuration: 1000 })
+            setCode(code);
+            getInfoByCode(code);
+        }
+
+        if (routerRefreshCount.current > 0) setRouterLoaded(true);
+        routerRefreshCount.current += 1;
+
+    }, [router.query])
+
+    /**
+     * 加载现有数据
+     * @param {string} code 
+     */
+    function getInfoByCode(code) {
+        // 判断code加载数据
+        FileService.getUploadInfo(code).then((result) => {
+            console.log('结果：%o', result);
+            setUploadInfo(result);
+            if (result.videoPath) {
+                initRemoteVideo(FileService.getFile(result.videoPath));
+            } else {
+                console.log('当前尚未上传过视频文件')
+            }
+        }).catch((err) => { // 说明code无效，此时UploadInfo为空
+            enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
+        });
+    }
+
+    /**
+     * 当加载到远程已有的文件url，将其设置为播放器的源
+     * @param {string} remoteUrl 
+     */
+    function initRemoteVideo(remoteUrl) {
+        setRecordBtnState(RecordBtnStateEnum.RETAKE);
+        setVideoSource(remoteUrl);
+    }
 
     useEffect(() => {
         testRecorderType();
@@ -260,6 +319,7 @@ function RecordVideoPage() {
             let recorder = mediaRecorder ? mediaRecorder : initMediaRecorder();
             recorder.start();
             enqueueSnackbar('开始录制', { variant: 'info', autoHideDuration: 1000 })
+            setWaitForUpload(true)
         } else {
             enqueueSnackbar('无效的媒体源，无法录制!', { variant: 'error', autoHideDuration: 2000 })
         }
@@ -270,7 +330,7 @@ function RecordVideoPage() {
      */
     function recordStop() {
         let video = videoEle.current;
-        console.log('timerId: %o, timeCount: %o, startTime: %o', timerId, timeCount, startTime.current);
+        console.log('timerId: %o, timeCount: %o, startTime: %o', timerIdRef.current, timeCountRef.current, startTime.current);
         if (video && timerIdRef.current != defaultTimerId) {
             console.log('停止计时')
             video.pause();
@@ -385,8 +445,19 @@ function RecordVideoPage() {
      * @param {Event} ev 
      */
     function previewBtnClicked(ev) {
-        // TODO 此按钮最好去掉，或者换成播放页面内媒体
-        enqueueSnackbar('跳转到预览', { variant: 'info', autoHideDuration: 2000 })
+        //// 此按钮最好去掉，或者换成播放页面内媒体
+        if (uploadInfo.videoPath) {
+            if (waitForUpload) {
+                showAlertDialog('提示', '当前新录制的文件尚未上传，是否确认放弃内容进入预览页？可先点击完成按钮，上传内容', (ok) => {
+                    if (ok) { router.push({ pathname: '/watchvideo', query: { code: code } }); setShowDialog(false) }
+                    else { setShowDialog(false) }
+                })
+            } else {
+                router.push({ pathname: '/watchvideo', query: { code: code } }); setShowDialog(false)
+            }
+        } else {
+            enqueueSnackbar('尚未上传音频内容，请先录制并上传', { variant: 'warning', autoHideDuration: 2000 })
+        }
     }
 
     /**
@@ -394,6 +465,9 @@ function RecordVideoPage() {
      */
     function finishBtnClicked() {
         if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile != null) {
+            if (!waitForUpload) {
+                enqueueSnackbar('当前录制文件已上传，无需重复上传！', { variant: 'warning', autoHideDuration: 2000 }); return;
+            }
             // 上传视频，并弹窗提示
             setLoading(true);
             enqueueSnackbar('待上传的文件:' + videoFile.size, { variant: 'info', autoHideDuration: 2000 });
@@ -408,7 +482,7 @@ function RecordVideoPage() {
                 setLoading(false);
             });
         } else {
-            enqueueSnackbar('请等待当前录制完成', { variant: 'warning', autoHideDuration: 1000 })
+            enqueueSnackbar('尚未录制，或等待或者点击停止按钮以结束当前录制', { variant: 'warning', autoHideDuration: 1000 })
         }
     }
 
