@@ -471,6 +471,9 @@ function RecordAudioPage() {
      */
     function finishBtnClicked() {
         if (recordBtnState == RecordBtnStateEnum.RETAKE && audioFile != null) {
+            if (!waitForUpload) {
+                enqueueSnackbar('当前录制文件已上传，无需重复上传！', { variant: 'warning', autoHideDuration: 2000 }); return;
+            }
             // 上传音频文件，并弹窗提示
             setLoading(true);
             enqueueSnackbar('待上传的文件:' + audioFile.size, { variant: 'info', autoHideDuration: 2000 });
@@ -487,7 +490,7 @@ function RecordAudioPage() {
                 setLoading(false);
             });
         } else {
-            enqueueSnackbar('请先等待或者点击停止按钮以结束当前录制，', { variant: 'warning', autoHideDuration: 1000 })
+            enqueueSnackbar('尚未录制，或等待或者点击停止按钮以结束当前录制，', { variant: 'warning', autoHideDuration: 2000 })
         }
     }
 
