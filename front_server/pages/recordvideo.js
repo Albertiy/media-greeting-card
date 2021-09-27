@@ -467,14 +467,17 @@ function RecordVideoPage() {
     function finishBtnClicked() {
         if (recordBtnState == RecordBtnStateEnum.RETAKE && videoFile != null) {
             if (!waitForUpload) {
-                enqueueSnackbar('当前录制文件已上传，无需重复上传！', { variant: 'warning', autoHideDuration: 2000 }); return;
+                enqueueSnackbar('当前录制文件已上传，无需重复上传！', { variant: 'warning', autoHideDuration: 2000 });
+                return;
             }
             // 上传视频，并弹窗提示
             setLoading(true);
             enqueueSnackbar('待上传的文件:' + videoFile.size, { variant: 'info', autoHideDuration: 2000 });
-            FileService.uploadGreetings(videoFile, null, progressUpload).then((result) => {
+            FileService.uploadGreetings(code, videoFile, null, progressUpload).then((result) => {
                 setProgressValue(1);
-                showAlertDialog('提示', '上传成功！')
+                showAlertDialog('提示', '文件上传成功！')
+                getInfoByCode(code);
+                setWaitForUpload(false);
             }).catch((err) => {
                 console.log(err)
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
