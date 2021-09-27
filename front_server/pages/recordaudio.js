@@ -190,10 +190,11 @@ function RecordAudioPage() {
      */
     function initMediaSource() {
         let constraints = {
-            audio: {
-                noiseSuppression: true,
-                echoCancellation: true
-            }
+            audio: true
+            // {
+            //     noiseSuppression: true,
+            //     echoCancellation: true
+            // }
         }
         navigator.mediaDevices.getUserMedia(constraints)
             .then(function (stream) {

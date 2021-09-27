@@ -190,10 +190,11 @@ function RecordVideoPage() {
      */
     function initMediaSource() {
         let constraints = {
-            audio: {
-                noiseSuppression: true,
-                echoCancellation: true
-            },
+            audio: true,
+            // {
+            //     noiseSuppression: true,
+            //     echoCancellation: true
+            // },
             video: { width: 800, height: 800 }
         }
         navigator.mediaDevices.getUserMedia(constraints)
