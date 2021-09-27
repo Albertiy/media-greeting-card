@@ -125,7 +125,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                             console.log('|| 临时路径:' + videoFile.path);
                                             let videoRelPath = tools.expandFileName((tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)), null, '-' + code + '-' + uuidV1());
                                             // videoRelPath += tools.getExtName(videoFile.name)
-                                            dbVideoPath = path.join(AUDIO_ROOT, audioRelPath);
+                                            dbVideoPath = path.join(VIDEO_ROOT, videoRelPath);
                                             console.log('|| 数据库存储路径:' + dbVideoPath);
                                             let videoAbsPath = path.resolve(rootUrl, VIDEO_ROOT, videoRelPath)
                                             console.log('|| 存储路径:' + videoAbsPath)
@@ -139,6 +139,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         if (oldVideoPath) { oldVideoPath = path.resolve(rootUrl, oldVideoPath); fs.rmSync(oldVideoPath, { force: true }); }
                                         res.send(new ReqBody(1, "上传成功"));
                                     }).catch((err) => {
+                                        console.log(err);
                                         res.send(new ReqBody(0, null, err));
                                     });
                                 }
@@ -146,9 +147,11 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                 res.send(new ReqBody(0, null, '文件上传失败'))
                             }
                         }).catch((err) => {
+                            console.log(err);
                             res.send(new ReqBody(0, null, err))
                         });
                     } catch (e) {
+                        console.log(e);
                         res.send(new ReqBody(0, null, '参数格式错误'))
                         return;
                     }
