@@ -163,7 +163,8 @@ function RecordAudioPage() {
      */
     function initRemoteAudio(remoteUrl) {
         setRecordBtnState(RecordBtnStateEnum.RETAKE);
-        setAudioSource(value => { setShowAudio(true); return remoteUrl; });
+        setAudioSource(remoteUrl);
+        setShowAudio(true);
     }
 
     useEffect(() => {

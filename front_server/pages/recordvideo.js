@@ -163,7 +163,8 @@ function RecordVideoPage() {
      */
     function initRemoteVideo(remoteUrl) {
         setRecordBtnState(RecordBtnStateEnum.RETAKE);
-        setVideoSource(value => { setShowVideo(true); return remoteUrl; });
+        setVideoSource(remoteUrl);
+        setShowVideo(true);
     }
 
     useEffect(() => {
