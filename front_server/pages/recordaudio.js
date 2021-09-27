@@ -480,7 +480,7 @@ function RecordAudioPage() {
             }
             // 上传音频文件，并弹窗提示
             setLoading(true);
-            enqueueSnackbar('待上传的文件:' + audioFile.size, { variant: 'info', autoHideDuration: 2000 });
+            enqueueSnackbar('待上传的文件:' + Tools.returnFileSize(audioFile.size), { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(code, null, audioFile, progressUpload).then((result) => {
                 setProgressValue(1);
                 showAlertDialog('提示', '文件上传成功！')

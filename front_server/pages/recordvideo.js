@@ -211,7 +211,7 @@ function RecordVideoPage() {
                 else if (err.name == 'NotAllowedError')
                     enqueueSnackbar('请授权当前页面录音与录像权限', { variant: 'error', autoHideDuration: 2000 })
                 else if (err.name == 'NotReadableError')
-                    enqueueSnackbar('摄像头与麦克风可能被其他应用占用，请更换浏览器', { variant: 'error', autoHideDuration: 2000 })
+                    enqueueSnackbar('摄像头与麦克风可能被其他应用占用，请更换浏览器', { variant: 'error', autoHideDuration: 10000 })
                 else {
                     enqueueSnackbar('' + err.name, { variant: 'error', autoHideDuration: 10000 })
                 }
@@ -283,7 +283,7 @@ function RecordVideoPage() {
             console.log('计时器启动：id = ' + id)
             setTimerId(id);
         } else {
-            enqueueSnackbar('video元素ref为空')
+            enqueueSnackbar('video元素ref为空', { variant: 'warning', autoHideDuration: 1000 })
         }
     }
 
@@ -472,7 +472,7 @@ function RecordVideoPage() {
             }
             // 上传视频，并弹窗提示
             setLoading(true);
-            enqueueSnackbar('待上传的文件:' + videoFile.size, { variant: 'info', autoHideDuration: 2000 });
+            enqueueSnackbar('待上传的文件:' + Tools.returnFileSize(videoFile.size), { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(code, videoFile, null, progressUpload).then((result) => {
                 setProgressValue(1);
                 showAlertDialog('提示', '文件上传成功！')

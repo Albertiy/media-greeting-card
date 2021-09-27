@@ -120,11 +120,11 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                     // 视频
                                     if (videoFileIdx != -1) {
                                         let videoFile = files[keys[videoFileIdx]];
-                                        console.log(videoFile);
+                                        console.log(`|| 文件信息：${videoFile.name} ${videoFile.type} ${videoFile.size} ${videoFile.lastModifiedDate}`);
                                         if (videoFile && videoFile.size > 0) {  // 保存视频文件
                                             console.log('|| 临时路径:' + videoFile.path);
-                                            let videoRelPath = (tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)) + '-' + code + '-' + uuidV1();
-                                            videoRelPath += tools.getExtName(videoFile.name)
+                                            let videoRelPath = tools.expandFileName((tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)), null, '-' + code + '-' + uuidV1());
+                                            // videoRelPath += tools.getExtName(videoFile.name)
                                             dbVideoPath = path.join(AUDIO_ROOT, audioRelPath);
                                             console.log('|| 数据库存储路径:' + dbVideoPath);
                                             let videoAbsPath = path.resolve(rootUrl, VIDEO_ROOT, videoRelPath)
