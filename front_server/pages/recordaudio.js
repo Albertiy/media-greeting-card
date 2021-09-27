@@ -201,7 +201,7 @@ function RecordAudioPage() {
                 // stream:+ stream.toString()
                 enqueueSnackbar('成功获取媒体源', { variant: 'success', autoHideDuration: 850 })
                 setMediaStream(stream);
-                if (!showAudio)  // 若当前audio元素已显示，说明加载了远程视频源
+                if (!audioEle.current)  // 若当前audio元素已显示，说明加载了远程视频源
                     setAudioSource(stream);
             })
             .catch(function (err) {
