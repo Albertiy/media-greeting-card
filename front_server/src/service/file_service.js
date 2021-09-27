@@ -25,8 +25,8 @@ export function uploadGreetings(code, videoFile, audioFile, uploadProgressCallba
         } else {
             const data = new FormData();
             data.append('code', code);
-            data.append('videoFile', videoFile);
-            data.append('audioFile', audioFile);
+            if (videoFile) data.append('videoFile', videoFile);
+            if (audioFile) data.append('audioFile', audioFile);
             FileAPI.uploadGreetingFiles(data, uploadProgressCallback).then(res => {
                 resolve(res)
             }).catch(err => {

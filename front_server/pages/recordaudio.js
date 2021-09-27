@@ -12,6 +12,8 @@ import TitleBar from "../src/component/title_bar";
 import * as FileService from '../src/service/file_service';
 import * as Tools from "../src/tool/tools";
 import styles from '../styles/recordaudio.module.scss';
+import Uploadfiles from '../src/model/uploadfiles';
+import { route } from 'next/dist/server/router';
 
 const RecordBtnStateEnum = {
     START: { title: '录制', icon: mdiMicrophone },
@@ -62,6 +64,7 @@ const audioMimeList = [
 let selectedMime = audioMimeList[0];
 
 const defaultProgressValue = 0;
+const defaultWaitForUpload = false;
 
 /**
  * Ref模仿State的回调函数
@@ -117,6 +120,7 @@ function RecordAudioPage() {
     const [audioFile, setAudioFile] = useState(defualtAudioFile);
 
     const [progressValue, setProgressValue] = useState(defaultProgressValue);
+    const [waitForUpload, setWaitForUpload] = useState(defaultWaitForUpload);
 
     useEffect(() => {
         console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
@@ -128,10 +132,10 @@ function RecordAudioPage() {
             setCode(code);
             getInfoByCode(code);
         }
-        return () => {
-            if (routerRefreshCount.current > 0) setRouterLoaded(true);
-            routerRefreshCount.current += 1;
-        }
+
+        if (routerRefreshCount.current > 0) setRouterLoaded(true);
+        routerRefreshCount.current += 1;
+
     }, [router.query])
 
     /**
@@ -314,6 +318,7 @@ function RecordAudioPage() {
             let recorder = mediaRecorder.current ? mediaRecorder.current : initMediaRecorder();
             recorder.start();
             enqueueSnackbar('开始录制', { variant: 'info', autoHideDuration: 1000 })
+            setWaitForUpload(true);
         } else {
             enqueueSnackbar('无效的媒体源，无法录制!', { variant: 'error', autoHideDuration: 2000 })
         }
@@ -446,8 +451,19 @@ function RecordAudioPage() {
      * @param {Event} ev 
      */
     function previewBtnClicked(ev) {
-        // TODO 此按钮最好去掉，或者换成播放页面内媒体
-        enqueueSnackbar('跳转到预览', { variant: 'info', autoHideDuration: 2000 })
+        // 此按钮最好去掉，或者换成播放页面内媒体
+        if (uploadInfo.audioPath) {
+            if (waitForUpload) {
+                showAlertDialog('提示', '当前新录制的文件尚未上传，是否确认放弃内容进入预览页？可先点击完成按钮，上传内容', (ok) => {
+                    if (ok) { router.push({ pathname: '/watchaudio', query: { code: code } }); setShowDialog(false) }
+                    else { setShowDialog(false) }
+                })
+            } else {
+                router.push({ pathname: '/watchaudio', query: { code: code } }); setShowDialog(false)
+            }
+        } else {
+            enqueueSnackbar('尚未上传音频内容，请先录制并上传', { variant: 'warning', autoHideDuration: 2000 })
+        }
     }
 
     /**
@@ -461,6 +477,8 @@ function RecordAudioPage() {
             FileService.uploadGreetings(code, null, audioFile, progressUpload).then((result) => {
                 setProgressValue(1);
                 showAlertDialog('提示', '上传成功！')
+                getInfoByCode(code);
+                setWaitForUpload(false);
             }).catch((err) => {
                 console.log(err)
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
@@ -469,7 +487,7 @@ function RecordAudioPage() {
                 setLoading(false);
             });
         } else {
-            enqueueSnackbar('请等待当前录制完成', { variant: 'warning', autoHideDuration: 1000 })
+            enqueueSnackbar('请先等待或者点击停止按钮以结束当前录制，', { variant: 'warning', autoHideDuration: 1000 })
         }
     }
 

@@ -24,21 +24,30 @@ function MethodPage() {
             enqueueSnackbar('code: ' + code, { variant: 'info', autoHideDuration: 1000 })
             setCode(code);
         }
-        return () => {
-            if (routerRefreshCount.current > 0) setRouterLoaded(true);
-            routerRefreshCount.current += 1;
-        }
+        if (routerRefreshCount.current > 0) setRouterLoaded(true);
+        routerRefreshCount.current += 1;
     }, [router.query])
 
-    function chooseAudio() {
-        enqueueSnackbar('选择了音频，即将跳转到音频录制页...', { variant: 'info', autoHideDuration: 1000 })
-        router.push({ pathname: '/recordaudio', query: { code } })
+    function checkCode() {
+        if (routerLoaded && !code) {
+            enqueueSnackbar('无效的code，请重新扫码', { variant: 'error', autoHideDuration: 2000 })
+            return false;
+        }
+        return true;
+    }
 
+    function chooseAudio() {
+        if (checkCode()) {
+            enqueueSnackbar('选择了音频，即将跳转到音频录制页...', { variant: 'info', autoHideDuration: 1000 })
+            router.push({ pathname: '/recordaudio', query: { code } })
+        }
     }
 
     function chooseVideo() {
-        enqueueSnackbar('选择了视频，即将跳转到视频录制页...', { variant: 'info', autoHideDuration: 1000 })
-        router.push({ pathname: '/recordvideo', query: { code } })
+        if (checkCode()) {
+            enqueueSnackbar('选择了视频，即将跳转到视频录制页...', { variant: 'info', autoHideDuration: 1000 })
+            router.push({ pathname: '/recordvideo', query: { code } })
+        }
     }
 
     return (

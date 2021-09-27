@@ -45,10 +45,8 @@ export default function MessagePage() {
             setCode(code);
             getInfoByCode(code);
         }
-        return () => {
-            if (routerRefreshCount.current > 0) setRouterLoaded(true);
-            routerRefreshCount.current += 1;
-        }
+        if (routerRefreshCount.current > 0) setRouterLoaded(true);
+        routerRefreshCount.current += 1;
     }, [router.query])
 
     /**

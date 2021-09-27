@@ -40,10 +40,9 @@ function EntryPage() {
             setCode(code);
             getInfoByCode(code);
         }
-        return () => {
-            if (routerRefreshCount.current > 0) setRouterLoaded(true);
-            routerRefreshCount.current += 1;
-        }
+
+        if (routerRefreshCount.current > 0) { setRouterLoaded(true); console.log('路由参数已加载') }
+        routerRefreshCount.current += 1;
     }, [router.query])
 
 
