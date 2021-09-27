@@ -39,8 +39,10 @@
 .cover_text {
   position: absolute;
   left: 0;
-  font-size: 16px;
+  font-size: 1.125rem;
   margin: 10px 0 10px;
+  color: $color-from-to-text;
+  font-weight: 500;
 }
 
 .text_to {

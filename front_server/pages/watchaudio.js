@@ -65,6 +65,8 @@ function WatchAudio() {
         FileService.getUploadInfo(code).then((result) => {
             console.log('结果：%o', result);
             setUploadInfo(result);
+            if (result.text_from) setTextFrom(result.text_from);
+            if (result.text_to) setTextTo(result.text_to);
             if (result.audioPath) {
                 let url = FileService.getFile(result.audioPath);
                 setFileURL(url);
