@@ -31,7 +31,7 @@ const defaultQueryId = '';
 const defaultIsLoading = false;
 const defaultDialog = { open: false, title: '提示', content: '确认' };
 const defaultQueryIdError = false;
-const defaultAntModalVisible = true;
+const defaultAntModalVisible = false;
 const defaultConfirmLoading = false;
 const defaultGenerateCount = 20;
 
