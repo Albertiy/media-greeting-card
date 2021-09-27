@@ -99,13 +99,12 @@ function updateText(code, textFrom, textTo) {
 function updateFile(code, videoPath, audioPath) {
     let data = [];
     let query = updateFileSql;
-    data.push(code);
     if (videoPath) { query += ' videoPath = ? '; data.push(videoPath) }
     if (audioPath) { if (videoPath && audioPath) query += ' , '; query += ' audioPath = ? '; data.push(audioPath) }
     query += 'where `uuid` = ?';
     data.push(code);
-    console.log('query: %o', query)
-    console.log('data: %o', data)
+    // console.log('query: %o', query)
+    // console.log('data: %o', data)
     return new Promise((resolve, reject) => {
         pool.query(query, data, (err, res, fields) => {
             if (err) {

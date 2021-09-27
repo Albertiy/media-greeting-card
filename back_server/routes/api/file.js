@@ -133,7 +133,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                             fs.renameSync(videoFile.path, videoAbsPath);
                                         }
                                     }
-                                    dbService.updateGreetingFiles(code, dbVideoPath, dbAudioPath).then((result) => {
+                                    dbService.updateGreetingFiles({ code, dbVideoPath, dbAudioPath }).then((result) => {
                                         // 删除旧文件
                                         if (oldAudioPath) fs.rmSync(oldAudioPath, { force: true });
                                         if (oldVideoPath) fs.rmSync(oldVideoPath, { force: true });
