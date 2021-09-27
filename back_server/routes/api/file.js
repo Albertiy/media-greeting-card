@@ -108,7 +108,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         console.log(`|| 文件信息：${audioFile.name} ${audioFile.type} ${audioFile.size} ${audioFile.lastModifiedDate}`);
                                         if (audioFile && audioFile.size > 0) {  // 保存音频文件
                                             console.log('|| 临时路径:' + audioFile.path);
-                                            let audioRelPath = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + uuidV1());
+                                            let audioRelPath = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + code + '-' + uuidV1());
                                             dbAudioPath = path.join(AUDIO_ROOT, audioRelPath);
                                             console.log('|| 数据库存储路径:' + dbAudioPath);
                                             let audioAbsPath = path.resolve(rootUrl, AUDIO_ROOT, audioRelPath)
@@ -123,7 +123,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         console.log(videoFile);
                                         if (videoFile && videoFile.size > 0) {  // 保存视频文件
                                             console.log('|| 临时路径:' + videoFile.path);
-                                            let videoRelPath = (tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)) + '-' + uuidV1();
+                                            let videoRelPath = (tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)) + '-' + code + '-' + uuidV1();
                                             videoRelPath += tools.getExtName(videoFile.name)
                                             dbVideoPath = path.join(AUDIO_ROOT, audioRelPath);
                                             console.log('|| 数据库存储路径:' + dbVideoPath);
@@ -135,8 +135,8 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                     }
                                     dbService.updateGreetingFiles({ code, dbVideoPath, dbAudioPath }).then((result) => {
                                         // 删除旧文件
-                                        if (oldAudioPath) fs.rmSync(oldAudioPath, { force: true });
-                                        if (oldVideoPath) fs.rmSync(oldVideoPath, { force: true });
+                                        if (oldAudioPath) { oldAudioPath = path.resolve(rootUrl, oldAudioPath); fs.rmSync(oldAudioPath, { force: true }); }
+                                        if (oldVideoPath) { oldVideoPath = path.resolve(rootUrl, oldVideoPath); fs.rmSync(oldVideoPath, { force: true }); }
                                         res.send(new ReqBody(1, "上传成功"));
                                     }).catch((err) => {
                                         res.send(new ReqBody(0, null, err));
