@@ -316,7 +316,7 @@ function RecordVideoPage() {
      */
     function recording() {
         if (mediaStream) {
-            let recorder = mediaRecorder ? mediaRecorder : initMediaRecorder();
+            let recorder = mediaRecorder.current ? mediaRecorder.current : initMediaRecorder();
             recorder.start();
             enqueueSnackbar('开始录制', { variant: 'info', autoHideDuration: 1000 })
             setWaitForUpload(true)
