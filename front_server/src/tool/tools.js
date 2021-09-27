@@ -300,7 +300,7 @@ export function formatDuration(seconds) {
 }
 
 /**
- * 后台直接下载文件，IOS 无效
+ * 后台直接下载文件，IOS 无效。若不传递download属性，则会在此页面中打开
  * @param {string} url 下载链接
  * @param {string} fileName 文件名
  */
@@ -309,7 +309,7 @@ export function download(url, fileName) {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = url;
-    a.download = fileName;
+    if (fileName) a.download = fileName;
     a.click();
     a.remove();
 }
