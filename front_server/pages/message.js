@@ -34,6 +34,7 @@ export default function MessagePage() {
     const [textTo, setTextTo] = useState(defaultTextTo);
     const textFromInput = useRef(defaultNoStyleInput);
     const textToInput = useRef(defaultNoStyleInput);
+    const [dirty, setDirty] = useState(false);
 
     useEffect(() => {
         console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
@@ -84,20 +85,28 @@ export default function MessagePage() {
 
     function nextBtnClicked() {
         if (uploadInfo) {
-            saveText().then((result) => {
-                enqueueSnackbar('文本保存成功！', { variant: 'success', autoHideDuration: 1000 })
-                if (uploadInfo.videoPath) {
-                    router.push({ pathname: '/recordvideo', query: { code } })
-                } else if (uploadInfo.audioPath) {
-                    router.push({ pathname: '/recordaudio', query: { code } })
-                } else {
-                    router.push({ pathname: '/method', query: { code } })
-                }
-            }).catch((err) => {
-                enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
-            });
+            if (!dirty) {
+                jump();
+            } else {
+                saveText().then((result) => {
+                    enqueueSnackbar('文本保存成功！', { variant: 'success', autoHideDuration: 1000 })
+                    jump();
+                }).catch((err) => {
+                    enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
+                });
+            }
         } else {
             enqueueSnackbar('无效的code，请重新扫码', { variant: 'error', autoHideDuration: 2000 })
+        }
+    }
+
+    function jump() {
+        if (uploadInfo.videoPath) {
+            router.push({ pathname: '/recordvideo', query: { code } })
+        } else if (uploadInfo.audioPath) {
+            router.push({ pathname: '/recordaudio', query: { code } })
+        } else {
+            router.push({ pathname: '/method', query: { code } })
         }
     }
 
@@ -114,10 +123,10 @@ export default function MessagePage() {
             <main className={styles.main}>
                 <div className={styles.logo}></div>
                 <LabelInput name='from' label='我是:'>
-                    <NoStyleInput className={styles.input} maxLength={20} defaultValue={textFrom} onChange={(ele) => { setTextFrom(ele.value) }} parentRef={textFromInput} />
+                    <NoStyleInput className={styles.input} maxLength={20} defaultValue={textFrom} onChange={(ele) => { setTextFrom(ele.value); setDirty(true); }} parentRef={textFromInput} />
                 </LabelInput>
                 <LabelInput name='to' label='送给:' style={{ marginTop: '10%' }}>
-                    <NoStyleInput className={styles.input} maxLength={20} defaultValue={textTo} onChange={(ele) => { setTextTo(ele.value) }} parentRef={textToInput} />
+                    <NoStyleInput className={styles.input} maxLength={20} defaultValue={textTo} onChange={(ele) => { setTextTo(ele.value); setDirty(true); }} parentRef={textToInput} />
                 </LabelInput>
                 <div className={styles.message_btn} onClick={nextBtnClicked}>
                     <div className={styles.logo2}></div>
