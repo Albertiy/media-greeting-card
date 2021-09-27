@@ -201,7 +201,7 @@ function RecordAudioPage() {
                 // stream:+ stream.toString()
                 enqueueSnackbar('成功获取媒体源', { variant: 'success', autoHideDuration: 850 })
                 setMediaStream(stream);
-                if (!audioEle.current)  // 若当前audio元素已显示，说明加载了远程视频源
+                if (!audioEle.current.src)  // 若当前audio元素已显示，说明加载了远程视频源
                     setAudioSource(stream);
             })
             .catch(function (err) {
@@ -285,7 +285,7 @@ function RecordAudioPage() {
             console.log('计时器启动：id = ' + id)
             setTimerId(id);
         } else {
-            enqueueSnackbar('audio元素ref为空')
+            enqueueSnackbar('audio元素ref为空', { variant: 'warning', autoHideDuration: 1000 })
         }
     }
 
