@@ -201,7 +201,8 @@ function RecordVideoPage() {
                 // alert('success get media stream')
                 enqueueSnackbar('成功获取媒体源', { variant: 'success', autoHideDuration: 850 })
                 setMediaStream(stream);
-                setVideoSource(stream);
+                if (!showVideo) // 若当前video元素已显示，说明加载了远程视频源
+                    setVideoSource(stream);
             })
             .catch(function (err) {
                 // alert('fail to get media stream: ' + err.toString());
