@@ -62,7 +62,7 @@ function QrManagePage(props) {
     const tableColumns = [
         {
             title: '',
-            width: 1,
+            width: 20,
             align: 'center',
             render: (text, record, index) => `${index + 1}`,
         }, {
@@ -75,7 +75,7 @@ function QrManagePage(props) {
             title: '创建时间',
             dataIndex: 'create_time',
             key: 'create_time',
-            width: 100,
+            width: 75,
             align: 'center',
             render: (text, record, index) => { return dayjs(text).format('YYYY-MM-DD HH:mm:ss') }
         }, {
@@ -266,7 +266,7 @@ function QrManagePage(props) {
                     </div>
                 </div>
                 <div className={styles.tableContainer}>
-                    <AntTable className={styles.table} rowKey="id" columns={tableColumns} dataSource={recordsList} loading={isLoading} content pagination={{ ...tablePagination }} />
+                    <AntTable id="qrmanage_table" className={styles.table} rowKey="id" columns={tableColumns} dataSource={recordsList} loading={isLoading} content pagination={{ ...tablePagination }} />
                 </div>
             </div>
         </main >

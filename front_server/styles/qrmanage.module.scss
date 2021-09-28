@@ -94,3 +94,49 @@
   align-items: center;
   justify-content: center;
 }
+
+.table > :first-child {
+  height: 100%;
+}
+
+.table > :first-child > :first-child {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.table > :first-child > :first-child > :first-child {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.table > :first-child > :first-child > :first-child > :first-child {
+  height: 100%;
+}
+
+.table
+  > :first-child
+  > :first-child
+  > :first-child
+  > :first-child
+  > :first-child {
+  height: 100%;
+}
+
+.table table {
+  // height: 100%;
+  position: relative;
+}
+
+.table thead {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+}
+
+.table tbody {
+  // width: 100%;
+  // height: calc(100% - 100px);
+  // position: absolute;
+  overflow-y: auto;
+}
