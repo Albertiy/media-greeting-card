@@ -514,7 +514,6 @@ function RecordAudioPage() {
         }).catch((err) => {
             enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
         });
-
     }
 
     /**
@@ -540,18 +539,10 @@ function RecordAudioPage() {
      * @param {function} [handleClose] 
      */
     function showAlertDialog(title, content, handleClose) {
-        // console.log(title)
-        // console.log(content)
-        // console.log(handleClose)
-
         setDialogTitle(value => title || defaultDialog.title)
         setDialogContent(value => content || defaultDialog.content)
         setDialogHandleClose(value => handleClose || defaultHandleClose)
         setShowDialog(true)
-
-        // console.log(dialogTitle)
-        // console.log(dialogContent)
-        // console.log(dialogHandleClose)
     }
 
     return (
@@ -585,7 +576,7 @@ function RecordAudioPage() {
                     <div className={styles.btn}>
                         <div className={styles.icon} onClick={finishBtnClicked}>
                             <Icon path={mdiCheckBold} size={1} /></div>
-                        <div>完成</div>
+                        <div>提交</div>
                     </div>
                 </div>
                 <div className={styles.info}>

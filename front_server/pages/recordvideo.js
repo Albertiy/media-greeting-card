@@ -65,6 +65,7 @@ let selectedMime = videoMimeList[0];
 
 const defaultProgressValue = 0;
 const defaultWaitForUpload = false;
+const defaultIsLocked = false;
 
 /**
  * Ref模仿State的回调函数
@@ -122,6 +123,9 @@ function RecordVideoPage() {
     const [progressValue, setProgressValue] = useState(defaultProgressValue);
     const [waitForUpload, setWaitForUpload] = useState(defaultWaitForUpload);
 
+    const [isLocked, setIsLocked] = useState(defaultIsLocked);
+    const [remoteFileUrl, setRemoteFileUrl] = useState(defaultFileURL);
+
     useEffect(() => {
         console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
         let params = router.query;
@@ -148,7 +152,9 @@ function RecordVideoPage() {
             console.log('结果：%o', result);
             setUploadInfo(result);
             if (result.videoPath) {
-                initRemoteVideo(FileService.getFile(result.videoPath));
+                let remoteFileUrl = FileService.getFile(result.videoPath);
+                initRemoteVideo(remoteFileUrl);
+                setRemoteFileUrl(remoteFileUrl);
             } else {
                 console.log('当前尚未上传过视频文件')
             }
@@ -492,6 +498,14 @@ function RecordVideoPage() {
         }
     }
 
+    function lockBtnClicked() {
+        FileService.lock(code).then((result) => {
+            enqueueSnackbar('已锁定，后续扫码将直接进入观看页面', { variant: 'success', autoHideDuration: 2000 })
+        }).catch((err) => {
+            enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
+        });
+    }
+
     /**
      * axios 进度回调函数
      * @param {*} progressEvent 
@@ -515,19 +529,10 @@ function RecordVideoPage() {
      * @param {function} [handleClose] 
      */
     function showAlertDialog(title, content, handleClose) {
-        // console.log(title)
-        // console.log(content)
-        // console.log(handleClose)
-
         setDialogTitle(value => title || defaultDialog.title)
         setDialogContent(value => content || defaultDialog.content)
         setDialogHandleClose(value => handleClose || defaultHandleClose)
         setShowDialog(true)
-
-        // console.log(dialogTitle)
-        // console.log(dialogContent)
-        // console.log(dialogHandleClose)
-
     }
 
     return (
@@ -565,7 +570,7 @@ function RecordVideoPage() {
                     <div className={styles.btn}>
                         <div className={styles.icon} onClick={finishBtnClicked}>
                             <Icon path={mdiCheckBold} size={1} /></div>
-                        <div>完成</div>
+                        <div>提交</div>
                     </div>
                 </div>
                 <div className={styles.info}>
@@ -575,6 +580,11 @@ function RecordVideoPage() {
                     {/* {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
                         <Icon path={mdiDownload} size={1}></Icon>
                     </div>} */}
+                    {!waitForUpload && remoteFileUrl && !isLocked && (
+                        <div className={styles.float_lock} title="锁定" onClick={lockBtnClicked}>
+                            <Icon path={mdiLock} size={1}></Icon>
+                        </div>
+                    )}
                 </div>
             </main>
             <footer>
