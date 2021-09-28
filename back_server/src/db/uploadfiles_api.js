@@ -3,7 +3,7 @@ const ConnPool = require('./conn_pool')
 const pool = ConnPool.getPool();
 
 const addMultipleSql = 'insert into uploadfiles(uuid, record_id) values ?';
-const setLockSql = 'update uploadfiles set isLocked = ? where id = ?';
+const setLockSql = 'update uploadfiles set `isLocked` = ? where `uuid` = ?';
 const getByCodeSql = 'SELECT * FROM heka.uploadfiles where uuid = ?';
 const updateTextSql = 'update heka.`uploadfiles` set `text_from`=?, `text_to`=? where `uuid` = ?';
 const updateFileSql = 'update heka.`uploadfiles` set '; // where `uuid` = ?
@@ -33,13 +33,13 @@ function addMultiple(codes, recordId) {
 
 /**
  * 更新锁定状态
- * @param {number} id //where `uuid` = ?
+ * @param {string} uuid //where `uuid` = ?
  * @param {boolean} lock 
  * @returns 
  */
-function setLock(id, lock) {
+function setLock(uuid, lock) {
     return new Promise((resolve, reject) => {
-        pool.query(setLockSql, [lock, id], (err, res, fields) => {
+        pool.query(setLockSql, [lock, uuid], (err, res, fields) => {
             if (err) {
                 console.log(err)
                 reject(err)

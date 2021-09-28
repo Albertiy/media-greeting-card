@@ -97,17 +97,17 @@ function getRecords(params) {
 
 /**
  * 设置上锁状态
- * @param {number} id 
+ * @param {string} uuid 
  * @param {boolean} lock 
  * @returns 
  */
-function setLock(id, lock) {
+function setLock(uuid, lock) {
     return new Promise((resolve, reject) => {
-        UploadfilesAPI.setLock(id, lock).then((result) => {
+        UploadfilesAPI.setLock(uuid, lock).then((result) => {
             if (result.affectedRows > 0)
                 resolve(result)
             else
-                reject('无效的id')
+                reject('无效的code')
         }).catch((err) => {
             reject(err)
         });

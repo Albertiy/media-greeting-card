@@ -66,13 +66,11 @@ router.get('/records', function (req, res, next) {
 })
 
 router.post('/lock', function (req, res, next) {
-    let { id, lock } = req.body;
-    if (id === undefined || lock === undefined) {
+    let { code, lock } = req.body;
+    if (code === undefined || lock === undefined) {
         res.send(new ReqBody(0, null, '缺少必要参数'))
     } else {
-        id = parseInt(id);
-        lock = Boolean(lock);
-        dbService.setLock(id, lock).then((result) => {
+        dbService.setLock(code, lock).then((result) => {
             res.send(new ReqBody(1, result))
         }).catch((err) => {
             res.send(new ReqBody(0, null, err))
