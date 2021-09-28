@@ -1,5 +1,5 @@
 import { LinearProgress } from '@material-ui/core';
-import { mdiCheckBold, mdiDownload, mdiMicrophone, mdiPlay, mdiRefresh, mdiStop } from '@mdi/js';
+import { mdiCheckBold, mdiDownload, mdiMicrophone, mdiPlay, mdiRefresh, mdiStop, mdiLock } from '@mdi/js';
 import Icon from "@mdi/react";
 import dayjs from 'dayjs';
 import Head from "next/head";
@@ -65,6 +65,7 @@ let selectedMime = audioMimeList[0];
 
 const defaultProgressValue = 0;
 const defaultWaitForUpload = false;
+const defaultIsLocked = false;
 
 /**
  * Ref模仿State的回调函数
@@ -122,6 +123,9 @@ function RecordAudioPage() {
     const [progressValue, setProgressValue] = useState(defaultProgressValue);
     const [waitForUpload, setWaitForUpload] = useState(defaultWaitForUpload);
 
+    const [isLocked, setIsLocked] = useState(defaultIsLocked);
+    const [remoteFileUrl, setRemoteFileUrl] = useState(defaultFileURL);
+
     useEffect(() => {
         console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
         let params = router.query;
@@ -148,10 +152,13 @@ function RecordAudioPage() {
             console.log('结果：%o', result);
             setUploadInfo(result);
             if (result.audioPath) {
-                initRemoteAudio(FileService.getFile(result.audioPath));
+                let remoteFileUrl = FileService.getFile(result.audioPath);
+                initRemoteAudio(remoteFileUrl);
+                setRemoteFileUrl(remoteFileUrl);
             } else {
                 console.log('当前尚未上传过音频文件')
             }
+            setIsLocked(result.isLocked);
         }).catch((err) => { // 说明code无效，此时UploadInfo为空
             enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
         });
@@ -486,7 +493,7 @@ function RecordAudioPage() {
             enqueueSnackbar('待上传的文件:' + Tools.returnFileSize(audioFile.size), { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(code, null, audioFile, progressUpload).then((result) => {
                 setProgressValue(1);
-                showAlertDialog('提示', '文件上传成功！')
+                showAlertDialog('提示', '文件上传成功！\n可点击锁定按钮以锁定修改，后续扫码将直接进入观看页面，输入密码方可编辑')
                 getInfoByCode(code);
                 setWaitForUpload(false);
             }).catch((err) => {
@@ -499,6 +506,15 @@ function RecordAudioPage() {
         } else {
             enqueueSnackbar('尚未录制，或等待或者点击停止按钮以结束当前录制', { variant: 'warning', autoHideDuration: 2000 })
         }
+    }
+
+    function lockBtnClicked() {
+        FileService.lock(code).then((result) => {
+            enqueueSnackbar('已锁定，后续扫码将直接进入观看页面', { variant: 'success', autoHideDuration: 2000 })
+        }).catch((err) => {
+            enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
+        });
+
     }
 
     /**
@@ -575,11 +591,16 @@ function RecordAudioPage() {
                 <div className={styles.info}>
                     <div>时长：{Tools.formatDuration(timeCount) + '/' + Tools.formatDuration(MAX_RECORD_DURATION)}</div>
                 </div>
-                {/* <div className={styles.float_bar}>
-                    {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
+                <div className={styles.float_bar}>
+                    {/* {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
                         <Icon path={mdiDownload} size={1}></Icon>
-                    </div>}
-                </div> */}
+                    </div>} */}
+                    {!waitForUpload && remoteFileUrl && !isLocked && (
+                        <div className={styles.float_lock} title="锁定" onClick={lockBtnClicked}>
+                            <Icon path={mdiLock} size={1}></Icon>
+                        </div>
+                    )}
+                </div>
             </main>
             <footer>
             </footer>

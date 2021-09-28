@@ -160,3 +160,9 @@
   background-color: $color-download-background;
   margin-top: 10px;
 }
+
+.float_lock {
+  @extend .float_btn;
+  background-color: rgb(81, 177, 255);
+  margin-top: 10px;
+}

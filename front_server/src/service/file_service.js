@@ -74,3 +74,17 @@ export function uploadGreetingText(code, textFrom, textTo) {
     })
 
 }
+
+export function lock(code) {
+    return new Promise((resolve, reject) => {
+        if (!code) { reject('code不能为空') }
+        else {
+            FileAPI.setLockState(code, true).then((result) => {
+                resolve(result)
+            }).catch((err) => {
+                reject(err)
+            });
+        }
+    })
+
+}
