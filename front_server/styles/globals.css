@@ -15,4 +15,32 @@ a {
   box-sizing: border-box;
 }
 
+/** 滚动条的背景 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 12px;
+  background-color: #fff;
+}
+
+/** 若要彻底隐藏滚动条，就用 display:none */
+
+/** 滚动条的把手 */
+::-webkit-scrollbar-thumb {
+  display: block;
+  min-height: 12px;
+  min-width: 8px;
+  border-radius: 6px;
+  background-color: rgb(217, 217, 217);
+}
+
+/** 悬浮滚动条上时的样式 */
+::-webkit-scrollbar-thumb:hover {
+  display: block;
+  min-height: 12px;
+  min-width: 8px;
+  border-radius: 6px;
+  background-color: rgb(159, 159, 159);
+}
+
+
 @import '../node_modules/antd//dist/antd.css';
