@@ -572,9 +572,9 @@ function RecordVideoPage() {
                     <div>时长：{Tools.formatDuration(timeCount) + '/' + Tools.formatDuration(MAX_RECORD_DURATION)}</div>
                 </div>
                 <div className={styles.float_bar}>
-                    {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
+                    {/* {fileURL && <div className={styles.float_download} title="下载" onClick={downloadBtnClicked}>
                         <Icon path={mdiDownload} size={1}></Icon>
-                    </div>}
+                    </div>} */}
                 </div>
             </main>
             <footer>

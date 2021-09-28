@@ -73,6 +73,7 @@ function WatchVideo() {
                 initRemoteVideo(url);
             } else {
                 console.log('当前尚未上传过视频文件')
+                enqueueSnackbar('当前尚未上传视频文件', { variant: 'info', autoHideDuration: 2000 })
             }
         }).catch((err) => { // 说明code无效，此时UploadInfo为空
             enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
