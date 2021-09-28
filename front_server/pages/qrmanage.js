@@ -101,16 +101,14 @@ function QrManagePage(props) {
             key: 'operation',
             width: 100,
             fixed: 'right',
-            render: (value, row, index) => {
-                return (
-                    <div className={styles.button_bar}>
-                        <Button type="primary" shape="round" size='middle' onClick={() => {
-                            let filePath = value.filePath;
-                            Tools.download(FileService.getFile(filePath), Tools.getFileName(filePath));
-                            enqueueSnackbar('下载', { variant: 'info', autoHideDuration: 2000 })
-                        }}><div className={styles.button}><Icon path={mdiDownload} size={0.75}></Icon>下载</div></Button>
-                    </div>
-                )
+            render: function renderOperations(value, row, index) {
+                return (<div className={styles.button_bar}>
+                    <Button type="primary" shape="round" size='middle' onClick={downloadQrBatch.bind(this, value)}>
+                        <div className={styles.button}>
+                            <Icon path={mdiDownload} size={0.75}></Icon>下载
+                        </div>
+                    </Button>
+                </div>)
             }
         }
     ]
@@ -188,8 +186,10 @@ function QrManagePage(props) {
         }
     }
 
-    function downloadQrBatch() {
-
+    function downloadQrBatch(value) {
+        let filePath = value.filePath;
+        Tools.download(FileService.getFile(filePath), Tools.getFileName(filePath));
+        enqueueSnackbar('下载', { variant: 'info', autoHideDuration: 2000 })
     }
 
     function onIdInputChange(ev) {
