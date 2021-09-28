@@ -1,5 +1,5 @@
 import { LinearProgress } from '@material-ui/core';
-import { mdiCamera, mdiCheckBold, mdiDownload, mdiPlay, mdiRefresh, mdiStop, mdiVideoOutline } from '@mdi/js';
+import { mdiCamera, mdiCheckBold, mdiDownload, mdiPlay, mdiRefresh, mdiStop, mdiVideoOutline, mdiLock } from '@mdi/js';
 import Icon from "@mdi/react";
 import dayjs from 'dayjs';
 import Head from "next/head";
