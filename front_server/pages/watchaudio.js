@@ -115,7 +115,7 @@ function WatchAudio() {
         let url = window.location.href;
         window.navigator.clipboard.writeText(url).then((result) => {
             enqueueSnackbar('已将网址复制到剪切板', { variant: 'success', autoHideDuration: 2000 })
-        }).catch((err) => {
+        }).catch((err) => { // 安卓会报错
             enqueueSnackbar('从浏览器中直接分享页面即可', { variant: 'info', autoHideDuration: 2000 })
         });
     }

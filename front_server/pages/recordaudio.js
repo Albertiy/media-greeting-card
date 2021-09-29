@@ -560,7 +560,7 @@ function RecordAudioPage() {
                     <img className={styles.cover_image} src="img/turntable.png" alt='封面图' title='封面'></img>
                 </div>
                 <div className={styles.audio_block}>
-                    <audio className={styles.audio} ref={audioEle} controls={true} style={showAudio ? {} : { display: 'none' }} playsInline={true} webkit-playsinline="true"></audio>
+                    <audio className={styles.audio} ref={audioEle} controls={true} style={showAudio ? {} : { display: 'none' }} playsInline={true} webkit-playsinline="true" muted={recordBtnState.title == RecordBtnStateEnum.STOP}></audio>
                 </div>
                 <div className={styles.btn_panel}>
                     <div className={styles.btn}>
