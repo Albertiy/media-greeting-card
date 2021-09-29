@@ -95,6 +95,21 @@ module.exports.getExtName = function (fileName) {
 }
 
 /**
+ * 替换文件后缀名   
+ * @param {string} fileName 
+ * @param {string} extName 带有点号的后缀名
+ * @returns 
+ */
+module.exports.replaceExtName = function (fileName, extName = '') {
+    var p = fileName.lastIndexOf('.');
+    if (p == -1) {  // 无后缀名
+        return fileName += extName;
+    } else {
+        return fileName.replace(/.[^/.]+$/, extName);
+    }
+}
+
+/**
  * 文件名拼接前后缀（文件名可能带有文件夹路径）
  * @param {string} fileName 
  * @param {string} [prefix] 前缀
