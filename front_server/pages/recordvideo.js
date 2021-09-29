@@ -553,7 +553,7 @@ function RecordVideoPage() {
             </header>
             <main className={styles.main}>
                 <div className={styles.cover}>
-                    <video className={styles.video} ref={videoEle} controls={true} style={showVideo ? {} : { display: 'none' }} playsInline={true} webkit-playsinline="true" muted={recordBtnState.title == RecordBtnStateEnum.STOP}></video>
+                    <video className={styles.video} ref={videoEle} controls={true} style={showVideo ? {} : { display: 'none' }} playsInline={true} webkit-playsinline="true" muted={recordBtnState == RecordBtnStateEnum.STOP}></video>
                     <div onClick={recordBtnClicked} style={showVideo ? { display: 'none' } : {}}>
                         <div>
                             <Icon className={styles.cover_icon} path={mdiVideoOutline} />
