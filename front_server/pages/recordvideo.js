@@ -183,6 +183,7 @@ function RecordVideoPage() {
         for (let i = 0; i < videoMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(videoMimeList[i].mimeType);
             console.log(`${videoMimeList[i].mimeType} : ${ok}`)
+            // alert(`${videoMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = videoMimeList[i].mimeType;
                 selectedMime = videoMimeList[i];
