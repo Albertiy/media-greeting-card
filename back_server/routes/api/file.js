@@ -122,11 +122,15 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                             fileService.mkdirsSync(path.dirname(audioAbsPath));   // 若目录不存在，创建之
                                             fs.renameSync(audioFile.path, audioAbsPath);
                                             let transformed = tools.expandFileName(tools.replaceExtName(audioAbsPath, AUDIO_EXTNAME), null, TEMP_SUFFIX);
+                                            console.log('|| 格式转换文件路径:' + transformed)
                                             // 异步执行，与接口返回结果无关，假设转换过程顺利完成。转换，重命名文件
                                             mediaService.audioToM4a(audioAbsPath, transformed).then((result) => {
-                                                fs.renameSync(audioAbsPath, tools.expandFileName(audioAbsPath, null, SOURCE_SUFFIX));
-                                                fs.renameSync(transformed, audioAbsPath);
+                                                let sourceAbsPath = tools.expandFileName(audioAbsPath, null, SOURCE_SUFFIX);
+                                                console.log('|| 源文件路径：' + sourceAbsPath)
+                                                fs.renameSync(audioAbsPath, sourceAbsPath);
+                                                fs.renameSync(transformed, tools.replaceExtName(audioAbsPath, AUDIO_EXTNAME));
                                             }).catch((err) => {
+                                                console.log(err);
                                                 console.log('音频文件格式转换失败！不进行文件替换工作');
                                             });
                                         }
@@ -146,11 +150,15 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                             fileService.mkdirsSync(path.dirname(videoAbsPath));   // 若目录不存在，创建之
                                             fs.renameSync(videoFile.path, videoAbsPath);
                                             let transformed = tools.expandFileName(tools.replaceExtName(videoAbsPath, VIDEO_EXTNAME), null, TEMP_SUFFIX);
+                                            console.log('|| 格式转换文件路径:' + transformed)
                                             // 异步执行，与接口返回结果无关，假设转换过程顺利完成。转换，重命名文件
                                             mediaService.videoToMp4(videoAbsPath, transformed).then((result) => {
-                                                fs.renameSync(videoAbsPath, tools.expandFileName(videoAbsPath, null, SOURCE_SUFFIX));
-                                                fs.renameSync(transformed, videoAbsPath);
+                                                let sourceAbsPath = tools.expandFileName(videoAbsPath, null, SOURCE_SUFFIX);
+                                                console.log('|| 源文件路径：' + sourceAbsPath)
+                                                fs.renameSync(videoAbsPath, sourceAbsPath);
+                                                fs.renameSync(transformed, tools.replaceExtName(videoAbsPath, VIDEO_EXTNAME));
                                             }).catch((err) => {
+                                                console.log(err);
                                                 console.log('视频文件格式转换失败！不进行文件替换工作');
                                             });
                                         }
