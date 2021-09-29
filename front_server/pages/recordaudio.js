@@ -56,7 +56,7 @@ const audioMimeList = [
         fileMime: 'audio/webm',
     },
     {
-        mime: '.mp3',
+        mime: '.m4a',
         mimeType: 'audio/mp4',  //;codecs=mp4a.40.2
         fileMime: 'audio/mp4',
     },
