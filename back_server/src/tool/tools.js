@@ -126,7 +126,7 @@ module.exports.expandFileName = function (fileName, prefix = '', suffix = '') {
     else step1 = fileName.slice(0, p) + suffix + fileName.slice(p);
     var d = Math.max(step1.lastIndexOf('/'), step1.lastIndexOf('\\'));
     if (d == -1) step2 = prefix + step1;
-    else step2 = step1.slice(0, d + 1) + suffix + step1.slice(d + 1);
+    else step2 = step1.slice(0, d + 1) + prefix + step1.slice(d + 1);
     return step2;
 }
 
