@@ -52,6 +52,11 @@ const FILE_NAME = 'greeting';
 const videoMimeList = [
     {
         mime: '.webm',
+        mimeType: 'video/webm; codecs="avc1.4d002a, opus"', // codecs=vp9 vp9 依赖于硬件解码。
+        fileMime: 'video/webm',
+    },
+    {
+        mime: '.webm',
         mimeType: 'video/webm; codecs="vp8, opus"', // codecs=vp9 vp9 依赖于硬件解码。
         fileMime: 'video/webm',
     },
@@ -183,7 +188,7 @@ function RecordVideoPage() {
         for (let i = 0; i < videoMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(videoMimeList[i].mimeType);
             console.log(`${videoMimeList[i].mimeType} : ${ok}`)
-            // alert(`${videoMimeList[i].mimeType} : ${ok}`)
+            alert(`${videoMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = videoMimeList[i].mimeType;
                 selectedMime = videoMimeList[i];
