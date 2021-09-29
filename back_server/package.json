@@ -16,6 +16,7 @@
     "file-stream-rotator": "^0.5.7",
     "fluent-ffmpeg": "^2.1.2",
     "formidable": "^1.2.2",
+    "glob": "^7.2.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "mysql": "^2.18.1",
