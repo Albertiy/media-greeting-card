@@ -50,6 +50,11 @@ const FILE_NAME = 'greeting';
 
 /** 视频MIME类型列表 */
 const videoMimeList = [
+    { // H.264 + ER AAC LC ，理应是最兼容的格式
+        mime: '.mp4',
+        mimeType: 'video/mp4; codecs="avc1.4d002a, mp4a.40.2"', // avc1.424028 后面的一串数字是profile版本，关于视频质量等信息
+        fileMime: 'video/mp4',
+    },
     {
         mime: '.webm',
         mimeType: 'video/webm; codecs="avc1.4d002a, opus"', // codecs=vp9 vp9 依赖于硬件解码。
@@ -59,11 +64,6 @@ const videoMimeList = [
         mime: '.webm',
         mimeType: 'video/webm; codecs="vp8, opus"', // codecs=vp9 vp9 依赖于硬件解码。
         fileMime: 'video/webm',
-    },
-    { // H.264 + ER AAC LC ，理应是最兼容的格式
-        mime: '.mp4',
-        mimeType: 'video/mp4; codecs="avc1.4d002a, mp4a.40.2"', // avc1.424028
-        fileMime: 'video/mp4',
     },
 ];
 let selectedMime = videoMimeList[0];
@@ -188,6 +188,7 @@ function RecordVideoPage() {
         for (let i = 0; i < videoMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(videoMimeList[i].mimeType);
             console.log(`${videoMimeList[i].mimeType} : ${ok}`)
+            //TODO 移除弹窗提示
             alert(`${videoMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = videoMimeList[i].mimeType;

@@ -51,14 +51,14 @@ const FILE_NAME = 'greeting';
 /** 音频MIME类型列表 */
 const audioMimeList = [
     {
-        mime: '.webm',
-        mimeType: 'audio/webm;codecs=opus', // codecs=vp9 vp9 依赖于硬件解码。
-        fileMime: 'audio/webm',
-    },
-    {
         mime: '.m4a',
         mimeType: 'audio/mp4',  //;codecs=mp4a.40.2
         fileMime: 'audio/mp4',
+    },
+    {
+        mime: '.webm',
+        mimeType: 'audio/webm;codecs=opus', // codecs=vp9 vp9 依赖于硬件解码。
+        fileMime: 'audio/webm',
     },
 ];
 let selectedMime = audioMimeList[0];
@@ -184,6 +184,8 @@ function RecordAudioPage() {
         for (let i = 0; i < audioMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(audioMimeList[i].mimeType);
             console.log(`${audioMimeList[i].mimeType} : ${ok}`)
+            //TODO 移除弹窗提示
+            alert(`${audioMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = audioMimeList[i].mimeType;
                 selectedMime = audioMimeList[i];
