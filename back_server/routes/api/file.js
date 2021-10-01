@@ -118,7 +118,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         const audioName = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + code + '-' + uuidV1());
                                         // 数据库中音频路径相对于根存储路径，此处替换格式转换后的文件扩展名
                                         audioDbPath = path.join(AUDIO_ROOT, tools.replaceExtName(audioName, AUDIO_EXTNAME));
-                                        console.log('|| 音频DB路径:' + audDioDbPath);
+                                        console.log('|| 音频DB路径:' + audioDbPath);
                                         /** 假设音频文件移动到对应位置时的绝对路径 */
                                         const audioAbsPath = path.resolve(rootStoragePath, AUDIO_ROOT, audioName)
                                         console.log('|| 音频绝对路径:' + audioAbsPath)
@@ -134,6 +134,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                             console.log('|| 音频源文件路径：' + audioSrcPath)
                                             fs.renameSync(audioTempPath, audioSrcPath);  // 移动源文件
                                             fs.renameSync(audioTransPath, tools.replaceExtName(audioAbsPath, AUDIO_EXTNAME));   // 重命名转换文件
+                                            console.log('|| 音频格式转换与移动完成！')
                                         }).catch((err) => {
                                             console.log(err);
                                             console.log('音频文件格式转换失败！不进行文件替换工作');
@@ -166,6 +167,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                             console.log('|| 视频源文件路径：' + sourceAbsPath)
                                             fs.renameSync(videoTempPath, sourceAbsPath);  // 移动源文件
                                             fs.renameSync(videoTransPath, tools.replaceExtName(videoAbsPath, VIDEO_EXTNAME));   // 重命名转换文件
+                                            console.log('|| 视频格式转换与移动完成！')
                                         }).catch((err) => {
                                             console.log(err);
                                             console.log('视频文件格式转换失败！不进行文件替换工作');
