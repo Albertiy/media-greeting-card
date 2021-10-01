@@ -104,6 +104,8 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                 let audioDbPath = '';
                                 /** 数据库存储的视频路径 */
                                 let videoDbPath = '';
+                                /** 文件转换的Promise列表 */
+                                let promList = [];
                                 // 音频
                                 if (audioFileIdx != -1) {
                                     let audioFile = files[keys[audioFileIdx]];
@@ -123,8 +125,8 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         /** 格式转换文件的临时路径 */
                                         const audioTransPath = tools.expandFileName(tools.replaceExtName(audioAbsPath, AUDIO_EXTNAME), null, TEMP_SUFFIX);
                                         console.log('|| 音频转换路径:' + audioTransPath)
-                                        // 异步执行，与接口返回结果无关，假设转换过程顺利完成。转换，重命名文件
-                                        mediaService.audioToM4a(audioAbsPath, audioTransPath).then((result) => {
+                                        // 格式转换 + 重命名
+                                        promList.push(mediaService.audioToM4a(audioAbsPath, audioTransPath).then((result) => {
                                             /** 音频源文件最终路径 */
                                             const audioSrcPath = tools.expandFileName(audioAbsPath, null, SOURCE_SUFFIX);
                                             console.log('|| 音频源文件路径：' + audioSrcPath)
@@ -133,7 +135,7 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         }).catch((err) => {
                                             console.log(err);
                                             console.log('音频文件格式转换失败！不进行文件替换工作');
-                                        });
+                                        }))
                                     }
                                 }
                                 // 视频
@@ -154,8 +156,8 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         fs.renameSync(videoFile.path, videoAbsPath);    // 移动文件（这一步可以省略，直接在临时目录转换即可）
                                         const videoTransPath = tools.expandFileName(tools.replaceExtName(videoAbsPath, VIDEO_EXTNAME), null, TEMP_SUFFIX);
                                         console.log('|| 视频转换路径:' + videoTransPath)
-                                        // 异步执行，与接口返回结果无关，假设转换过程顺利完成。转换，重命名文件
-                                        mediaService.videoToMp4(videoAbsPath, videoTransPath).then((result) => {
+                                        // 格式转换 + 重命名
+                                        promList.push(mediaService.videoToMp4(videoAbsPath, videoTransPath).then((result) => {
                                             /** 视频源文件最终路径 */
                                             const sourceAbsPath = tools.expandFileName(videoAbsPath, null, SOURCE_SUFFIX);
                                             console.log('|| 视频源文件路径：' + sourceAbsPath)
@@ -164,35 +166,40 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         }).catch((err) => {
                                             console.log(err);
                                             console.log('视频文件格式转换失败！不进行文件替换工作');
-                                        });
+                                        }))
                                     }
                                 }
-                                dbService.updateGreetingFiles({ code, dbVideoPath: videoDbPath, dbAudioPath: audioDbPath }).then((result) => {
-                                    // 删除旧的源文件和生成文件，需要使用通配符方式（因为后缀有变化）
-                                    if (oldAudioPath) {
-                                        let oldSourceAudioPath = tools.expandFileName(oldAudioPath, null, SOURCE_SUFFIX);
-                                        fs.rmSync(oldAudioPath, { force: true });
-                                        glob(tools.replaceExtName(oldSourceAudioPath, '.*'), (err, files) => {
-                                            if (!err && files.length > 0)
-                                                fs.rmSync(files[0], { force: true });
-                                            else
-                                                console.log('[error] 删除旧源文件失败: %o', oldSourceAudioPath)
-                                        })
-                                    }
-                                    if (oldVideoPath) {
-                                        let oldSourceVideoPath = tools.expandFileName(oldVideoPath, null, SOURCE_SUFFIX);
-                                        fs.rmSync(oldVideoPath, { force: true });
-                                        glob(tools.replaceExtName(oldSourceVideoPath, '.*'), (err, files) => {
-                                            if (!err && files.length > 0)
-                                                fs.rmSync(files[0], { force: true });
-                                            else
-                                                console.log('[error] 删除旧源文件失败: %o', oldSourceVideoPath)
-                                        })
-                                    }
-                                    res.send(new ReqBody(1, "上传成功"));
+                                Promise.all(promList).then((result) => {
+                                    dbService.updateGreetingFiles({ code, dbVideoPath: videoDbPath, dbAudioPath: audioDbPath }).then((result) => {
+                                        // 删除旧的源文件和生成文件，需要使用通配符方式（因为后缀有变化，没有记录到数据库）
+                                        if (oldAudioPath) {
+                                            let oldSourceAudioPath = tools.expandFileName(oldAudioPath, null, SOURCE_SUFFIX);
+                                            fs.rmSync(oldAudioPath, { force: true });
+                                            glob(tools.replaceExtName(oldSourceAudioPath, '.*'), (err, files) => {
+                                                if (!err && files.length > 0)
+                                                    fs.rmSync(files[0], { force: true });
+                                                else
+                                                    console.log('[error] 删除旧源文件失败: %o', oldSourceAudioPath)
+                                            })
+                                        }
+                                        if (oldVideoPath) {
+                                            let oldSourceVideoPath = tools.expandFileName(oldVideoPath, null, SOURCE_SUFFIX);
+                                            fs.rmSync(oldVideoPath, { force: true });
+                                            glob(tools.replaceExtName(oldSourceVideoPath, '.*'), (err, files) => {
+                                                if (!err && files.length > 0)
+                                                    fs.rmSync(files[0], { force: true });
+                                                else
+                                                    console.log('[error] 删除旧源文件失败: %o', oldSourceVideoPath)
+                                            })
+                                        }
+                                        res.send(new ReqBody(1, "上传成功"));
+                                    }).catch((err) => {
+                                        console.log(err);
+                                        res.send(new ReqBody(0, null, err));
+                                    });
                                 }).catch((err) => {
-                                    console.log(err);
-                                    res.send(new ReqBody(0, null, err));
+                                    res.send(new ReqBody(0, null, '格式转换失败'))
+                                    return;
                                 });
                             }
                         } else {
