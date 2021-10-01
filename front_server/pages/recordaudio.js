@@ -184,8 +184,8 @@ function RecordAudioPage() {
         for (let i = 0; i < audioMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(audioMimeList[i].mimeType);
             console.log(`${audioMimeList[i].mimeType} : ${ok}`)
-            //TODO 移除弹窗提示
-            alert(`${audioMimeList[i].mimeType} : ${ok}`)
+            // 移除弹窗提示
+            // alert(`${audioMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = audioMimeList[i].mimeType;
                 selectedMime = audioMimeList[i];

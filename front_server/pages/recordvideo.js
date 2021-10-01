@@ -188,8 +188,8 @@ function RecordVideoPage() {
         for (let i = 0; i < videoMimeList.length; i++) {
             let ok = MediaRecorder.isTypeSupported(videoMimeList[i].mimeType);
             console.log(`${videoMimeList[i].mimeType} : ${ok}`)
-            //TODO 移除弹窗提示
-            alert(`${videoMimeList[i].mimeType} : ${ok}`)
+            // 移除弹窗提示
+            // alert(`${videoMimeList[i].mimeType} : ${ok}`)
             if (ok) {
                 mediaRecorderOptions.mimeType = videoMimeList[i].mimeType;
                 selectedMime = videoMimeList[i];
@@ -365,7 +365,7 @@ function RecordVideoPage() {
      */
     function generateSrcUrl(chunks) {
         return new Promise((resolve, reject) => {
-            // TODO 文件缺少时长元数据，目前尚无办法解决
+            // 文件缺少时长元数据，在后台通过ffmpeg转码时顺带解决了
             let file = new File(chunks, FILE_NAME + selectedMime.mime, { type: selectedMime.fileMime });
             console.log('Gened File: %o', file);
             setVideoFile(file); // 用来上传的文件

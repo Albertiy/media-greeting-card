@@ -119,7 +119,7 @@ function WatchVideo() {
     }
 
     function downloadBtnClicked() {
-        // TODO 下载链接点击（ios无效）
+        // 下载链接点击（ios无效）
         if (fileURL) {
             if ("Safari" == Tools.myBrowser()) {
                 console.log('Safari，弹窗')
