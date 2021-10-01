@@ -7,4 +7,24 @@
   text-align: center;
   line-height: 2.75rem;
   font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  // flex: 1;
+}
+
+.left {
+  // margin-right: auto;
+  flex: 1;
+}
+
+.right {
+  flex: 1;
+  // margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }

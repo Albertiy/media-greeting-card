@@ -1,4 +1,4 @@
-import { mdiDownload, mdiShareVariant } from '@mdi/js';
+import { mdiDownload, mdiShareVariant, mdiCircleEditOutline } from '@mdi/js';
 import Icon from "@mdi/react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
@@ -136,6 +136,10 @@ function WatchAudio() {
         }
     }
 
+    function editBtnClicked() {
+        router.push({ pathname: '/recordaudio', query: { code } })
+    }
+
     /**
      * 显示弹窗
      * @param {string} title 
@@ -158,7 +162,7 @@ function WatchAudio() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <header>
-                <TitleBar title='留声机'></TitleBar>
+                <TitleBar title='留声机' rightEle={<Icon className={styles.edit_btn} path={mdiCircleEditOutline} size={1.2} onClick={editBtnClicked}></Icon>}></TitleBar>
             </header>
             <main className={styles.main}>
                 <div className={styles.cover}>

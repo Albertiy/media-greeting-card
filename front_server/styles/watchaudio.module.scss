@@ -123,3 +123,13 @@
   background-color: $color-download-background;
   margin-top: 10px;
 }
+
+.edit_btn {
+  margin-right: 0.4rem;
+  color: $color-background-violet;
+  transition: filter 0.3s cubic-bezier(0.13, 0.97, 0.27, 0.98);
+}
+
+.edit_btn:active {
+  filter: brightness(0.86);
+}
