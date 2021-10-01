@@ -111,26 +111,28 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                     let audioFile = files[keys[audioFileIdx]];
                                     console.log(`|| 音频文件：${audioFile.name} ${audioFile.type} ${audioFile.size} ${audioFile.lastModifiedDate}`);
                                     if (audioFile && audioFile.size > 0) {  // 保存音频文件
-                                        console.log('|| 音频临时路径:' + audioFile.path);
+                                        /** 音频临时路径 */
+                                        const audioTempPath = audioFile.path;
+                                        console.log('|| 音频临时路径:' + audioTempPath);
                                         /** 音频文件名 */
                                         const audioName = tools.expandFileName((tools.validateFileName(audioFile.name) ? audioFile.name : tools.correctingFileName(audioFile.name)), null, '-' + code + '-' + uuidV1());
                                         // 数据库中音频路径相对于根存储路径，此处替换格式转换后的文件扩展名
                                         audioDbPath = path.join(AUDIO_ROOT, tools.replaceExtName(audioName, AUDIO_EXTNAME));
                                         console.log('|| 音频DB路径:' + audDioDbPath);
-                                        /** 音频源文件当前的绝对路径 */
+                                        /** 假设音频文件移动到对应位置时的绝对路径 */
                                         const audioAbsPath = path.resolve(rootStoragePath, AUDIO_ROOT, audioName)
                                         console.log('|| 音频绝对路径:' + audioAbsPath)
                                         fileService.mkdirsSync(path.dirname(audioAbsPath));   // 若目录不存在，创建之
-                                        fs.renameSync(audioFile.path, audioAbsPath);    // 移动文件（这一步可以省略，直接在临时目录转换即可）
+                                        // fs.renameSync(audioTmpPath, audioAbsPath);    // 移动文件（这一步省略，直接在临时目录转换后移动）
                                         /** 格式转换文件的临时路径 */
                                         const audioTransPath = tools.expandFileName(tools.replaceExtName(audioAbsPath, AUDIO_EXTNAME), null, TEMP_SUFFIX);
                                         console.log('|| 音频转换路径:' + audioTransPath)
                                         // 格式转换 + 重命名
-                                        promList.push(mediaService.audioToM4a(audioAbsPath, audioTransPath).then((result) => {
+                                        promList.push(mediaService.audioToM4a(audioTempPath, audioTransPath).then((result) => {
                                             /** 音频源文件最终路径 */
                                             const audioSrcPath = tools.expandFileName(audioAbsPath, null, SOURCE_SUFFIX);
                                             console.log('|| 音频源文件路径：' + audioSrcPath)
-                                            fs.renameSync(audioAbsPath, audioSrcPath);  // 重命名源文件
+                                            fs.renameSync(audioTempPath, audioSrcPath);  // 移动源文件
                                             fs.renameSync(audioTransPath, tools.replaceExtName(audioAbsPath, AUDIO_EXTNAME));   // 重命名转换文件
                                         }).catch((err) => {
                                             console.log(err);
@@ -143,7 +145,8 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                     let videoFile = files[keys[videoFileIdx]];
                                     console.log(`|| 视频文件：${videoFile.name} ${videoFile.type} ${videoFile.size} ${videoFile.lastModifiedDate}`);
                                     if (videoFile && videoFile.size > 0) {  // 保存视频文件
-                                        console.log('|| 视频临时路径:' + videoFile.path);
+                                        const videoTempPath = videoFile.path;
+                                        console.log('|| 视频临时路径:' + videoTempPath);
                                         /** 视频文件名 */
                                         const videoName = tools.expandFileName((tools.validateFileName(videoFile.name) ? videoFile.name : tools.correctingFileName(videoFile.name)), null, '-' + code + '-' + uuidV1());
                                         // 数据库记录替换文件名的路径
@@ -153,15 +156,15 @@ router.post('/uploadGreetingFiles', function (req, res, next) {
                                         const videoAbsPath = path.resolve(rootStoragePath, VIDEO_ROOT, videoName)
                                         console.log('|| 视频绝对路径:' + videoAbsPath)
                                         fileService.mkdirsSync(path.dirname(videoAbsPath));   // 若目录不存在，创建之
-                                        fs.renameSync(videoFile.path, videoAbsPath);    // 移动文件（这一步可以省略，直接在临时目录转换即可）
+                                        // fs.renameSync(videoTempPath, videoAbsPath);    // 移动文件（这一步可以省略，直接在临时目录转换即可）
                                         const videoTransPath = tools.expandFileName(tools.replaceExtName(videoAbsPath, VIDEO_EXTNAME), null, TEMP_SUFFIX);
                                         console.log('|| 视频转换路径:' + videoTransPath)
                                         // 格式转换 + 重命名
-                                        promList.push(mediaService.videoToMp4(videoAbsPath, videoTransPath).then((result) => {
+                                        promList.push(mediaService.videoToMp4(videoTempPath, videoTransPath).then((result) => {
                                             /** 视频源文件最终路径 */
                                             const sourceAbsPath = tools.expandFileName(videoAbsPath, null, SOURCE_SUFFIX);
                                             console.log('|| 视频源文件路径：' + sourceAbsPath)
-                                            fs.renameSync(videoAbsPath, sourceAbsPath);  // 重命名源文件
+                                            fs.renameSync(videoTempPath, sourceAbsPath);  // 移动源文件
                                             fs.renameSync(videoTransPath, tools.replaceExtName(videoAbsPath, VIDEO_EXTNAME));   // 重命名转换文件
                                         }).catch((err) => {
                                             console.log(err);
