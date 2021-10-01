@@ -495,7 +495,7 @@ function RecordAudioPage() {
             enqueueSnackbar('待上传的文件:' + Tools.returnFileSize(audioFile.size), { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(code, null, audioFile, progressUpload).then((result) => {
                 setProgressValue(1);
-                showAlertDialog('提示', '文件上传成功！\n可点击锁定按钮以锁定修改，后续扫码将直接进入观看页面，输入密码方可编辑')
+                showAlertDialog('提示', '文件上传成功！\n可点击锁定按钮以锁定修改，后续扫码将直接进入观看页面') // TODO ，输入密码方可编辑
                 getInfoByCode(code);
                 setWaitForUpload(false);
             }).catch((err) => {

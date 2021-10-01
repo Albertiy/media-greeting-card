@@ -490,7 +490,7 @@ function RecordVideoPage() {
             enqueueSnackbar('待上传的文件:' + Tools.returnFileSize(videoFile.size), { variant: 'info', autoHideDuration: 2000 });
             FileService.uploadGreetings(code, videoFile, null, progressUpload).then((result) => {
                 setProgressValue(1);
-                showAlertDialog('提示', '文件上传成功！')
+                showAlertDialog('提示', '文件上传成功！\n可点击锁定按钮以锁定修改，后续扫码将直接进入观看页面')
                 getInfoByCode(code);
                 setWaitForUpload(false);
             }).catch((err) => {
