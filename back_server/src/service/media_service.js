@@ -1,6 +1,11 @@
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+// const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath(ffmpegPath);
+var CONFIG = require('../../config');
+const ffmpegRoot = CONFIG.application().ffmpegRoot;
+if (ffmpegRoot) {
+    ffmpeg.setFfmpegPath(ffmpegRoot + 'ffmpeg.exe');
+    ffmpeg.setFfprobePath(ffmpegRoot + 'ffprobe.exe');
+}
 
 /**
  * 

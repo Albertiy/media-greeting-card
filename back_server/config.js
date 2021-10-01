@@ -13,9 +13,10 @@ const fs = require('fs');
  * tokenSecret: string,
  * tokenExpires: number,
  * qrEntryUrl: string,
- *  videoFileRoot: string,
- *  audioFileRoot: string,
- *  qrFileRoot: string,
+ * videoFileRoot: string,
+ * audioFileRoot: string,
+ * qrFileRoot: string,
+ * ffmpegRoot: string,
  * }}
  */
 exports.application = function () {
