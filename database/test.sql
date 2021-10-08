@@ -37,4 +37,16 @@ select * from heka.uploadfiles where audioPath is not null;
 
 select * from heka.uploadfiles where videoPath is not null;
 
+set @a = JSON_array();
+select @a;
+
+set @b = '[]';
+select @b;
+
+select JSON_ARRAY_APPENDproduct_item(convert('[]',json), '$', convert('{"type":"image", id: 1}',json));
+
+set @c = convert('[{"type":"image", "id":1}]',json);
+select @c;
+select JSON_ARRAY(@c);
+
 
