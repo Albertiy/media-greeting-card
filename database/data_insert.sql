@@ -25,3 +25,4 @@ SELECT * FROM bgimage;
 
 select * from uploadfiles;
 
+-- 插入文章模板

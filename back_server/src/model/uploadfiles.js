@@ -2,6 +2,7 @@ class Uploadfiles {
     id;
     uuid;
     record_id;
+    product_id;
     text_from;
     text_to;
     text_detail;
@@ -14,7 +15,8 @@ class Uploadfiles {
      * 数据库 uploadfiles 表
      * @param {number} id 
      * @param {string} uuid 
-     * @param {string} record_id
+     * @param {number} record_id
+     * @param {number} product_id
      * @param {string} text_from
      * @param {string} text_to
      * @param {string} text_detail
@@ -23,10 +25,11 @@ class Uploadfiles {
      * @param {boolean} isLocked 
      * @param {boolean} isDeleted 
      */
-    constructor(id, uuid, record_id, text_from, text_to, text_detail, videoPath, audioPath, isLocked, isDeleted) {
+    constructor(id, uuid, record_id, product_id, text_from, text_to, text_detail, videoPath, audioPath, isLocked, isDeleted) {
         this.id = id;
         this.uuid = uuid;
         this.record_id = record_id;
+        this.product_id = product_id;
         this.text_from = text_from;
         this.text_to = text_to;
         this.text_detail = text_detail;
