@@ -1,5 +1,6 @@
 const UploadfilesAPI = require('../db/uploadfiles_api');
 const GeneraterecordsAPI = require('../db/generaterecords_api');
+const ArticleAPI = require('../db/article_api');
 const Uploadfiles = require('../model/uploadfiles');
 
 /**
@@ -173,6 +174,26 @@ function updateGreetingFiles(params) {
     })
 }
 
+function getMusicList() {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.getMusicList().then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
+function getBgImageList() {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.getBgImageList().then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -182,4 +203,6 @@ module.exports = {
     getUploadInfo,
     updateGreetingText,
     updateGreetingFiles,
+    getMusicList,
+    getBgImageList,
 }
