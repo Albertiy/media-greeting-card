@@ -18,3 +18,5 @@ class ArticleTemplate {
         this.order = order;
     }
 }
+
+module.exports = ArticleTemplate;

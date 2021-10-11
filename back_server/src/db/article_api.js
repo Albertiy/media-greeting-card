@@ -3,10 +3,14 @@ const pool = ConnPool.getPool();
 const Music = require('../model/music')
 const Bgimage = require('../model/bgimage')
 const Product = require('../model/product')
+const ArticleTemplate = require('../model/article_template')
 const getMusicListSql = 'select * from music'; // select * from music where product_id = ? order by `order` is null, `order`asc;
 const getBgImageListSql = 'select * from bgimage';
 const getProductListSql = 'select * from product';
+const getArticleTemplateListSql = 'select * from article_template';
+
 const orderStr = ' order by `order` is null, `order` asc';
+
 
 /**
  * 获取音乐列表
@@ -31,7 +35,7 @@ function getMusicList(product_id) {
 }
 
 /**
- * 获取泵背景图片列表
+ * 获取内置背景图片列表
  * @param {number} [product_id]
  * @returns {Bgimage[]}
  */
@@ -71,8 +75,29 @@ function getProductList() {
     })
 }
 
+/**
+ * 获取文章模板列表
+ * @returns {ArticleTemplate[]}
+ */
+function getArticleTemplateList() {
+    let query = getArticleTemplateListSql;
+    query += orderStr;
+    let data = [];
+    return new Promise((resolve, reject) => {
+        pool.query(query, data, (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
+
 module.exports = {
     getMusicList,
     getBgImageList,
     getProductList,
+    getArticleTemplateList,
 }

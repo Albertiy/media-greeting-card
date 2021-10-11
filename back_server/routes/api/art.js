@@ -28,4 +28,12 @@ router.get('/bgimagelist', function (req, res, next) {
     });
 })
 
+router.get('/articletemplatelist', function (req, res, next) {
+    dbService.getArticleTemplateList().then((result) => {
+        res.send(new ReqBody(1, result))
+    }).catch((err) => {
+        res.send(new ReqBody(0, null, err))
+    });
+})
+
 module.exports = router;

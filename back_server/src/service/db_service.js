@@ -204,6 +204,16 @@ function getProductList() {
     })
 }
 
+function getArticleTemplateList() {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.getArticleTemplateList().then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -216,4 +226,5 @@ module.exports = {
     getMusicList,
     getBgImageList,
     getProductList,
+    getArticleTemplateList,
 }

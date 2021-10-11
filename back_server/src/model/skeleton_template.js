@@ -1,6 +1,8 @@
-const SkeletonTemplates = [
+const SkeletonTemplate = [
     {
         name: '默认模板-1',
+        /** @type{string} 自定义页面标题，默认空 */
+        title: null,
         /** @type{number} 内置背景图片Id，默认1 */
         bgImageId: 1,
         /** @type{number} 自定义背景图片Id */
@@ -16,4 +18,4 @@ const SkeletonTemplates = [
     }
 ];
 
-module.exports = SkeletonTemplates;
+module.exports = SkeletonTemplate;
