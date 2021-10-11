@@ -12,7 +12,7 @@ class Uploadfiles {
     isDeleted;
 
     /**
-     * 数据库 uploadfiles 表
+     * 数据库 uploadfiles 表，Code唯一表，兼音视频数据表
      * @param {number} id 
      * @param {string} uuid 
      * @param {number} record_id
