@@ -4,6 +4,14 @@ var router = express.Router();
 
 const dbService = require('../../src/service/db_service')
 
+router.get('/productlist', function (req, res, next) {
+    dbService.getProductList().then((result) => {
+        res.send(new ReqBody(1, result))
+    }).catch((err) => {
+        res.send(new ReqBody(0, null, err))
+    });
+})
+
 router.get('/musiclist', function (req, res, next) {
     dbService.getMusicList().then((result) => {
         res.send(new ReqBody(1, result))

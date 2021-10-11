@@ -194,6 +194,16 @@ function getBgImageList() {
     })
 }
 
+function getProductList() {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.getProductList().then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -205,4 +215,5 @@ module.exports = {
     updateGreetingFiles,
     getMusicList,
     getBgImageList,
+    getProductList,
 }
