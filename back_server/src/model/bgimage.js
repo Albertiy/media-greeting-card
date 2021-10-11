@@ -6,7 +6,7 @@ class Bgimage {
     order;
 
     /**
-     * 
+     * 背景图片表
      * @param {number} id 
      * @param {number} product_id 
      * @param {string} name 
@@ -21,3 +21,5 @@ class Bgimage {
         this.order = order;
     }
 }
+
+module.exports = Bgimage;

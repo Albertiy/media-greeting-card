@@ -3,7 +3,7 @@ class Product {
     name;
 
     /**
-     * 
+     * 商品大类
      * @param {number} id 
      * @param {string} name 
      */

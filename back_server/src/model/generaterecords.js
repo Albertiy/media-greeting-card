@@ -8,7 +8,7 @@ class Generaterecords {
     create_time;
 
     /**
-     * 数据库 uploadfiles 表
+     * code批次生成记录表
      * @param {number} id 
      * @param {number} count 
      * @param {number} product_id
@@ -27,3 +27,5 @@ class Generaterecords {
         this.create_time = create_time;
     }
 }
+
+module.exports = Generaterecords;

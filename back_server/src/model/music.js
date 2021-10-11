@@ -7,7 +7,7 @@ class Music {
     order;
 
     /**
-     * 
+     * 自带音乐表
      * @param {number} id 
      * @param {number} product_id 
      * @param {string} name 
@@ -24,3 +24,5 @@ class Music {
         this.order = order;
     }
 }
+
+module.exports = Music;

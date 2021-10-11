@@ -5,7 +5,7 @@ class Imagefiles {
     temp_path;
 
     /**
-     * 
+     * 上传图片文件表
      * @param {number} id 
      * @param {number} code_id 
      * @param {string} path 
@@ -18,3 +18,5 @@ class Imagefiles {
         this.order = temp_path;
     }
 }
+
+module.exports = Imagefiles;
