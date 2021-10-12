@@ -52,5 +52,3 @@ select JSON_ARRAY(@c);
 select * from music where product_id = ? order by `order` is null, `order`asc;
 select * from bgimage;
 select * from product;
-
-

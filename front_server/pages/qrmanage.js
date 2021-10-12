@@ -1,7 +1,6 @@
 import { mdiDownload } from '@mdi/js';
 import Icon from "@mdi/react";
-import { Button, DatePicker as AntDatePicker, Input, Table as AntTable, Modal as AntModal, Select as AntSelect, InputNumber, DatePicker } from 'antd';
-const { Option: AntOption } = AntSelect;
+import { Button, DatePicker as AntDatePicker, DatePicker, Input, InputNumber, Modal as AntModal, Select as AntSelect, Table as AntTable } from 'antd';
 import dayjs from 'dayjs';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -12,11 +11,14 @@ import { useEffect, useRef, useState } from 'react';
 import AlertDialog from '../src/component/alert-dialog';
 import ModelLoading from '../src/component/model_loading';
 import GenerateRecords from '../src/model/generaterecords';
-import * as RecordsService from '../src/service/records_service';
+import Product from '../src/model/product';
+import * as ArtService from '../src/service/art_service';
 import * as FileService from '../src/service/file_service';
+import * as RecordsService from '../src/service/records_service';
 import GlobalSettings from '../src/setting/global';
-import styles from '../styles/qrmanage.module.scss';
 import * as Tools from '../src/tool/tools';
+import styles from '../styles/qrmanage.module.scss';
+const { Option: AntOption } = AntSelect;
 const { RangePicker } = AntDatePicker;
 
 /** @type{GenerateRecords[]} */
@@ -33,6 +35,9 @@ const defaultDialog = { open: false, title: '提示', content: '确认' };
 const defaultQueryIdError = false;
 const defaultAntModalVisible = false;
 const defaultConfirmLoading = false;
+/** @type{Product[]} */
+const defaultProductList = [{ id: -1, name: '未选择' }];
+const defaultGenerateProduct = -1;
 const defaultGenerateCount = 20;
 
 
@@ -53,11 +58,36 @@ function QrManagePage(props) {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [antModalvisible, setAntModalVisible] = useState(defaultAntModalVisible);
     const [confirmLoading, setConfirmLoading] = useState(defaultConfirmLoading);
+    const [productList, setProductList] = useState(defaultProductList);
+    const [generateProduct, setGenerateProduct] = useState(defaultGenerateProduct);
     const [generateCount, setGenerateCount] = useState(defaultGenerateCount);
     const [countInputError, setCountInputError] = useState(false);
     const router = useRouter();
 
-
+    const tablePagination = {
+        position: 'bottomRight',
+        pageSizeOptions: [10, 20, 50],
+        showSizeChanger: true,
+        showQuickJumper: true,
+        showTotal: (total, range) => `共 ${total} 项，当前显示 ${range[0]}-${range[1]} 项`,
+        locale: {
+            items_per_page: " / 页",
+            jump_to: "跳转至",
+            jump_to_confirm: "确认",
+            next_3: "下 3 页",
+            next_5: "下 5 页",
+            next_page: "下一页",
+            Page: "",
+            prev_3: "上 3 页",
+            prev_5: "上 5 页",
+            prev_page: "上一页",
+        }
+        // 这部分需要状态
+        // total: this.state.tableResultCount,
+        // current: this.state.tablePageNumber,
+        // pageSize: this.state.tableMaxRows,
+        // onChange: this.onPaginationChange,   // 已经有了 onTableChange，此项无效
+    }
 
     const tableColumns = [
         {
@@ -78,6 +108,16 @@ function QrManagePage(props) {
             width: 75,
             align: 'center',
             render: (text, record, index) => { return dayjs(text).format('YYYY-MM-DD HH:mm:ss') }
+        }, {
+            title: '产品类型',
+            dataIndex: 'product_id',
+            key: 'product_id',
+            width: 75,
+            align: 'center',
+            render: (text, record, index) => {
+                let item = productList.find(val => val.id == text);
+                return (item && item.name) || text;
+            }
         }, {
             title: '生成数量',
             dataIndex: 'count',
@@ -113,36 +153,19 @@ function QrManagePage(props) {
         }
     ]
 
-    const tablePagination = {
-        position: 'bottomRight',
-        pageSizeOptions: [10, 20, 50],
-        showSizeChanger: true,
-        showQuickJumper: true,
-        showTotal: (total, range) => `共 ${total} 项，当前显示 ${range[0]}-${range[1]} 项`,
-        locale: {
-            items_per_page: " / 页",
-            jump_to: "跳转至",
-            jump_to_confirm: "确认",
-            next_3: "下 3 页",
-            next_5: "下 5 页",
-            next_page: "下一页",
-            Page: "",
-            prev_3: "上 3 页",
-            prev_5: "上 5 页",
-            prev_page: "上一页",
-        }
-        // 这部分需要状态
-        // total: this.state.tableResultCount,
-        // current: this.state.tablePageNumber,
-        // pageSize: this.state.tableMaxRows,
-        // onChange: this.onPaginationChange,   // 已经有了 onTableChange，此项无效
-    }
-
     /**
      * 初始化方法
      */
     function init() {
-        queryRecords();
+        // 先查Product，再查记录
+        ArtService.getProducts().then((result) => {
+            setProductList(result);
+            if (result && result.length > 0) setGenerateProduct(result[0].id);
+            queryRecords();
+        }).catch((err) => {
+            alert(err);
+            console.log(err);
+        });
     }
 
     useEffect(() => {
@@ -168,10 +191,10 @@ function QrManagePage(props) {
      * 当用户在模态对话框中输入count并确定，批量生成二维码
      */
     function createQRBatch() {
-        if (generateCount && !countInputError) {
+        if (generateProduct && generateProduct != defaultGenerateProduct && generateCount && !countInputError) {
             enqueueSnackbar('生成二维码中~', { variant: 'info', autoHideDuration: 800 })
             setConfirmLoading(true)
-            RecordsService.generateCode(generateCount).then((result) => {
+            RecordsService.generateCode(generateCount, generateProduct).then((result) => {
                 console.log('url: ' + result);
                 enqueueSnackbar('生成成功！', { variant: "success", autoHideDuration: 2000 })
                 Tools.download(FileService.getFile(result), Tools.getFileName(result));
@@ -269,7 +292,7 @@ function QrManagePage(props) {
                     <AntTable id="qrmanage_table" className={styles.table} rowKey="id" columns={tableColumns} dataSource={recordsList} loading={isLoading} content pagination={{ ...tablePagination }} />
                 </div>
             </div>
-        </main >
+        </main>
         <footer className={styles.footer}>
             <div className={styles.footerPanel}>
                 <Button type="primary" onClick={() => { setAntModalVisible(true); }}>批量创建新二维码</Button>
@@ -283,8 +306,19 @@ function QrManagePage(props) {
             setAntModalVisible(false);
         }}>
             <div className={styles.modalPanel}>
-                <label>数量：</label>
-                <InputNumber min={1} max={2000} defaultValue={defaultGenerateCount} maxLength={4} onChange={onCountInputChange} className={countInputError ? styles.errorInput : null} /><label style={{ marginLeft: "20px", color: '#f46' }}>* 范围 1-2000</label>
+                <label style={{ gridColumnStart: 2, justifySelf: 'end' }}>产品：</label>
+                <AntSelect placeholder={'选择产品'}
+                    onChange={value => {
+                        console.log('【select generateProduct】:%o', value);
+                        setGenerateProduct(value);
+                    }} value={generateProduct}>
+                    {productList.map(val => {
+                        return (<AntOption value={val.id} key={val.id} label={val.name}>{val.name}</AntOption>)
+                    })}
+                </AntSelect>
+                <label style={{ gridColumnStart: 2, justifySelf: 'end' }}>数量：</label>
+                <InputNumber min={1} max={2000} defaultValue={defaultGenerateCount} maxLength={4} onChange={onCountInputChange} className={countInputError ? styles.errorInput : null} style={{ width: "100%" }} />
+                <label style={{ color: '#f46' }}>* 范围 1-2000</label>
             </div>
         </AntModal>
     </div>;

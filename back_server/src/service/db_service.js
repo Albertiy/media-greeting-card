@@ -19,7 +19,7 @@ function insertCodesAndRecord(codes, zipFilePath, productId) {
             GeneraterecordsAPI.add(count, first, latest, zipFilePath, productId).then((result) => {
                 let recordId = result.insertId;
                 console.log('[insertGenerateRecord] result: %o', result)
-                UploadfilesAPI.addMultiple(codes, recordId).then((result) => {
+                UploadfilesAPI.addMultiple(codes, recordId, productId).then((result) => {
                     console.log('[insertCodes] result: %o', result)
                     resolve(true);
                 }).catch((err) => {

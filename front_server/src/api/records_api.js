@@ -30,11 +30,12 @@ export function getRecords(params = {}) {
 /**
  * 批量生成二维码
  * @param {number} count 要生成的数量
+ * @param {number} productId 要生成的产品
  * @returns {Promise<string>} 返回生成的二维码包的路径
  */
-export function generateCode(count) {
+export function generateCode(count, productId) {
     return new Promise((resolve, reject) => {
-        let data = { count }
+        let data = { count, productId }
         axios.post(generateCodeUrl, data).then((result) => {
             let res = result.data;
             if (res.state) resolve(res.data)

@@ -90,9 +90,17 @@
 }
 
 .modalPanel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 25% 2fr 7fr 25%; // fr表示“片段”
+  grid-gap: 0.35rem 0.5rem; // row column
+  align-items: center; // 所有item垂直居中
+  // justify-items: center; // 默认靠右。所有item水平居中，部分元素将失去默认width:100%
+}
+
+@media (max-width: 600px) {
+  .modalPanel {
+    grid-template-columns: 0 2fr 7fr 25%;
+  }
 }
 
 .table > :first-child {

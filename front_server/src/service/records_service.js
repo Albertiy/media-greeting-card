@@ -27,11 +27,12 @@ export function getRecords(startTime, endTime, id) {
 /**
  * 批量生成二维码
  * @param {number} count 要生成的数量
+ * @param {number} productId 要生成的产品
  * @returns {Promsise<string>} 返回生成的二维码包的路径
  */
-export function generateCode(count) {
+export function generateCode(count, productId) {
     return new Promise((resolve, reject) => {
-        RecordsAPI.generateCode(count).then((result) => {
+        RecordsAPI.generateCode(count, productId).then((result) => {
             resolve(result)
         }).catch((err) => {
             reject(err)
