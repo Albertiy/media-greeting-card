@@ -1,6 +1,7 @@
 export default class Generagerecords {
     id;
     count;
+    product_id;
     first;
     latest;
     filePath;
@@ -10,14 +11,16 @@ export default class Generagerecords {
      * 数据库 uploadfiles 表
      * @param {number} id 
      * @param {number} count 
+     * @param {number} product_id
      * @param {string} first 
      * @param {string} latest 
      * @param {string} filePath 
      * @param {Date} create_time
      */
-    constructor(id, count, first, latest, filePath, create_time) {
+    constructor(id, count, product_id, first, latest, filePath, create_time) {
         this.id = id;
         this.count = count;
+        this.product_id = product_id;
         this.first = first;
         this.latest = latest;
         this.filepath = filePath;
