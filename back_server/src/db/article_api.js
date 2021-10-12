@@ -4,10 +4,12 @@ const Music = require('../model/music')
 const Bgimage = require('../model/bgimage')
 const Product = require('../model/product')
 const ArticleTemplate = require('../model/article_template')
+const Article = require('../model/article')
 const getMusicListSql = 'select * from music'; // select * from music where product_id = ? order by `order` is null, `order`asc;
 const getBgImageListSql = 'select * from bgimage';
 const getProductListSql = 'select * from product';
 const getArticleTemplateListSql = 'select * from article_template';
+const getArticleByCodeIdSql = 'select * from article where code_id = ?';
 
 const orderStr = ' order by `order` is null, `order` asc';
 
@@ -95,9 +97,31 @@ function getArticleTemplateList() {
     })
 }
 
+/**
+ * 根据二维码记录id获取文章id
+ * @param {number} codeid 关联二维码记录的id
+ * @returns {Article[]}
+ */
+function getArticleByCodeId(codeid) {
+    let query = getArticleByCodeIdSql;
+    let data = [codeid];
+    return new Promise((resolve, reject) => {
+        pool.query(query, data, (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+
+}
+
 module.exports = {
     getMusicList,
     getBgImageList,
     getProductList,
     getArticleTemplateList,
+    getArticleByCodeId,
 }

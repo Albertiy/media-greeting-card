@@ -8,10 +8,10 @@ const dbService = require('../../src/service/db_service')
 
 /** 批量获取二维码 */
 router.post('/generateCode', function (req, res, next) {
-    let { count } = req.body;
+    let { count, productId } = req.body;
     if (count && (count = parseInt(count)) > 0) {
         let startTime = new Date();
-        console.log('[generateCode] count = %o', count);
+        console.log('[generateCode] count = %o, productId = %o', count, productId);
         // step1: 批量生成二维码code
         let codes = codeService.getBatchCode(count);
         // step2: 批量拼接接口，并生成二维码图片，然后打成压缩包，返回相对地址，以供前端点击链接下载
@@ -23,7 +23,7 @@ router.post('/generateCode', function (req, res, next) {
                 // TODO 因此，要调整文件服务和数据库服务的顺序，或者让数据库的回调可以返回 connection 对象（在关闭前），让它帮忙 rollback。
                 // 其实吧。。。正常也不会有问题的。但是就当是学新知识了。
                 // step3: 数据库批量插入生成的二维码，并插入生成记录
-                dbService.insertCodesAndRecord(codes, zipFilePath).then((result) => {
+                dbService.insertCodesAndRecord(codes, zipFilePath, productId).then((result) => {
                     // step4: 通过 api/file/ 接口拼接相对路径，直接读取文件。
                     res.send(new ReqBody(1, zipFilePath));
                 }).catch((err) => {

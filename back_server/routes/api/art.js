@@ -36,4 +36,20 @@ router.get('/articletemplatelist', function (req, res, next) {
     });
 })
 
+/** 获取文章对象；若codeid为空或codeid在uploadfiles中不存在，则返回错误；
+    若codeid存在但 product_id 不等于2，则返回“产品类型错误”；
+    若codeid存在且 product_id 为2，则查询 article 表；
+    若article有数据，返回该记录；
+    若article无数据，则新建一条记录，并返回该记录。
+*/
+router.get('/article', function (req, res, next) {
+    let { codeid } = req.query;
+    if (!codeid) { res.send(new ReqBody(0, null, 'codeid不能为空！')); return }
+    dbService.getArticleByCodeId(codeid).then((result) => {
+        res.send(new ReqBody(1, result))
+    }).catch((err) => {
+        res.send(new ReqBody(0, null, err))
+    });
+})
+
 module.exports = router;

@@ -7,15 +7,16 @@ const Uploadfiles = require('../model/uploadfiles');
  * 合并批量插入二维码与插入生成记录服务
  * @param {string[]} codes 
  * @param {string} zipFilePath 
+ * @param {number} productId
  * @returns 
  */
-function insertCodesAndRecord(codes, zipFilePath) {
+function insertCodesAndRecord(codes, zipFilePath, productId) {
     return new Promise((resolve, reject) => {
         if (codes && codes.length > 0) {
             let count = codes.length;
             let first = codes[0];
             let latest = codes[codes.length - 1];
-            GeneraterecordsAPI.add(count, first, latest, zipFilePath).then((result) => {
+            GeneraterecordsAPI.add(count, first, latest, zipFilePath, productId).then((result) => {
                 let recordId = result.insertId;
                 console.log('[insertGenerateRecord] result: %o', result)
                 UploadfilesAPI.addMultiple(codes, recordId).then((result) => {
@@ -214,6 +215,19 @@ function getArticleTemplateList() {
     })
 }
 
+function getArticleByCodeId(codeid) {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.getArticleByCodeId(codeid).then((result) => {
+            if (result.length > 0)
+                resolve(result[0])
+            else reject('未找到此id对应的文章')
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -227,4 +241,5 @@ module.exports = {
     getBgImageList,
     getProductList,
     getArticleTemplateList,
+    getArticleByCodeId,
 }
