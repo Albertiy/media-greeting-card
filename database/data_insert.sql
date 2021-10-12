@@ -26,3 +26,4 @@ SELECT * FROM bgimage;
 select * from uploadfiles;
 
 -- 插入文章模板
+insert into article_template(`name`,`order`) values('默认模板-1',1); 

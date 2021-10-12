@@ -1,5 +1,9 @@
-const SkeletonTemplate = [
-    {
+/**
+ * @method get
+ */
+const SkeletonTemplate = {
+    1: {
+        id: 1,
         name: '默认模板-1',
         /** @type{string} 自定义页面标题，默认空 */
         title: null,
@@ -16,6 +20,10 @@ const SkeletonTemplate = [
         /** @type{string} 自定义字体，默认空 */
         font: null,
     }
-];
+};
+
+// SkeletonTemplate.get = function (id) {
+//     return res = this.find((val) => val.id == id);
+// }
 
 module.exports = SkeletonTemplate;

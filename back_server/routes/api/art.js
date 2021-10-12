@@ -44,8 +44,10 @@ router.get('/articletemplatelist', function (req, res, next) {
 */
 router.get('/article', function (req, res, next) {
     let { codeid } = req.query;
+    codeid = parseInt(codeid);
     if (!codeid) { res.send(new ReqBody(0, null, 'codeid不能为空！')); return }
-    dbService.getArticleByCodeId(codeid).then((result) => {
+    // 当前无需 template_id 参数，无需判断code_id是否存在（有外键）
+    dbService.getOrCreateArticleByCodeId(codeid).then((result) => {
         res.send(new ReqBody(1, result))
     }).catch((err) => {
         res.send(new ReqBody(0, null, err))

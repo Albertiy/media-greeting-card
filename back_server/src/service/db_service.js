@@ -2,6 +2,8 @@ const UploadfilesAPI = require('../db/uploadfiles_api');
 const GeneraterecordsAPI = require('../db/generaterecords_api');
 const ArticleAPI = require('../db/article_api');
 const Uploadfiles = require('../model/uploadfiles');
+const SkeletonTemplate = require('../model/skeleton_template');
+const Article = require('../model/article');
 
 /**
  * 合并批量插入二维码与插入生成记录服务
@@ -215,17 +217,54 @@ function getArticleTemplateList() {
     })
 }
 
-function getArticleByCodeId(codeid) {
+/**
+ * 
+ * @param {number} codeId 
+ * @param {number} templateId 
+ * @returns {Promise<number>} 新插入数据的id
+ */
+function createArticle(codeId, templateId) {
+    let skeleton = SkeletonTemplate[templateId];
     return new Promise((resolve, reject) => {
-        ArticleAPI.getArticleByCodeId(codeid).then((result) => {
-            if (result.length > 0)
-                resolve(result[0])
-            else reject('未找到此id对应的文章')
+        ArticleAPI.addArticle(codeId, templateId, skeleton).then((result) => {
+            resolve(result.insertId)
+        }).catch((err) => { reject(err) });
+    })
+}
+
+/**
+ * 
+ * @param {number} codeId 
+ * @returns {Promise<Article>}
+ */
+function getArticleByCodeId(codeId) {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.getArticleByCodeId(codeId).then((result) => {
+            if (result.length > 0) {
+                /** @type{Article} */
+                let res = result[0];
+                if (res.skeleton) res.skeleton = JSON.parse(res.skeleton);
+                if (res.paragraph_set) res.paragraph_set = JSON.parse(res.paragraph_set);
+                resolve(res);
+            } else reject('未找到此id对应的文章')
         }).catch((err) => {
             reject(err)
         });
     })
+}
 
+function getOrCreateArticleByCodeId(codeId) {
+    return new Promise((resolve, reject) => {
+        getArticleByCodeId(codeId).then((result) => {
+            resolve(result);
+        }).catch((err) => {
+            createArticle(codeId, 1).then((result) => {
+                resolve(getArticleByCodeId(codeId))
+            }).catch((err) => {
+                reject(err)
+            });
+        });
+    })
 }
 
 module.exports = {
@@ -242,4 +281,6 @@ module.exports = {
     getProductList,
     getArticleTemplateList,
     getArticleByCodeId,
+    createArticle,
+    getOrCreateArticleByCodeId,
 }

@@ -10,6 +10,7 @@ const getBgImageListSql = 'select * from bgimage';
 const getProductListSql = 'select * from product';
 const getArticleTemplateListSql = 'select * from article_template';
 const getArticleByCodeIdSql = 'select * from article where code_id = ?';
+const addArticleSql = 'insert into article(code_id, template_id, skeleton) values(?,?,convert(?, json))';
 
 const orderStr = ' order by `order` is null, `order` asc';
 
@@ -118,10 +119,31 @@ function getArticleByCodeId(codeid) {
 
 }
 
+function addArticle(code_id, template_id, skeleton) {
+    let query = addArticleSql;
+    let data = [code_id, template_id, JSON.stringify(skeleton)];
+    return new Promise((resolve, reject) => {
+        pool.query(query, data, (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                if (err.errno == 1452) {
+                    reject('code_id不存在，无法创建Article')
+                } else {
+                    reject(err)
+                }
+            } else {
+                resolve(res)
+            }
+        })
+    })
+
+}
+
 module.exports = {
     getMusicList,
     getBgImageList,
     getProductList,
     getArticleTemplateList,
     getArticleByCodeId,
+    addArticle,
 }
