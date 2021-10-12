@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var compression = require('compression')
 
 var fs = require('fs');
 var FileStreamRotator = require('file-stream-rotator');
@@ -49,6 +50,7 @@ function skip(req) {
   return (req.url).indexOf('stylesheets') != -1 // 跳过样式表请求
 }
 
+app.use(compression()); // GZip压缩
 app.use(logger('dev'));
 app.use(logger('customAccessLog', { skip: skip, stream: accessLogfile }));
 app.use(express.json());
@@ -70,7 +72,7 @@ app.use(function (err, req, res, next) {
   var time = dayjs(now).format('YYYY-MM-DD HH:mm:ss');
   var meta = '[' + time + '] ' + req.method + ' ' + req.url + '\r\n';
   errorLogfile.write(meta + err.stack + '\r\n\r\n\r\n');
-  
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
