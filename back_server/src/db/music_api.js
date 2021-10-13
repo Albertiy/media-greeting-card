@@ -4,7 +4,7 @@ const Music = require('../model/music')
 
 const getListSql = 'select * from music';
 // select * from music where product_id = ? order by `order` is null, `order`asc;
-const getByIdSql = 'select * from bgimage where id = ?';
+const getByIdSql = 'select * from music where id = ?';
 
 const orderStr = ' order by `order` is null, `order` asc';
 
@@ -32,7 +32,7 @@ function getList(product_id) {
 }
 
 /**
- * 
+ * 用Id获取音乐
  * @param {number} id 
  * @returns 
  */

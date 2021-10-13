@@ -1,39 +1,14 @@
 const ConnPool = require('./conn_pool')
 const pool = ConnPool.getPool();
-const Music = require('../model/music')
-const Bgimage = require('../model/bgimage')
-const Product = require('../model/product')
 const ArticleTemplate = require('../model/article_template')
 const Article = require('../model/article')
 
-const getProductListSql = 'select * from product';
 const getArticleTemplateListSql = 'select * from article_template';
 const getArticleByCodeIdSql = 'select * from article where code_id = ?';
 const addArticleSql = 'insert into article(code_id, template_id, skeleton) values(?,?,convert(?, json))';
 
 const orderStr = ' order by `order` is null, `order` asc';
 
-
-
-
-/**
- * 获取产品列表
- * @returns {Product[]}
- */
-function getProductList() {
-    let query = getProductListSql;
-    let data = [];
-    return new Promise((resolve, reject) => {
-        pool.query(query, data, (err, res, fields) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(res)
-            }
-        })
-    })
-}
 
 /**
  * 获取文章模板列表
@@ -97,7 +72,6 @@ function addArticle(code_id, template_id, skeleton) {
 }
 
 module.exports = {
-    getProductList,
     getArticleTemplateList,
     getArticleByCodeId,
     addArticle,

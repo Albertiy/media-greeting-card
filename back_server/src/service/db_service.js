@@ -3,6 +3,7 @@ const GeneraterecordsAPI = require('../db/generaterecords_api');
 const ArticleAPI = require('../db/article_api');
 const BgImageAPI = require('../db/bgimage_api');
 const MusicAPI = require('../db/music_api')
+const ProductAPI = require('../db/product_api')
 const Uploadfiles = require('../model/uploadfiles');
 const SkeletonTemplate = require('../model/skeleton_template');
 const Article = require('../model/article');
@@ -202,7 +203,7 @@ function getBgImageList() {
 
 function getProductList() {
     return new Promise((resolve, reject) => {
-        ArticleAPI.getProductList().then((result) => {
+        ProductAPI.getList().then((result) => {
             resolve(result)
         }).catch((err) => {
             reject(err)
@@ -295,7 +296,7 @@ module.exports = {
     getMusicList,
     getMusic,
     getBgImageList,
-    getProductList,
+    getProductList: getProductList,
     getArticleTemplateList,
     getArticleByCodeId,
     createArticle,

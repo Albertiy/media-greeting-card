@@ -10,6 +10,7 @@ router.get('/productlist', function (req, res, next) {
     dbService.getProductList().then((result) => {
         res.send(new ReqBody(1, result))
     }).catch((err) => {
+        console.log(err)
         res.send(new ReqBody(0, null, err))
     });
 })
