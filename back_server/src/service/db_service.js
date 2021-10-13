@@ -2,6 +2,7 @@ const UploadfilesAPI = require('../db/uploadfiles_api');
 const GeneraterecordsAPI = require('../db/generaterecords_api');
 const ArticleAPI = require('../db/article_api');
 const BgImageAPI = require('../db/bgimage_api');
+const MusicAPI = require('../db/music_api')
 const Uploadfiles = require('../model/uploadfiles');
 const SkeletonTemplate = require('../model/skeleton_template');
 const Article = require('../model/article');
@@ -278,6 +279,10 @@ function getBgImage(id) {
     return BgImageAPI.getById(id);
 }
 
+function getMusic(id) {
+    return MusicAPI.getById(id);
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -288,6 +293,7 @@ module.exports = {
     updateGreetingText,
     updateGreetingFiles,
     getMusicList,
+    getMusic,
     getBgImageList,
     getProductList,
     getArticleTemplateList,

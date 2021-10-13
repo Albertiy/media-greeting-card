@@ -1,16 +1,18 @@
 const ConnPool = require('./conn_pool')
 const pool = ConnPool.getPool();
-const Bgimage = require('../model/bgimage')
+const Music = require('../model/music')
 
-const getListSql = 'select * from bgimage';
+const getListSql = 'select * from music';
+// select * from music where product_id = ? order by `order` is null, `order`asc;
 const getByIdSql = 'select * from bgimage where id = ?';
 
 const orderStr = ' order by `order` is null, `order` asc';
 
+
 /**
- * 获取内置背景图片列表
+ * 获取音乐列表
  * @param {number} [product_id]
- * @returns {Bgimage[]}
+ * @returns {Music[]}
  */
 function getList(product_id) {
     let query = getListSql;
@@ -29,7 +31,11 @@ function getList(product_id) {
     })
 }
 
-
+/**
+ * 
+ * @param {number} id 
+ * @returns 
+ */
 function getById(id) {
     let query = getByIdSql;
     let data = [id];
@@ -42,7 +48,7 @@ function getById(id) {
             } else if (res.length > 0) {
                 resolve(res[0])
             } else {
-                reject('未找到对应图片')
+                reject('未找到对应音乐')
             }
         })
     })

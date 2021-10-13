@@ -1,6 +1,7 @@
 var express = require('express');
 const ReqBody = require('../../src/model/req_body');
 var router = express.Router();
+var path = require('path')
 
 const dbService = require('../../src/service/db_service')
 const fileService = require('../../src/service/file_service')
@@ -76,15 +77,29 @@ router.get('/recordandarticle', function (req, res, next) {
 
 router.get('/bgimage', function (req, res, next) {
     let { id } = req.query;
+    if (!id) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
+    id = parseInt(id);
     console.log('id: ' + id)
-    if (!code) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
-    dbService.getBgImage().then((result) => {
-        let filePath = result.path;
-        const tempFilePath = path.resolve(rootStoragePath, './temp');
-        res.sendFile(path.join(fileService.getBgImageRoot(), filePath))
+    dbService.getBgImage(id).then((result) => {
+        // let filePath = result.path;
+        // console.log('path: %o', filePath)
+        // let absPath = path.join(fileService.getFileRoot(), filePath);
+        // console.log('absPath: %o', absPath)
+        // res.sendFile(absPath)
+        res.send(new ReqBody(1, result.path))
     }).catch((err) => {
         res.send(new ReqBody(0, null, err))
     });
+})
+
+router.get('/music', function (req, res, next) {
+    let { id } = req.query;
+    if (!id) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
+    id = parseInt(id);
+    console.log('id: ' + id)
+    dbService.getMusic(id).then((result) => {
+        res.send(new ReqBody(1, result.path))
+    }).catch(err => { res.send(new ReqBody(0, null, err)) })
 })
 
 module.exports = router;
