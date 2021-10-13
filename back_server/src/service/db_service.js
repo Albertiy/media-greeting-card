@@ -1,6 +1,7 @@
 const UploadfilesAPI = require('../db/uploadfiles_api');
 const GeneraterecordsAPI = require('../db/generaterecords_api');
 const ArticleAPI = require('../db/article_api');
+const ArticleTemplateAPI = require('../db/article_template_api');
 const BgImageAPI = require('../db/bgimage_api');
 const MusicAPI = require('../db/music_api')
 const ProductAPI = require('../db/product_api')
@@ -213,7 +214,7 @@ function getProductList() {
 
 function getArticleTemplateList() {
     return new Promise((resolve, reject) => {
-        ArticleAPI.getArticleTemplateList().then((result) => {
+        ArticleTemplateAPI.getArticleTemplateList().then((result) => {
             resolve(result)
         }).catch((err) => {
             reject(err)

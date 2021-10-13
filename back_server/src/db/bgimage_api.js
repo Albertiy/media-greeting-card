@@ -35,7 +35,6 @@ function getById(id) {
     let data = [id];
     return new Promise((resolve, reject) => {
         pool.query(query, data, (err, res, fields) => {
-            console.log(res)
             if (err) {
                 console.log(err)
                 reject(err)
