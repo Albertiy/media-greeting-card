@@ -7,16 +7,16 @@ SELECT * FROM product;
 
 -- 插入音乐
 
-insert into music(product_id,`name`,author,`path`,`order`) values(2, 'Default - 温馨', 'default', 'music\\default-1.mp3', 1);
-insert into music(product_id,`name`,author,`path`,`order`) values(2, 'Default - 浪漫', 'default', 'music\\default-2.mp3', 2);
+insert into music(product_id,`name`,author,`path`,`order`) values(2, 'Default - 温馨', 'default', 'music\\\\default-1.mp3', 1);
+insert into music(product_id,`name`,author,`path`,`order`) values(2, 'Default - 浪漫', 'default', 'music\\\\default-2.mp3', 2);
 
 select * from music;
 
 -- 插入背景图片
 
-insert into bgimage(product_id,`name`,`path`,`order`) values(2, 'Default - 冉兰', 'bgimage\\bush.png',1);
-insert into bgimage(product_id,`name`,`path`,`order`) values(2, 'Default - 几何叶', 'bgimage\\geometric-leaves.png',2);
-insert into bgimage(product_id,`name`,`path`,`order`) values(2, 'Default - 素心', 'bgimage\\pixel-heart.png',3);
+insert into bgimage(product_id,`name`,`path`,`order`) values(2, 'Default - 冉兰', 'bgimage\\\\bush.png',1);
+insert into bgimage(product_id,`name`,`path`,`order`) values(2, 'Default - 几何叶', 'bgimage\\\\geometric-leaves.png',2);
+insert into bgimage(product_id,`name`,`path`,`order`) values(2, 'Default - 素心', 'bgimage\\\\pixel-heart.png',3);
 
 SELECT * FROM bgimage;
 
