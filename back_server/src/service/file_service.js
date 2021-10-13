@@ -4,10 +4,20 @@ var path = require('path');
 var fs = require('fs');
 
 module.exports = {
+    getBgImageRoot: getBgImageRoot,
+    getMusicRoot: getMusicRoot,
     getFileRoot: getFileRoot,
     mkdirs: mkdirs,
     mkdirsSync: mkdirsSync,
     deletefile: deletefile,
+}
+
+function getBgImageRoot() {
+    return path.resolve(getFileRoot(), config.application().bgImageRoot);
+}
+
+function getMusicRoot() {
+    return path.resolve(getFileRoot(), config.application().musicRoot);
 }
 
 /**

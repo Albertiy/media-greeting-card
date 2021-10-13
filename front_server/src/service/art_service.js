@@ -1,6 +1,7 @@
 import * as ArtAPI from '../api/art_api';
 import Article from '../model/article';
 import Product from '../model/product';
+import Uploadfiles from '../model/uploadfiles';
 
 
 /**
@@ -18,4 +19,13 @@ export function getProducts() {
  */
 export function getArticle(codeId) {
     return ArtAPI.getArticle(codeId);
+}
+
+/**
+ * 同时获取record和article
+ * @param {string} code 二维码uuid
+ * @returns {Promise<{record: Uploadfiles, article: Article}>}
+ */
+export function getRecordAndArticle(code) {
+    return ArtAPI.getRecordAndArticle(code);
 }

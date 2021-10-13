@@ -3,6 +3,7 @@ const ReqBody = require('../../src/model/req_body');
 var router = express.Router();
 
 const dbService = require('../../src/service/db_service')
+const fileService = require('../../src/service/file_service')
 
 router.get('/productlist', function (req, res, next) {
     dbService.getProductList().then((result) => {
@@ -49,6 +50,38 @@ router.get('/article', function (req, res, next) {
     // 当前无需 template_id 参数，无需判断code_id是否存在（有外键）
     dbService.getOrCreateArticleByCodeId(codeid).then((result) => {
         res.send(new ReqBody(1, result))
+    }).catch((err) => {
+        res.send(new ReqBody(0, null, err))
+    });
+})
+
+/**
+ * 一次性获取record和article对象（不使用视图，方便复用当前service）
+ * 结构：{record, article}
+ */
+router.get('/recordandarticle', function (req, res, next) {
+    let { code } = req.query;
+    console.log('code: ' + code)
+    if (!code) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
+    dbService.getUploadInfo(code).then((uploadRecord) => {
+        dbService.getArticleByCodeId(uploadRecord.id).then((article) => {
+            res.send(new ReqBody(1, { record: uploadRecord, article: article }))
+        }).catch((err) => {
+            res.send(new ReqBody(0, null, err))
+        });
+    }).catch((err) => {
+        res.send(new ReqBody(0, null, err))
+    });
+})
+
+router.get('/bgimage', function (req, res, next) {
+    let { id } = req.query;
+    console.log('id: ' + id)
+    if (!code) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
+    dbService.getBgImage().then((result) => {
+        let filePath = result.path;
+        const tempFilePath = path.resolve(rootStoragePath, './temp');
+        res.sendFile(path.join(fileService.getBgImageRoot(), filePath))
     }).catch((err) => {
         res.send(new ReqBody(0, null, err))
     });

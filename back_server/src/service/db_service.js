@@ -1,9 +1,11 @@
 const UploadfilesAPI = require('../db/uploadfiles_api');
 const GeneraterecordsAPI = require('../db/generaterecords_api');
 const ArticleAPI = require('../db/article_api');
+const BgImageAPI = require('../db/bgimage_api');
 const Uploadfiles = require('../model/uploadfiles');
 const SkeletonTemplate = require('../model/skeleton_template');
 const Article = require('../model/article');
+const BgImage = require('../model/bgimage')
 
 /**
  * 合并批量插入二维码与插入生成记录服务
@@ -189,7 +191,7 @@ function getMusicList() {
 
 function getBgImageList() {
     return new Promise((resolve, reject) => {
-        ArticleAPI.getBgImageList().then((result) => {
+        BgImageAPI.getList().then((result) => {
             resolve(result)
         }).catch((err) => {
             reject(err)
@@ -267,6 +269,15 @@ function getOrCreateArticleByCodeId(codeId) {
     })
 }
 
+/**
+ * 
+ * @param {number} id 
+ * @returns {Promise<BgImage>}
+ */
+function getBgImage(id) {
+    return BgImageAPI.getById(id);
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -283,4 +294,5 @@ module.exports = {
     getArticleByCodeId,
     createArticle,
     getOrCreateArticleByCodeId,
+    getBgImage,
 }

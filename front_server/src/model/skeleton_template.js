@@ -1,5 +1,5 @@
-export default SkeletonTemplate = [
-    {
+export const SkeletonTemplate = {
+    1: {
         name: '默认模板-1',
         /** @type{string} 自定义页面标题，默认空 */
         title: null,
@@ -16,4 +16,4 @@ export default SkeletonTemplate = [
         /** @type{string} 自定义字体，默认空 */
         font: null,
     }
-];
+};

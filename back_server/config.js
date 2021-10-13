@@ -16,6 +16,8 @@ const fs = require('fs');
  * videoFileRoot: string,
  * audioFileRoot: string,
  * qrFileRoot: string,
+ * bgImageRoot: string,
+ * musicRoot: string,
  * ffmpegRoot: string,
  * }}
  */

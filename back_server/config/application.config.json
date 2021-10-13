@@ -11,5 +11,7 @@
   "videoFileRoot": "./video",
   "audioFileRoot": "./audio",
   "qrFileRoot": "./qr",
+  "bgImageRoot": "./bgimage",
+  "musicRoot": "./music",
   "ffmpegRoot": ""
 }

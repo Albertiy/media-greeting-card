@@ -6,6 +6,7 @@ import { apiProcessor } from './api_tool';
 
 const getProductListUrl = '/api/productlist';
 const getArticleUrl = '/api/article';
+const getRecordAndArticleUrl = '/api/recordandarticle';
 
 /**
  * 
@@ -22,4 +23,8 @@ export function getProductList() {
  */
 export function getArticle(codeid) {
     return apiProcessor(axios.get(getArticleUrl, { params: { codeid } }))
+}
+
+export function getRecordAndArticle(code) {
+    return apiProcessor(axios.get(getRecordAndArticleUrl, { params: { code } }))
 }

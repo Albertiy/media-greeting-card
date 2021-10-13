@@ -6,7 +6,6 @@ const Product = require('../model/product')
 const ArticleTemplate = require('../model/article_template')
 const Article = require('../model/article')
 const getMusicListSql = 'select * from music'; // select * from music where product_id = ? order by `order` is null, `order`asc;
-const getBgImageListSql = 'select * from bgimage';
 const getProductListSql = 'select * from product';
 const getArticleTemplateListSql = 'select * from article_template';
 const getArticleByCodeIdSql = 'select * from article where code_id = ?';
@@ -22,28 +21,6 @@ const orderStr = ' order by `order` is null, `order` asc';
  */
 function getMusicList(product_id) {
     let query = getMusicListSql;
-    let data = [];
-    if (product_id) { query += ' where product_id = ? '; data.push(product_id); }
-    query += orderStr;
-    return new Promise((resolve, reject) => {
-        pool.query(query, data, (err, res, fields) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(res)
-            }
-        })
-    })
-}
-
-/**
- * 获取内置背景图片列表
- * @param {number} [product_id]
- * @returns {Bgimage[]}
- */
-function getBgImageList(product_id) {
-    let query = getBgImageListSql;
     let data = [];
     if (product_id) { query += ' where product_id = ? '; data.push(product_id); }
     query += orderStr;
@@ -141,7 +118,6 @@ function addArticle(code_id, template_id, skeleton) {
 
 module.exports = {
     getMusicList,
-    getBgImageList,
     getProductList,
     getArticleTemplateList,
     getArticleByCodeId,
