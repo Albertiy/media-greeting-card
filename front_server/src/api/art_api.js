@@ -7,6 +7,8 @@ import { apiProcessor } from './api_tool';
 const getProductListUrl = '/api/productlist';
 const getArticleUrl = '/api/article';
 const getRecordAndArticleUrl = '/api/recordandarticle';
+const getBgImageUrl = '/api/bgimage';
+const getMusicUrl = '/api/music';
 
 /**
  * 
@@ -27,4 +29,12 @@ export function getArticle(codeid) {
 
 export function getRecordAndArticle(code) {
     return apiProcessor(axios.get(getRecordAndArticleUrl, { params: { code } }))
+}
+
+export function getBgImage(id) {
+    return apiProcessor(axios.get(getBgImageUrl, { params: { id } }))
+}
+
+export function getMusic(id) {
+    return apiProcessor(axios.get(getMusicUrl, { params: { id } }))
 }

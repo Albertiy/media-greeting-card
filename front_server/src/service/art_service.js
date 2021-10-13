@@ -1,5 +1,7 @@
 import * as ArtAPI from '../api/art_api';
 import Article from '../model/article';
+import Bgimage from '../model/bgimage';
+import Music from '../model/music';
 import Product from '../model/product';
 import Uploadfiles from '../model/uploadfiles';
 
@@ -28,4 +30,22 @@ export function getArticle(codeId) {
  */
 export function getRecordAndArticle(code) {
     return ArtAPI.getRecordAndArticle(code);
+}
+
+/**
+ * 
+ * @param {number} id 
+ * @returns {Promise<Bgimage>}
+ */
+export function getBgImage(id) {
+    return ArtAPI.getBgImage(id);
+}
+
+/**
+ * 
+ * @param {number} id 
+ * @returns {Promise<Music>}
+ */
+export function getMusic(id) {
+    return ArtAPI.getMusic(id);
 }
