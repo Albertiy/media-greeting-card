@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: relative;
 }
 
 .main {
@@ -11,11 +12,94 @@
   // background-color: $color-background-violet;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  // align-items: center;
   justify-content: center;
   position: relative;
-  padding-bottom: 1.75rem;
+  // padding-bottom: 1.75rem;
+  position: relative;
 }
 
-.backgroundLayer {
+.contentLayer {
+  flex: 1;
+  margin: 2rem;
+  display: grid;
+  grid-template-rows: 3fr 4fr 2fr;
+}
+
+.upperLayer {
+  pointer-events: none;
+  position: absolute;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.mainImageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mainImageBorder {
+  border: 0.125rem solid $color-shadow-panel;
+  border-radius: 0.5rem;
+  max-width: 90%;
+  max-height: 90%;
+  width: 19.2rem;
+  height: 12.7rem;
+  background-color: $color-input-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mainParagraphContainer {
+  background-color: $color-input-bg;
+  border-radius: 0.5rem;
+  display: flex;
+  margin: 1rem;
+}
+
+.paragraph {
+  user-select: text;
+  -webkit-user-select: text;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+}
+
+.interactiveMessageContainer {
+}
+
+.musicBtn {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  pointer-events: auto;
+  width: 2rem;
+  height: 2rem;
+  overflow: visible;
+  border-radius: 50%;
+  background-color: $color-shadow-panel;
+  border: 2px solid $color-input-text;
+
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  color: $color-float-icon;
+}
+
+.musicOnBtn {
+  background-color: $color-background-violet;
+  animation: rotate 2.5s infinite linear;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

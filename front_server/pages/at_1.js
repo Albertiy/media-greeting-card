@@ -1,3 +1,5 @@
+import { mdiMusic, mdiMusicOff } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -29,6 +31,7 @@ function ArtTemp1() {
     const [article, setArticle] = useState(defaultArticle);
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
     const [bgImageUrl, setBgImageUrl] = useState(defaultBgImageUrl);
+    const [musicOn, setMusicOn] = useState(false);
 
     useEffect(() => {
         console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
@@ -65,7 +68,7 @@ function ArtTemp1() {
     async function getInfoByCode(code) {
         try {
             let { record, article } = await ArtService.getRecordAndArticle(code);
-            console.log('record: %o, article: %o', record, article)
+            console.log('record: %o\narticle: %o\nskeleton: %o', record, article, article.skeleton)
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);
@@ -82,16 +85,32 @@ function ArtTemp1() {
             <link rel="icon" href="/favicon.ico" />
         </Head>
         <header>
-
         </header>
         <main className={styles.main} style={bgImageUrl ? { backgroundImage: `url(${bgImageUrl})` } : {}}>
             {/* 背景层 */}
-            <div id='content_layer'>
-
+            <div className={styles.contentLayer}>
+                <section className={styles.mainImageContainer}>
+                    {(skeleton && skeleton.imageList && skeleton.imageList[0]) ? (
+                        <img src={getFile(skeleton.imageList[0])}></img>
+                    ) : (
+                        <div className={styles.mainImageBorder}>点击上传照片</div>
+                    )}
+                </section>
+                <section className={styles.mainParagraphContainer}>
+                    <p className={styles.paragraph} contentEditable="true" suppressContentEditableWarning="true" onChange={(e) => { console.log(e) }}>xxx</p>
+                </section>
+                <section className={styles.interactiveMessageContainer}>
+                </section>
             </div>
-        </main>
-        <footer></footer>
-    </div>;
+            <div className={styles.upperLayer}>
+                <section className={[styles.musicBtn, musicOn ? styles.musicOnBtn : undefined].join(" ")} onClick={() => { setMusicOn(old => !old) }}>
+                    <Icon path={musicOn ? mdiMusic : mdiMusicOff} size={0.85}></Icon>
+                </section>
+            </div>
+        </main >
+        <footer>
+        </footer>
+    </div >;
 }
 
 export default ArtTemp1;
