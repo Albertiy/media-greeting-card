@@ -1,4 +1,15 @@
+.container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
 .music_btn {
+    position: absolute;
+    top: 0;
+    left: 0;
     pointer-events: auto;
     width: 2rem;
     height: 2rem;
@@ -10,21 +21,83 @@
     align-content: center;
     justify-content: center;
     color: rgba(255, 255, 255, 1);
-    animation: rotate 2.5s infinite linear;
+    animation: rotate 5s infinite linear;
     animation-play-state: paused;
 }
 
 .music_on_btn {
     background-color: #a69cff;
     animation-play-state: running;
+    background-blend-mode: difference;
+}
+
+.effect {
+    position: absolute;
+    /* top: 50%;
+    left: 50%; */
+    z-index: -1;
+    overflow: visible;
+}
+
+.effect_svg {
+    display: none;
+}
+
+.moon {
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid #888888;
+}
+
+.satellite_ball {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: rotate 8s linear infinite;
+    animation-play-state: paused;
+    visibility: hidden;
+}
+
+.satellite_ball_on {
+    animation-play-state: running;
+    visibility: visible;
+}
+
+.satellite_ball::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -1.4rem;
+    /* border-radius: 50%; */
+    /* width: 0.5rem; */
+    /* height: 0.5rem; */
+    /* background-color: #888888; */
+    width: 0;
+    height: 0;
+    border-left: 0.25rem solid transparent;
+    border-right: 0.25rem solid transparent;
+    border-bottom: 0.5rem solid #888888;
+}
+
+.ball_1::before {
+    border-bottom-color: #0ab2ff;
+}
+
+.ball_2::before {
+    border-bottom-color: #ff7b00;
 }
 
 @keyframes rotate {
     0% {
-        transform: rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg);
     }
 
     100% {
-        transform: rotate(360deg);
+        transform: translate(-50%, -50%) rotate(360deg);
     }
 }
