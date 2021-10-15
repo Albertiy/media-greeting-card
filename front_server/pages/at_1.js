@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useRef, useState } from 'react';
+import BackgroundMusic from '../src/component/background_music/background_music';
 import Article from '../src/model/article';
 import { SkeletonTemplate } from '../src/model/skeleton_template';
 import Uploadfiles from '../src/model/uploadfiles';
@@ -19,7 +20,10 @@ const defaultRecord = null;
 const defaultArticle = null;
 /** @type{SkeletonTemplate[1]} */
 const defaultSkeleton = null;
+/** @type{string} */
 const defaultBgImageUrl = null;
+/** @type{string} */
+const defaultBgMusicUrl = null;
 
 function ArtTemp1() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -32,6 +36,7 @@ function ArtTemp1() {
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
     const [bgImageUrl, setBgImageUrl] = useState(defaultBgImageUrl);
     const [musicOn, setMusicOn] = useState(false);
+    const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
 
     useEffect(() => {
         console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
@@ -58,6 +63,14 @@ function ArtTemp1() {
                 ArtService.getBgImage(skeleton.bgImageId).then((result) => {
                     console.log('[bgimage url]: %o', result)
                     setBgImageUrl(getFile(result))
+                }).catch((err) => {
+                    console.log(err)
+                });
+            }
+            if (skeleton.bgMusicId) {
+                ArtService.getMusic(skeleton.bgMusicId).then((result) => {
+                    console.log('[bgmusic url]: %o', result)
+                    setBgMusicUrl(getFile(result))
                 }).catch((err) => {
                     console.log(err)
                 });
@@ -103,8 +116,8 @@ function ArtTemp1() {
                 </section>
             </div>
             <div className={styles.upperLayer}>
-                <section className={[styles.musicBtn, musicOn ? styles.musicOnBtn : undefined].join(" ")} onClick={() => { setMusicOn(old => !old) }}>
-                    <Icon path={musicOn ? mdiMusic : mdiMusicOff} size={0.85}></Icon>
+                <section className={styles.musicBtn}>
+                    <BackgroundMusic musicOn={musicOn} source={bgMusicUrl} onClick={() => { setMusicOn(old => !old) }}></BackgroundMusic>
                 </section>
             </div>
         </main >

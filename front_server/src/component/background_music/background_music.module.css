@@ -1,0 +1,30 @@
+.music_btn {
+    pointer-events: auto;
+    width: 2rem;
+    height: 2rem;
+    overflow: visible;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 2px solid #888888;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 1);
+    animation: rotate 2.5s infinite linear;
+    animation-play-state: paused;
+}
+
+.music_on_btn {
+    background-color: #a69cff;
+    animation-play-state: running;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
