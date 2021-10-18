@@ -1,0 +1,69 @@
+.iconContainer {
+  position: relative;
+}
+
+.toggleBtn {
+  top: 1.4rem;
+  left: 1.2rem;
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  padding: 0;
+  color: #888888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggleIcon {
+}
+
+// 显隐过渡，width 不咋地，用透明度吧。
+.container {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  transition: all 0.2s linear;
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.sideItem {
+  padding: 0 16px 0 24px;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  @extend .sideItem;
+  height: 52px;
+  color: white;
+  background-color: rgb(255, 110, 66);
+}
+
+.divider {
+  border-color: rgba(255, 255, 255, 0.6);
+  // margin: 18px 16px 6px 24px;
+  margin: 18px 0 6px 0;
+  width: auto;
+  min-width: auto;
+}
+
+.quitBtn {
+  @extend .sideItem;
+  margin-top: 4px;
+  justify-content: flex-end;
+}
+
+.sider {
+  width: 10rem;
+  height: 100%;
+}
+
+.menu {
+}

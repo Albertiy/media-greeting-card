@@ -1,0 +1,24 @@
+@import "../../../styles/global.scss";
+
+textarea.paragraph{
+  border-radius: 0.5rem;
+  user-select: text;
+  -webkit-user-select: text;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  outline: none;
+  text-overflow: ellipsis;
+  background-color: transparent;
+  border: none;
+}
+
+.paragraph:focus {
+  background-color: $color-input-bg;
+  box-shadow: $color-shadow-panel 0px 0px 4px 2px inset;
+  border: none;
+}
+
+.paragraph:empty {
+  border: 0.25rem dashed $color-background-wuwangcao;
+}

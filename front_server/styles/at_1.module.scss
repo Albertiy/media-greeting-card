@@ -72,6 +72,8 @@
   padding: 0.5rem;
   outline: none;
   text-overflow: ellipsis;
+  background-color: transparent;
+  border: none;
 }
 
 .paragraph:focus {
@@ -89,9 +91,16 @@
   visibility: hidden;
 }
 
+.menuBtn {
+  position: fixed;
+
+  pointer-events: auto;
+}
+
 .musicBtn {
   position: fixed;
-  top: 2rem;
-  right: 2rem;
+  top: 1.6rem;
+  right: 1.2rem;
+  transform: translate(-50%, -50%);
   pointer-events: auto;
 }
