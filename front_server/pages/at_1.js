@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useRef, useState } from 'react';
 import BackgroundMusic from '../src/component/background_music/background_music';
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
+import MainImage from '../src/component/main_image/MainImage';
 import Paragraph from '../src/component/paragraph/Paragraph';
 import Article from '../src/model/article';
 import { SkeletonTemplate } from '../src/model/skeleton_template';
@@ -15,6 +16,7 @@ import * as ArtService from '../src/service/art_service';
 import { getFile } from '../src/service/file_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/at_1.module.scss';
+import useCode from '../src/hook/useCode'
 const { TextArea } = Input;
 
 const defaultRouterLoaded = false;
@@ -32,10 +34,10 @@ const defaultP1 = '';
 
 function ArtTemp1() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const router = useRouter();
-    const routerRefreshCount = useRef(0);
-    const [routerLoaded, setRouterLoaded] = useState(defaultRouterLoaded);
-    const [code, setCode] = useState(null);
+    // const router = useRouter();
+    // const routerRefreshCount = useRef(0);
+    // const [routerLoaded, setRouterLoaded] = useState(defaultRouterLoaded);
+    // const [code, setCode] = useState(null);
     const [record, setRecord] = useState(defaultRecord);
     const [article, setArticle] = useState(defaultArticle);
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
@@ -44,20 +46,26 @@ function ArtTemp1() {
     const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
     const [p1, setP1] = useState(defaultP1)
 
-    useEffect(() => {
-        console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
-        let params = router.query;
-        console.log('params: %o', params)
-        if (params && params.code) {
-            let code = params.code;
-            enqueueSnackbar('code: ' + code, { variant: 'info', autoHideDuration: 1000 })
-            setCode(code);
-            getInfoByCode(code);
-        }
+    // useEffect(() => {
+    //     console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
+    //     let params = router.query;
+    //     console.log('params: %o', params)
+    //     if (params && params.code) {
+    //         let code = params.code;
+    //         enqueueSnackbar('code: ' + code, { variant: 'info', autoHideDuration: 1000 })
+    //         setCode(code);
+    //         getInfoByCode(code);
+    //     }
 
-        if (routerRefreshCount.current > 0) { setRouterLoaded(true); console.log('路由参数已加载') }
-        routerRefreshCount.current += 1;
-    }, [router.query])
+    //     if (routerRefreshCount.current > 0) { setRouterLoaded(true); console.log('路由参数已加载') }
+    //     routerRefreshCount.current += 1;
+    // }, [router.query])
+    const { code, routerRefreshCount, routerLoaded } = useCode();
+
+    useEffect(() => {
+        if (code)
+            getInfoByCode(code);
+    }, [code])
 
     /** 初始化skeleton，加载内容 */
     useEffect(() => {
@@ -121,11 +129,7 @@ function ArtTemp1() {
             {/* 背景层 */}
             <div className={styles.contentLayer}>
                 <section className={styles.mainImageContainer}>
-                    {(skeleton && skeleton.imageList && skeleton.imageList[0]) ? (
-                        <img src={getFile(skeleton.imageList[0])}></img>
-                    ) : (
-                        <div className={styles.mainImageBorder}>点击上传照片</div>
-                    )}
+                    <MainImage src={skeleton && skeleton.imageList && skeleton.imageList[0] && getFile(skeleton.imageList[0])}></MainImage>
                 </section>
                 <section className={styles.mainParagraphContainer}>
                     {/*  contentEditable="true" suppressContentEditableWarning="true"  */}

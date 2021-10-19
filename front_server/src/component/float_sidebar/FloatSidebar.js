@@ -38,7 +38,7 @@ function FloatSidebar(props) {
                     </Menu>
                     <Divider className={styles.divider}></Divider>
                     <div className={styles.quitBtn}>
-                        <Button type="link" ghost size={'large'}><ExportOutlined />退出</Button>
+                        <Button type="link" size={'large'}><ExportOutlined />退出</Button>
                     </div>
                 </Sider>
             </div>
