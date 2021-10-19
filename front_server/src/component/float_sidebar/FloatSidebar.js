@@ -15,7 +15,7 @@ function FloatSidebar(props) {
 
     return (
         <div className={styles.iconContainer}>
-            <Button className={styles.toggleBtn} onClick={() => { console.log('显示侧边栏！'); setShow(true); }}>
+            <Button className={styles.toggleBtn} onClick={() => { console.log('显示侧边栏！'); setShow(true); }} title="切换侧边栏显示隐藏">
                 <Icon className={styles.toggleIcon} path={mdiMenu} size={1.0} />
             </Button>
             <div className={styles.container} style={show ? { visibility: 'visible', opacity: '100%' } : { visibility: 'collapse', opacity: '0%' }} onClick={() => {
@@ -38,7 +38,7 @@ function FloatSidebar(props) {
                     </Menu>
                     <Divider className={styles.divider}></Divider>
                     <div className={styles.quitBtn}>
-                        <Button type="link" ghost size={'large'}><ExportOutlined />退出</Button>
+                        <Button type="link" size={'large'}><ExportOutlined />退出</Button>
                     </div>
                 </Sider>
             </div>

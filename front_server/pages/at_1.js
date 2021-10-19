@@ -2,12 +2,13 @@ import { mdiMenu } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { Input } from 'antd';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useRef, useState } from 'react';
 import BackgroundMusic from '../src/component/background_music/background_music';
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
+import MainImage from '../src/component/main_image/MainImage';
 import Paragraph from '../src/component/paragraph/Paragraph';
+import useCode from '../src/hook/useCode';
 import Article from '../src/model/article';
 import { SkeletonTemplate } from '../src/model/skeleton_template';
 import Uploadfiles from '../src/model/uploadfiles';
@@ -17,7 +18,6 @@ import GlobalSettings from '../src/setting/global';
 import styles from '../styles/at_1.module.scss';
 const { TextArea } = Input;
 
-const defaultRouterLoaded = false;
 /**@type{Uploadfiles} */
 const defaultRecord = null;
 /** @type{Article} */
@@ -32,10 +32,7 @@ const defaultP1 = '';
 
 function ArtTemp1() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const router = useRouter();
-    const routerRefreshCount = useRef(0);
-    const [routerLoaded, setRouterLoaded] = useState(defaultRouterLoaded);
-    const [code, setCode] = useState(null);
+    const { code, routerRefreshCount, routerLoaded } = useCode();
     const [record, setRecord] = useState(defaultRecord);
     const [article, setArticle] = useState(defaultArticle);
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
@@ -45,19 +42,9 @@ function ArtTemp1() {
     const [p1, setP1] = useState(defaultP1)
 
     useEffect(() => {
-        console.log('第' + (routerRefreshCount.current + 1) + '次路由刷新')
-        let params = router.query;
-        console.log('params: %o', params)
-        if (params && params.code) {
-            let code = params.code;
-            enqueueSnackbar('code: ' + code, { variant: 'info', autoHideDuration: 1000 })
-            setCode(code);
+        if (code)
             getInfoByCode(code);
-        }
-
-        if (routerRefreshCount.current > 0) { setRouterLoaded(true); console.log('路由参数已加载') }
-        routerRefreshCount.current += 1;
-    }, [router.query])
+    }, [code])
 
     /** 初始化skeleton，加载内容 */
     useEffect(() => {
@@ -121,11 +108,7 @@ function ArtTemp1() {
             {/* 背景层 */}
             <div className={styles.contentLayer}>
                 <section className={styles.mainImageContainer}>
-                    {(skeleton && skeleton.imageList && skeleton.imageList[0]) ? (
-                        <img src={getFile(skeleton.imageList[0])}></img>
-                    ) : (
-                        <div className={styles.mainImageBorder}>点击上传照片</div>
-                    )}
+                    <MainImage src={skeleton && skeleton.imageList && skeleton.imageList[0] && getFile(skeleton.imageList[0])}></MainImage>
                 </section>
                 <section className={styles.mainParagraphContainer}>
                     {/*  contentEditable="true" suppressContentEditableWarning="true"  */}
