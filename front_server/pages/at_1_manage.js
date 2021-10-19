@@ -2,15 +2,16 @@ import Head from 'next/head';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
+import ImageBtn from '../src/component/image_btn/ImageBtn';
 import MainImage from '../src/component/main_image/MainImage';
 import useCode from '../src/hook/useCode';
 import Article from '../src/model/article';
 import { SkeletonTemplate } from '../src/model/skeleton_template';
 import Uploadfiles from '../src/model/uploadfiles';
 import * as ArtService from '../src/service/art_service';
+import { getFile } from '../src/service/file_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/at_1_manage.module.scss';
-import { getFile } from '../src/service/file_service';
 
 /**@type{Uploadfiles} */
 const defaultRecord = null;
@@ -109,12 +110,18 @@ export default function At1Manage() {
                         <MainImage src={skeleton && skeleton.imageList && skeleton.imageList[0] || ''}></MainImage>
                     </section>
                     <section className={styles.editContainer}>
+                        <ImageBtn title="文字" src="img/article_btn/note.png" imgStyle={{ transform: 'translate(3px, 0px)' }} onClick={() => { console.log('点击了xxx按钮') }}></ImageBtn>
+                        <ImageBtn title="图片" src="img/article_btn/image.png"></ImageBtn>
+                        <ImageBtn title="背景" src="img/article_btn/renovation.png"></ImageBtn>
+                        <ImageBtn title="音乐" src="img/article_btn/music.png"></ImageBtn>
+                        <ImageBtn title="预览" src="img/article_btn/preview.png"></ImageBtn>
+                        <ImageBtn title="加密" src="img/article_btn/encrypted.png"></ImageBtn>
                     </section>
                     <section className={styles.interactiveMessageContainer}>
                     </section>
                 </div>
                 <div className={styles.upperLayer}>
-                    <section className={styles.menuBtn}>
+                    <section className={styles.menuBtnContainer}>
                         <FloatSidebar onItemClicks={[() => { }, () => { }]}></FloatSidebar>
                     </section>
                 </div>

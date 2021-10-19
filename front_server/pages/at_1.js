@@ -118,10 +118,10 @@ function ArtTemp1() {
                 </section>
             </div>
             <div className={styles.upperLayer}>
-                <section className={styles.musicBtn}>
+                <section className={styles.musicBtnContainer}>
                     <BackgroundMusic musicOn={musicOn} source={bgMusicUrl} onClick={() => { setMusicOn(old => !old) }}></BackgroundMusic>
                 </section>
-                <section className={styles.menuBtn}>
+                <section className={styles.menuBtnContainer}>
                     <FloatSidebar onItemClicks={[() => { }, () => { }]}></FloatSidebar>
                 </section>
             </div>
