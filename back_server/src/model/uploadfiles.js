@@ -10,6 +10,8 @@ class Uploadfiles {
     audioPath;
     isLocked;
     isDeleted;
+    modify_pwd;
+    access_pwd;
 
     /**
      * 数据库 uploadfiles 表，Code唯一表，兼音视频数据表
@@ -24,8 +26,10 @@ class Uploadfiles {
      * @param {string} audioPath 
      * @param {boolean} isLocked 
      * @param {boolean} isDeleted 
+     * @param {boolean} modify_pwd
+     * @param {boolean} access_pwd
      */
-    constructor(id, uuid, record_id, product_id, text_from, text_to, text_detail, videoPath, audioPath, isLocked, isDeleted) {
+    constructor(id, uuid, record_id, product_id, text_from, text_to, text_detail, videoPath, audioPath, isLocked, isDeleted, modify_pwd, access_pwd) {
         this.id = id;
         this.uuid = uuid;
         this.record_id = record_id;
@@ -37,6 +41,8 @@ class Uploadfiles {
         this.audioPath = audioPath;
         this.isLocked = isLocked;
         this.isDeleted = isDeleted;
+        this.modify_pwd = modify_pwd;
+        this.access_pwd = access_pwd;
     }
 }
 

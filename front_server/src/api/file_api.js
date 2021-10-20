@@ -1,11 +1,14 @@
 import axios from 'axios';
 import ReqBody from '../model/req_body';
 import Uploadfiles from '../model/uploadfiles';
+import { apiProcessor } from './api_tool';
 
 const uploadGreetingFilesUrl = '/api/uploadGreetingFiles';
 const getUploadInfoUrl = '/api/getGreetingFiles';
 const uploadGreetingTextUrl = '/api/uploadGreetingText';
 const setLockStateUrl = '/api/lock';
+const loginUrl = '/api/login';
+const accessUrl = '/api/access';
 
 /**
  * 
@@ -88,4 +91,14 @@ export function setLockState(code, state) {
         });
     })
 
+}
+
+export function login(code, password) {
+    let data = { code, modify_pwd: password };
+    return apiProcessor(axios.post(loginUrl, data))
+}
+
+export function access(code, password) {
+    let data = { code, access_pwd: password }
+    return apiProcessor(axios.post(accessUrl, data))
 }

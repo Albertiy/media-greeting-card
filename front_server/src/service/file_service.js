@@ -88,3 +88,33 @@ export function lock(code) {
     })
 
 }
+
+export function login(code, password) {
+    return new Promise((resolve, reject) => {
+        if (code && password != undefined && password != '') {
+            FileAPI.login(code, password).then((res) => {
+                console.log(res)
+                if (res.code == 'EXISTS_TOKEN' || res.code == 'NEW_TOKEN') resolve('验证通过')
+                else reject('无效返回码')
+            }).catch((err) => {
+                reject(err)
+            });
+        } else reject('编号和密码不能为空')
+    })
+
+}
+
+export function access(code, password) {
+    return new Promise((resolve, reject) => {
+        if (code && password != undefined && password != '') {
+            FileAPI.login(code, password).then((res) => {
+                console.log(res)
+                if (res.code == 'EXISTS_TOKEN' || res.code == 'NEW_TOKEN') resolve('解锁成功')
+                else reject('无效返回码')
+            }).catch((err) => {
+                reject(err)
+            });
+        } else reject('编号和密码不能为空')
+    })
+
+}

@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import authenticatedRoute from '../src/component/authenticated_route/AuthenticatedRoute';
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
 import ImageBtn from '../src/component/image_btn/ImageBtn';
 import MainImage from '../src/component/main_image/MainImage';
@@ -25,7 +26,7 @@ const defaultBgImageUrl = null;
 const defaultBgMusicUrl = null;
 const defaultP1 = '';
 
-export default function At1Manage() {
+function At1Manage() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { code, routerRefreshCount, routerLoaded } = useCode()
     const [record, setRecord] = useState(defaultRecord);
@@ -131,3 +132,5 @@ export default function At1Manage() {
         </div>
     )
 }
+
+export default authenticatedRoute(At1Manage, { tokenName: 'token' });
