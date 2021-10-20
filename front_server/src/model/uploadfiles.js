@@ -12,6 +12,7 @@ export default class Uploadfiles {
     isDeleted;
     modify_pwd;
     access_pwd;
+    needAccessPwd;
 
     /**
      * 数据库 uploadfiles 表
@@ -43,6 +44,7 @@ export default class Uploadfiles {
         this.isDeleted = isDeleted;
         this.modify_pwd = modify_pwd;
         this.access_pwd = access_pwd;
+        if (this.access_pwd) this.needAccessPwd = true;
     }
 }
 

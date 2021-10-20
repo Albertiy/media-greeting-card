@@ -2,12 +2,14 @@ import { mdiMenu } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { Input } from 'antd';
 import Head from 'next/head';
+import router from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useRef, useState } from 'react';
 import BackgroundMusic from '../src/component/background_music/background_music';
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../src/component/main_image/MainImage';
 import Paragraph from '../src/component/paragraph/Paragraph';
+import useAccessToken from '../src/hook/useAccessToken';
 import useCode from '../src/hook/useCode';
 import Article from '../src/model/article';
 import { SkeletonTemplate } from '../src/model/skeleton_template';
@@ -16,7 +18,6 @@ import * as ArtService from '../src/service/art_service';
 import { getFile } from '../src/service/file_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/at_1.module.scss';
-const { TextArea } = Input;
 
 /**@type{Uploadfiles} */
 const defaultRecord = null;
@@ -33,6 +34,7 @@ const defaultP1 = '';
 function ArtTemp1() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { code, routerRefreshCount, routerLoaded } = useCode();
+    const access_token = useAccessToken();
     const [record, setRecord] = useState(defaultRecord);
     const [article, setArticle] = useState(defaultArticle);
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
@@ -90,6 +92,9 @@ function ArtTemp1() {
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);
+            if (record.needAccessPwd && !access_token) { // 跳转输入访问密码页面
+                router.push({ pathname: '/access_login', query: { code } })
+            }
         } catch (error) {
             console.log(error)
             enqueueSnackbar(error.toString())

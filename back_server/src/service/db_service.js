@@ -132,8 +132,13 @@ function getUploadInfo(code) {
     return new Promise((resolve, reject) => {
         if (!code) { reject('缺少必要参数'); return; }
         UploadfilesAPI.getByCode(code).then((result) => {
-            if (result && result.length > 0)
-                resolve(result[0])
+            if (result && result.length > 0) {
+                /** @type {Uploadfiles} */
+                let temp = result[0];
+                temp.needAccessPwd = !!temp.access_pwd; // 此字段用于前端判断是否需要查看密码
+                resolve(temp)
+            }
+
             else
                 reject('无效的code')
         }).catch((err) => {
