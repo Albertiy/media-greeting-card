@@ -89,6 +89,12 @@ export function lock(code) {
 
 }
 
+/**
+ * 验证管理密码
+ * @param {*} code 
+ * @param {*} password 
+ * @returns 
+ */
 export function login(code, password) {
     return new Promise((resolve, reject) => {
         if (code && password != undefined && password != '') {
@@ -104,10 +110,37 @@ export function login(code, password) {
 
 }
 
+/**
+ * 修改管理密码
+ * @param {*} code 
+ * @param {*} oldPwd 
+ * @param {*} newPwd 
+ * @returns 
+ */
+export function changePwd(code, oldPwd, newPwd) {
+    return new Promise((resolve, reject) => {
+        if (code && oldPwd && newPwd) {
+            FileAPI.changePwd(code, oldPwd, newPwd).then((res) => {
+                console.log(res)
+                if (res.code == 'EXISTS_TOKEN' || res.code == 'NEW_TOKEN') resolve('验证通过')
+                else reject('无效返回码')
+            }).catch((err) => {
+                reject(err)
+            });
+        } else reject('编号和密码不能为空')
+    })
+}
+
+/**
+ * 验证访问密码，返回cookie值 access_token
+ * @param {string} code 
+ * @param {string} password 
+ * @returns 
+ */
 export function access(code, password) {
     return new Promise((resolve, reject) => {
         if (code && password != undefined && password != '') {
-            FileAPI.login(code, password).then((res) => {
+            FileAPI.access(code, password).then((res) => {
                 console.log(res)
                 if (res.code == 'EXISTS_TOKEN' || res.code == 'NEW_TOKEN') resolve('解锁成功')
                 else reject('无效返回码')
@@ -116,5 +149,23 @@ export function access(code, password) {
             });
         } else reject('编号和密码不能为空')
     })
+}
 
+/**
+ * 设置访问密码，无需原密码，清空访问密码则设置 password 为 null
+ * @param {string} code 
+ * @param {string} password 
+ * @returns 
+ */
+export function setAccessPwd(code, password) {
+    return new Promise((resolve, reject) => {
+        if (code && password != undefined && password != '') {
+            FileAPI.setAccessPwd(code, password).then((result) => {
+                console.log(res)
+                resolve(res)
+            }).catch((err) => {
+                reject(err)
+            });
+        }
+    })
 }

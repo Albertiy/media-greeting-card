@@ -9,6 +9,8 @@ const uploadGreetingTextUrl = '/api/uploadGreetingText';
 const setLockStateUrl = '/api/lock';
 const loginUrl = '/api/login';
 const accessUrl = '/api/access';
+const changePwdUrl = '/api/changepwd';
+const changeAccessPwdUrl = '/api/changeaccesspwd';
 
 /**
  * 
@@ -101,4 +103,14 @@ export function login(code, password) {
 export function access(code, password) {
     let data = { code, access_pwd: password }
     return apiProcessor(axios.post(accessUrl, data))
+}
+
+export function changePwd(code, oldPwd, newPwd) {
+    let data = { code, old_pwd: oldPwd, new_pwd: newPwd }
+    return apiProcessor(axios.post(changePwdUrl, data))
+}
+
+export function changeAccessPwd(code, pwd) {
+    let data = { code, new_pwd: pwd }
+    return apiProcessor(axios.post(changeAccessPwdUrl, data))
 }
