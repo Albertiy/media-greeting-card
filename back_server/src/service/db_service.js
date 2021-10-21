@@ -290,12 +290,26 @@ function getMusic(id) {
     return MusicAPI.getById(id);
 }
 
-function changeModifyPwd(code, oldPwd, newPwd) {
-
+function changeModifyPwd(code, newPwd) {
+    return new Promise((resolve, reject) => {
+        UploadfilesAPI.updateModifyPwd(code, newPwd).then((result) => {
+            if (result.affectedRows > 0) resolve('密码修改成功')
+            else reject('密码修改失败')
+        }).catch((err) => {
+            reject(err)
+        })
+    });
 }
 
-function changeAccessPwd(code, pwd) {
-
+function changeAccessPwd(code, newPwd) {
+    return new Promise((resolve, reject) => {
+        UploadfilesAPI.updateAccessPwd(code, newPwd).then((result) => {
+            if (result.affectedRows > 0) resolve('密码修改成功')
+            else reject('密码修改失败')
+        }).catch((err) => {
+            reject(err)
+        })
+    });
 }
 
 module.exports = {

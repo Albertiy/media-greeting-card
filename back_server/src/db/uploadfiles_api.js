@@ -7,6 +7,8 @@ const setLockSql = 'update uploadfiles set `isLocked` = ? where `uuid` = ?';
 const getByCodeSql = 'SELECT * FROM heka.uploadfiles where uuid = ?';
 const updateTextSql = 'update heka.`uploadfiles` set `text_from`=?, `text_to`=? where `uuid` = ?';
 const updateFileSql = 'update heka.`uploadfiles` set '; // where `uuid` = ?
+const updateModifyPwdSql = 'update uploadfiles set modify_pwd = ? where `uuid` = ?';
+const updateAccessPwdSql = 'update uploadfiles set access_pwd = ? where `uuid` = ?';
 
 /**
  * 新增多条数据
@@ -118,6 +120,48 @@ function updateFile(code, videoPath, audioPath) {
     })
 }
 
+/**
+ * 更新管理密码
+ * @param {string} code 
+ * @param {string} pwd 
+ * @returns 
+ */
+function updateModifyPwd(code, pwd) {
+    let data = [pwd, code];
+    let query = updateModifyPwdSql;
+    return new Promise((resolve, reject) => {
+        pool.query(query, data, (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
+
+/**
+ * 更新访问密码
+ * @param {string} code 
+ * @param {string} pwd 
+ * @returns 
+ */
+function updateAccessPwd(code, pwd = null) {
+    let data = [pwd, code];
+    let query = updateAccessPwdSql;
+    return new Promise((resolve, reject) => {
+        pool.query(query, data, (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
+
 
 module.exports = {
     addMultiple,
@@ -125,4 +169,6 @@ module.exports = {
     getByCode,
     updateText,
     updateFile,
+    updateModifyPwd,
+    updateAccessPwd,
 }
