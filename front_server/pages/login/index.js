@@ -3,10 +3,10 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useRef, useState } from 'react'
-import useCode from '../src/hook/useCode'
-import * as fileService from '../src/service/file_service'
-import GlobalSettings from '../src/setting/global'
-import styles from '../styles/login.module.scss'
+import useCode from '../../src/hook/useCode'
+import * as fileService from '../../src/service/file_service'
+import GlobalSettings from '../../src/setting/global'
+import styles from './login.module.scss'
 
 export default function login() {
     const router = useRouter();
