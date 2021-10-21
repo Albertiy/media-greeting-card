@@ -121,8 +121,7 @@ export function changePwd(code, oldPwd, newPwd) {
         if (code && oldPwd && newPwd) {
             FileAPI.changePwd(code, oldPwd, newPwd).then((res) => {
                 console.log(res)
-                if (res.code == 'EXISTS_TOKEN' || res.code == 'NEW_TOKEN') resolve('验证通过')
-                else reject('无效返回码')
+                resolve(res)
             }).catch((err) => {
                 reject(err)
             });
@@ -141,8 +140,7 @@ export function access(code, password) {
         if (code && password != undefined && password != '') {
             FileAPI.access(code, password).then((res) => {
                 console.log(res)
-                if (res.code == 'EXISTS_TOKEN' || res.code == 'NEW_TOKEN') resolve('解锁成功')
-                else reject('无效返回码')
+                resolve(res)
             }).catch((err) => {
                 reject(err)
             });
