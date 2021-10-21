@@ -133,4 +133,4 @@ function At1Manage() {
     )
 }
 
-export default authenticatedRoute(At1Manage, { tokenName: 'modify_token' });
+export default authenticatedRoute(At1Manage, { tokenName: GlobalSettings.modifyToken });
