@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useRef, useState } from 'react'
+import { useCookies } from 'react-cookie'
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar'
 import ModelLoading from '../../src/component/model_loading'
 import useCode from '../../src/hook/useCode'
@@ -17,6 +18,7 @@ export default function loginPwd() {
     const { code } = useCode();
     const [oldPwd, setOldPwd] = useState('')
     const [newPwd, setNewPwd] = useState('')
+    const [cookies, setCookie, removeCookie] = useCookies();
 
     /**
      * 点击登录按钮
@@ -76,7 +78,11 @@ export default function loginPwd() {
                     <section className={styles.menuBtnContainer}>
                         <FloatSidebar onItemClicks={[function () { router.push({ pathname: '/at_1_manage', query: { code } }) },
                         function () { router.push({ pathname: '/login_pwd', query: { code } }) },
-                        function () { router.push({ pathname: '/tips', query: { code } }) }]}></FloatSidebar>
+                        function () { router.push({ pathname: '/tips', query: { code } }) }]} onQuitClick={() => {
+                            console.log('退出')
+                            removeCookie(GlobalSettings.modifyToken || 'modify_token')
+                            console.log('modify_token: %o', cookies[GlobalSettings.modifyToken])
+                        }}></FloatSidebar>
                     </section>
                 </div>
             </main>

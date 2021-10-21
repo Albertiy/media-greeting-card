@@ -5,6 +5,7 @@ import Head from 'next/head';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useRef, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import BackgroundMusic from '../src/component/background_music/background_music';
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../src/component/main_image/MainImage';
@@ -42,6 +43,7 @@ function ArtTemp1() {
     const [musicOn, setMusicOn] = useState(false);
     const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
     const [p1, setP1] = useState(defaultP1)
+    const [cookies, setCookie, removeCookie] = useCookies();
 
     useEffect(() => {
         if (code)
@@ -128,7 +130,13 @@ function ArtTemp1() {
                     <BackgroundMusic musicOn={musicOn} source={bgMusicUrl} onClick={() => { setMusicOn(old => !old) }}></BackgroundMusic>
                 </section>
                 <section className={styles.menuBtnContainer}>
-                    <FloatSidebar onItemClicks={[() => { }, () => { }]}></FloatSidebar>
+                    <FloatSidebar onItemClicks={[function () { router.push({ pathname: '/at_1_manage', query: { code } }) },
+                    function () { router.push({ pathname: '/login_pwd', query: { code } }) },
+                    function () { router.push({ pathname: '/tips', query: { code } }) }]} onQuitClick={() => {
+                        console.log('退出')
+                        removeCookie(GlobalSettings.modifyToken || 'modify_token')
+                        console.log('modify_token: %o', cookies[GlobalSettings.modifyToken])
+                    }}></FloatSidebar>
                 </section>
             </div>
         </main>

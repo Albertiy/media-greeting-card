@@ -12,7 +12,9 @@ function FloatSidebar(props) {
     const [show, setShow] = useState(false)
     /** @type {function[]} */
     const onItemClicks = props.onItemClicks || [];
+    const onQuitClick = props.onQuitClick;
     console.log('onItemClicks: %o', onItemClicks)
+    console.log('onQuitClick: %o', onQuitClick)
 
     return (
         <div className={styles.iconContainer}>
@@ -39,7 +41,7 @@ function FloatSidebar(props) {
                     </Menu>
                     <Divider className={styles.divider}></Divider>
                     <div className={styles.quitBtn}>
-                        <Button type="link" size={'large'}><ExportOutlined />退出</Button>
+                        <Button type="link" size={'large'}><ExportOutlined onClick={onQuitClick || function () { console.log('退出') }} />退出</Button>
                     </div>
                 </Sider>
             </div>
@@ -48,7 +50,8 @@ function FloatSidebar(props) {
 }
 
 FloatSidebar.propTypes = {
-    onItemClicks: PropTypes.arrayOf(PropTypes.func).isRequired
+    onItemClicks: PropTypes.arrayOf(PropTypes.func).isRequired,
+    onQuitClick: PropTypes.func.isRequired,
 }
 
 export default FloatSidebar;

@@ -2,6 +2,7 @@ import Head from 'next/head';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import authenticatedRoute from '../src/component/authenticated_route/AuthenticatedRoute';
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
 import ImageBtn from '../src/component/image_btn/ImageBtn';
@@ -37,6 +38,7 @@ function At1Manage() {
     const [musicOn, setMusicOn] = useState(false);
     const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
     const [p1, setP1] = useState(defaultP1)
+    const [cookies, setCookie, removeCookie] = useCookies();
 
     useEffect(() => {
         if (code)
@@ -127,7 +129,11 @@ function At1Manage() {
                     <section className={styles.menuBtnContainer}>
                         <FloatSidebar onItemClicks={[function () { router.push({ pathname: '/at_1_manage', query: { code } }) },
                         function () { router.push({ pathname: '/login_pwd', query: { code } }) },
-                        function () { router.push({ pathname: '/tips', query: { code } }) }]}></FloatSidebar>
+                        function () { router.push({ pathname: '/tips', query: { code } }) }]} onQuitClick={() => {
+                            console.log('退出')
+                            removeCookie(GlobalSettings.modifyToken || 'modify_token')
+                            console.log('modify_token: %o', cookies[GlobalSettings.modifyToken])
+                        }}></FloatSidebar>
                     </section>
                 </div>
             </main>
