@@ -67,6 +67,9 @@ router.get('/recordandarticle', function (req, res, next) {
     if (!code) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
     dbService.getUploadInfo(code).then((uploadRecord) => {
         dbService.getArticleByCodeId(uploadRecord.id).then((article) => {
+            let temp = uploadRecord;
+            temp.access_pwd = null;
+            temp.modify_pwd = null;
             res.send(new ReqBody(1, { record: uploadRecord, article: article }))
         }).catch((err) => {
             res.send(new ReqBody(0, null, err))
