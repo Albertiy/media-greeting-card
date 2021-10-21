@@ -12,6 +12,7 @@ function FloatSidebar(props) {
     const [show, setShow] = useState(false)
     /** @type {function[]} */
     const onItemClicks = props.onItemClicks || [];
+    console.log('onItemClicks: %o', onItemClicks)
 
     return (
         <div className={styles.iconContainer}>
@@ -26,13 +27,13 @@ function FloatSidebar(props) {
                     {/* selectable={false} */}
                     <Menu className={styles.menu} mode="inline" theme="dark">
                         {/* antd不支持其他的Icon组件 <Icon path={mdiLock} size="0.8" style={{ color: '#fff' }} /> <SlackOutlined /> */}
-                        <Menu.Item key="1" icon={<BulbOutlined />} onClick={onItemClicks[0] || function () { console.log('预览') }}>
-                            预览
+                        <Menu.Item key="1" icon={<BulbOutlined />} onClick={onItemClicks[0] || function () { console.log('编辑二维码') }}>
+                            编辑二维码
                         </Menu.Item>
-                        <Menu.Item key="2" icon={<EditOutlined />} onClick={onItemClicks[0] || function () { console.log('修改密码') }}>
+                        <Menu.Item key="2" icon={<EditOutlined />} onClick={onItemClicks[1] || function () { console.log('修改密码') }}>
                             修改密码
                         </Menu.Item>
-                        <Menu.Item key="3" icon={<CarryOutOutlined />} onClick={onItemClicks[1] || function () { console.log('温馨提示') }}>
+                        <Menu.Item key="3" icon={<CarryOutOutlined />} onClick={onItemClicks[2] || function () { console.log('温馨提示') }}>
                             温馨提示
                         </Menu.Item>
                     </Menu>

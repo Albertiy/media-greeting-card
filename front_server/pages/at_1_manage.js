@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import router from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import authenticatedRoute from '../src/component/authenticated_route/AuthenticatedRoute';
@@ -117,13 +118,16 @@ function At1Manage() {
                         <ImageBtn title="音乐" src="img/article_btn/music.png"></ImageBtn>
                         <ImageBtn title="预览" src="img/article_btn/preview.png"></ImageBtn>
                         <ImageBtn title="加密" src="img/article_btn/encrypted.png"></ImageBtn>
+                        <ImageBtn title="默认预览" src="img/article_btn/encrypted.png" titleStyle={{ fontSize: '1rem' }} ></ImageBtn>
                     </section>
                     <section className={styles.interactiveMessageContainer}>
                     </section>
                 </div>
                 <div className={styles.upperLayer}>
                     <section className={styles.menuBtnContainer}>
-                        <FloatSidebar onItemClicks={[() => { }, () => { }]}></FloatSidebar>
+                        <FloatSidebar onItemClicks={[function () { router.push({ pathname: '/at_1_manage', query: { code } }) },
+                        function () { router.push({ pathname: '/login_pwd', query: { code } }) },
+                        function () { router.push({ pathname: '/tips', query: { code } }) }]}></FloatSidebar>
                     </section>
                 </div>
             </main>

@@ -100,8 +100,7 @@ export function login(code, password) {
         if (code && password != undefined && password != '') {
             FileAPI.login(code, password).then((res) => {
                 console.log(res)
-                if (res.code == 'EXISTS_TOKEN' || res.code == 'NEW_TOKEN') resolve('验证通过')
-                else reject('无效返回码')
+                resolve(res)
             }).catch((err) => {
                 reject(err)
             });

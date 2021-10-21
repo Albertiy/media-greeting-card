@@ -7,12 +7,14 @@ import useCode from '../../src/hook/useCode'
 import * as fileService from '../../src/service/file_service'
 import GlobalSettings from '../../src/setting/global'
 import styles from './login.module.scss'
+import ModelLoading from '../../src/component/model_loading'
 
-export default function login() {
+export default function Login() {
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { code } = useCode();
     const [pwd, setPwd] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
     /**
      * 点击登录按钮
@@ -31,8 +33,8 @@ export default function login() {
     /**
      * 登录
      */
-    function login(code, pwd) {
-        console.log('code: %o, pwd: %o', code, pwd)
+    function login() {
+        console.log('[login] code: %o, pwd: %o', code, pwd)
         try {
             setIsLoading(true)
             // 后台请求
@@ -58,9 +60,10 @@ export default function login() {
             </Head>
             <Space direction="vertical" size="large" className={styles.form}>
                 <label className={styles.label}>请输入管理密码：</label>
-                <Input.Password className={styles.input} placeholder="密码" size="large" />
+                <Input.Password className={styles.input} placeholder="密码" maxLength={20} size="large" onChange={(e) => { setPwd(e.target.value) }} />
                 <Button type="primary" block={true} className={styles.btn} size="large" onClick={loginBtnClicked}>登录</Button>
             </Space>
+            {isLoading && <ModelLoading />}
         </Layout>
     )
 }
