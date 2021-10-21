@@ -27,6 +27,7 @@ const defaultBgImageUrl = null;
 /** @type{string} */
 const defaultBgMusicUrl = null;
 const defaultP1 = '';
+const tokenName = GlobalSettings.modifyToken || 'modify_token';
 
 function At1Manage() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -38,7 +39,7 @@ function At1Manage() {
     const [musicOn, setMusicOn] = useState(false);
     const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
     const [p1, setP1] = useState(defaultP1)
-    const [cookies, setCookie, removeCookie] = useCookies();
+    const [cookies, setCookie, removeCookie] = useCookies([tokenName]);
 
     useEffect(() => {
         if (code)
@@ -131,8 +132,9 @@ function At1Manage() {
                         function () { router.push({ pathname: '/login_pwd', query: { code } }) },
                         function () { router.push({ pathname: '/tips', query: { code } }) }]} onQuitClick={() => {
                             console.log('退出')
-                            removeCookie(GlobalSettings.modifyToken || 'modify_token')
-                            console.log('modify_token: %o', cookies[GlobalSettings.modifyToken])
+                            removeCookie(tokenName)
+                            console.log('modify_token: %o', cookies[tokenName])
+                            router.push({ pathname: '/at_1', query: { code } })
                         }}></FloatSidebar>
                     </section>
                 </div>
@@ -143,4 +145,4 @@ function At1Manage() {
     )
 }
 
-export default authenticatedRoute(At1Manage, { tokenName: GlobalSettings.modifyToken });
+export default authenticatedRoute(At1Manage, { tokenName: tokenName });

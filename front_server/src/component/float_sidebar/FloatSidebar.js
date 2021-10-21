@@ -13,8 +13,8 @@ function FloatSidebar(props) {
     /** @type {function[]} */
     const onItemClicks = props.onItemClicks || [];
     const onQuitClick = props.onQuitClick;
-    console.log('onItemClicks: %o', onItemClicks)
-    console.log('onQuitClick: %o', onQuitClick)
+    // console.log('onItemClicks: %o', onItemClicks)
+    // console.log('onQuitClick: %o', onQuitClick)
 
     return (
         <div className={styles.iconContainer}>

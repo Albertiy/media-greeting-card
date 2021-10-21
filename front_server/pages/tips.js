@@ -35,6 +35,7 @@ export default function tips() {
                             console.log('退出')
                             removeCookie(GlobalSettings.modifyToken || 'modify_token')
                             console.log('modify_token: %o', cookies[GlobalSettings.modifyToken])
+                            router.push({ pathname: '/at_1', query: { code } })
                         }}></FloatSidebar>
                     </section>
                 </div>
