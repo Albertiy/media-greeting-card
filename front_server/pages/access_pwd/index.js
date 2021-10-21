@@ -8,7 +8,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import * as fileService from '../../src/service/file_service'
 
-export default function accessPwd() {
+function AccessPwd() {
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { code } = useCode();
@@ -66,3 +66,5 @@ export default function accessPwd() {
         </Layout>
     )
 }
+
+export default authenticatedRoute(AccessPwd, { tokenName: GlobalSettings.modifyToken });

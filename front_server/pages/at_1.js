@@ -89,6 +89,7 @@ function ArtTemp1() {
         try {
             let { record, article } = await ArtService.getRecordAndArticle(code);
             console.log('record: %o\narticle: %o\nskeleton: %o', record, article, article.skeleton)
+            if (record.needAccessPwd) { router.push({ pathname: '\access_login', query: { code } }); return; }
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);
