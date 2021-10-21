@@ -236,7 +236,10 @@ router.post('/getGreetingFiles', function (req, res, next) {
     console.log('code: ' + code)
     if (!code) { res.send(new ReqBody(0, null, '缺少必要参数')); return; }
     dbService.getUploadInfo(code).then((result) => {
-        res.send(new ReqBody(1, result))
+        let temp = result;
+        temp.modify_pwd = null;
+        temp.access_pwd = null;
+        res.send(new ReqBody(1, temp))
     }).catch((err) => {
         res.send(new ReqBody(0, null, err))
     });
