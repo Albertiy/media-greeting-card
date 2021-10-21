@@ -13,5 +13,6 @@
   "qrFileRoot": "./qr",
   "bgImageRoot": "./bgimage",
   "musicRoot": "./music",
-  "ffmpegRoot": ""
+  "ffmpegRoot": "",
+  "defaultModifyPwd": "123456"
 }

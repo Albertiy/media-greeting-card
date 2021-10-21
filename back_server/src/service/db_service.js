@@ -9,6 +9,7 @@ const Uploadfiles = require('../model/uploadfiles');
 const SkeletonTemplate = require('../model/skeleton_template');
 const Article = require('../model/article');
 const BgImage = require('../model/bgimage')
+const appConfig = require('../../config').application();
 
 /**
  * 合并批量插入二维码与插入生成记录服务
@@ -26,7 +27,7 @@ function insertCodesAndRecord(codes, zipFilePath, productId) {
             GeneraterecordsAPI.add(count, first, latest, zipFilePath, productId).then((result) => {
                 let recordId = result.insertId;
                 console.log('[insertGenerateRecord] result: %o', result)
-                UploadfilesAPI.addMultiple(codes, recordId, productId).then((result) => {
+                UploadfilesAPI.addMultiple(codes, recordId, productId, appConfig.defaultModifyPwd).then((result) => {
                     console.log('[insertCodes] result: %o', result)
                     resolve(true);
                 }).catch((err) => {
@@ -39,11 +40,11 @@ function insertCodesAndRecord(codes, zipFilePath, productId) {
             reject('生成的二维码为空')
         }
     })
-
 }
 
 /**
- * 批量插入二维码
+ * @deprecated
+ * 批量插入二维码 缺少参数，停止使用
  * @param {*} codes 
  * @returns 
  */

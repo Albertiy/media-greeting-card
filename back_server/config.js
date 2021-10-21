@@ -19,6 +19,7 @@ const fs = require('fs');
  * bgImageRoot: string,
  * musicRoot: string,
  * ffmpegRoot: string,
+ * defaultModifyPwd: string,
  * }}
  */
 exports.application = function () {
