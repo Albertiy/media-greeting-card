@@ -3,7 +3,7 @@ import styles from './ImageBtn.module.scss'
 import PropTypes from 'prop-types';
 
 function ImageBtn(props) {
-    const { src, title, onClick, imgStyle, children } = props;
+    const { src, title, onClick, imgStyle, titleStyle, children } = props;
 
     return (
         <div className={styles.btnContainer}>
@@ -12,7 +12,7 @@ function ImageBtn(props) {
                     <img title={title} alt={title} className={styles.btnImg} style={imgStyle} src={src}></img>
                 }
             </div>
-            <span className={styles.btnText}>{title}</span>
+            <span className={styles.btnText} style={titleStyle}>{title}</span>
         </div>
     )
 }
@@ -22,6 +22,7 @@ ImageBtn.propTypes = {
     title: PropTypes.string,
     onClick: PropTypes.func,
     imgStyle: PropTypes.object,
+    titleStyle: PropTypes.object,
 }
 
 export default ImageBtn;

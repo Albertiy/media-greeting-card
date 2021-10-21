@@ -54,4 +54,7 @@ $lc: #ff9777;
     $b 0 0 $c, 0 $b 0 $c, -$b 0 0 $c, 0 (-$b) 0 $c; //, -2px 0px 0px #fff;
   font-weight: bold;
   font-stretch: expanded;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
