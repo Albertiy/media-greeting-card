@@ -6,7 +6,7 @@ const ReqBody = require("../../src/model/req_body")
  * @param {string} msg 
  */
 const okMessage = function (res, msg) {
-    res.send(new ReqBody(0, msg));
+    res.send(new ReqBody(1, msg));
 }
 
 const okLoginSuccess = function (res) {
