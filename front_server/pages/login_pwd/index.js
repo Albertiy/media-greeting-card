@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useRef, useState } from 'react'
+import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar'
 import ModelLoading from '../../src/component/model_loading'
 import useCode from '../../src/hook/useCode'
 import * as fileService from '../../src/service/file_service'
@@ -56,18 +57,29 @@ export default function loginPwd() {
     }
 
     return (
-        <Layout className={styles.container}>
+        <div className={styles.container}>
             <Head>
                 <title>{GlobalSettings.siteTitle('修改管理密码')}</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Space direction="vertical" size="large" className={styles.form}>
-                <label className={styles.label}>修改管理密码：</label>
-                <Input.Password className={styles.input} placeholder="原密码" size="large" value={oldPwd} onChange={(e) => setOldPwd(e.target.value)} maxLength={20} />
-                <Input.Password className={styles.input} placeholder="新密码" size="large" value={newPwd} onChange={(e) => setNewPwd(e.target.value)} maxLength={20} />
-                <Button type="primary" block={true} className={styles.btn} size="large" onClick={confirmBtnClicked}>确认</Button>
-            </Space>
-            {isLoading && <ModelLoading />}
-        </Layout>
+            <main className={styles.main}>
+                <Layout className={styles.pwdContainer}>
+                    <Space direction="vertical" size="large" className={styles.form}>
+                        <label className={styles.label}>修改管理密码：</label>
+                        <Input.Password className={styles.input} placeholder="原密码" size="large" value={oldPwd} onChange={(e) => setOldPwd(e.target.value)} maxLength={20} />
+                        <Input.Password className={styles.input} placeholder="新密码" size="large" value={newPwd} onChange={(e) => setNewPwd(e.target.value)} maxLength={20} />
+                        <Button type="primary" block={true} className={styles.btn} size="large" onClick={confirmBtnClicked}>确认</Button>
+                    </Space>
+                    {isLoading && <ModelLoading />}
+                </Layout>
+                <div className={styles.upperLayer}>
+                    <section className={styles.menuBtnContainer}>
+                        <FloatSidebar onItemClicks={[function () { router.push({ pathname: '/at_1_manage', query: { code } }) },
+                        function () { router.push({ pathname: '/login_pwd', query: { code } }) },
+                        function () { router.push({ pathname: '/tips', query: { code } }) }]}></FloatSidebar>
+                    </section>
+                </div>
+            </main>
+        </div>
     )
 }
