@@ -290,6 +290,14 @@ function getMusic(id) {
     return MusicAPI.getById(id);
 }
 
+function changeModifyPwd(code, oldPwd, newPwd) {
+
+}
+
+function changeAccessPwd(code, pwd) {
+
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -302,10 +310,12 @@ module.exports = {
     getMusicList,
     getMusic,
     getBgImageList,
-    getProductList: getProductList,
+    getProductList,
     getArticleTemplateList,
     getArticleByCodeId,
     createArticle,
     getOrCreateArticleByCodeId,
     getBgImage,
+    changeModifyPwd,
+    changeAccessPwd,
 }
