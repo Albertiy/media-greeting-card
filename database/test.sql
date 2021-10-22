@@ -53,5 +53,6 @@ select * from music where product_id = ? order by `order` is null, `order`asc;
 select * from bgimage;
 select * from product;
 
-update uploadfiles set modify_pwd = '123456' where `uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
+-- update uploadfiles set modify_pwd = '123456' where `uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
+
 select * from uploadfiles where `uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';

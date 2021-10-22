@@ -23,7 +23,7 @@ router.post('/login', (req, res, next) => {
                 ApiTools.errorMessage(res, '密码错误😐'); return;
             } else {
                 let token = tokenService.genToken(code, modify_pwd);
-                res.cookie("modify_token", token, tokenOptions)
+                res.cookie(ModifyTokenName, token, tokenOptions)
                 ApiTools.okLoginSuccess(res)
             }
         }).catch((err) => {
