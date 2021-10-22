@@ -11,6 +11,8 @@ import styles from './FloatSidebar.module.scss'
 
 const Sider = Layout.Sider;
 const tokenName = GlobalSettings.modifyToken || 'modify_token';
+const defaultManagePage = 'at_1_manage';
+const defaultPreviewPage = 'at_1';
 
 function FloatSidebar(props) {
     const router = useRouter();
@@ -38,7 +40,7 @@ function FloatSidebar(props) {
 
     function editCode() {
         if (props.code) {
-            router.push({ pathname: '/at_1_manage', query: { code: props.code } })
+            router.push({ pathname: props.managePage || defaultManagePage, query: { code: props.code } })
         } else {
             console.log('code 尚未加载')
         }
@@ -67,7 +69,7 @@ function FloatSidebar(props) {
         if (props.code) {
             console.log(`${tokenName}: %o`, cookies[tokenName])
             removeCookie(tokenName, { path: '/' })
-            router.push({ pathname: '/at_1', query: { code: props.code } })
+            router.push({ pathname: props.previewPage || defaultPreviewPage, query: { code: props.code } })
         } else {
             console.log('code 尚未加载')
         }
@@ -104,7 +106,9 @@ function FloatSidebar(props) {
 }
 
 FloatSidebar.propTypes = {
-    code: PropTypes.string
+    code: PropTypes.string,
+    managePage: PropTypes.string,
+    previewPage: PropTypes.string,
 }
 
 export default FloatSidebar;
