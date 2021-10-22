@@ -62,7 +62,11 @@ function EntryPage() {
                 console.log('[getArticle] 开始：code=%o', record.id)
                 ArtService.getArticle(record.id).then((art) => {
                     console.log('[getArticle] 结果：%o', art)
-                    router.replace({ pathname: '/at_1', query: { code } })
+                    if (!record.isLocked)
+                        router.replace({ pathname: '/at_1_manage', query: { code } })
+                    else {
+                        router.replace({ pathname: '/at_1', query: { code } })
+                    }
                 }).catch((err) => {
                     console.log(err)
                     setInfoText(err.toString())
