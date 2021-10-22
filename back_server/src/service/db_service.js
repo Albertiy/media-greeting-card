@@ -115,7 +115,7 @@ function setLock(uuid, lock) {
     return new Promise((resolve, reject) => {
         UploadfilesAPI.setLock(uuid, lock).then((result) => {
             if (result.affectedRows > 0)
-                resolve(result)
+                resolve(lock ? '锁定成功' : '解锁成功')
             else
                 reject('无效的code')
         }).catch((err) => {

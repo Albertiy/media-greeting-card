@@ -6,11 +6,12 @@ import authenticatedRoute from '../src/component/authenticated_route/Authenticat
 import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
 import ImageBtn from '../src/component/image_btn/ImageBtn';
 import MainImage from '../src/component/main_image/MainImage';
+import ModelLoading from '../src/component/model_loading';
 import useCode from '../src/hook/useCode';
 import Article from '../src/model/article';
 import Uploadfiles from '../src/model/uploadfiles';
 import * as ArtService from '../src/service/art_service';
-import { getFile } from '../src/service/file_service';
+import * as FileService from '../src/service/file_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/at_1_manage.module.scss';
 
@@ -29,6 +30,7 @@ const tokenName = GlobalSettings.modifyToken || 'modify_token';
 
 function At1Manage() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const router = useRouter();
     const { code, routerRefreshCount, routerLoaded } = useCode()
     const [record, setRecord] = useState(defaultRecord);
     const [article, setArticle] = useState(defaultArticle);
@@ -37,7 +39,7 @@ function At1Manage() {
     const [musicOn, setMusicOn] = useState(false);
     const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
     const [p1, setP1] = useState(defaultP1)
-    const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (code)
@@ -61,7 +63,7 @@ function At1Manage() {
             setSkeleton(article.skeleton);
         } catch (error) {
             console.log(error)
-            enqueueSnackbar(error.toString())
+            enqueueSnackbar(error.toString(), { variant: 'error', autoHideDuration: 2000 })
         }
     }
 
@@ -72,7 +74,7 @@ function At1Manage() {
         else if (skele.bgImageId) {
             ArtService.getBgImage(skele.bgImageId).then((result) => {
                 console.log('[bgimage url]: %o', result)
-                setBgImageUrl(getFile(result))
+                setBgImageUrl(FileService.getFile(result))
             }).catch((err) => {
                 console.log(err)
             });
@@ -81,7 +83,7 @@ function At1Manage() {
         if (skele.bgMusicId) {
             ArtService.getMusic(skele.bgMusicId).then((result) => {
                 console.log('[bgmusic url]: %o', result)
-                setBgMusicUrl(getFile(result))
+                setBgMusicUrl(FileService.getFile(result))
             }).catch((err) => {
                 console.log(err)
             });
@@ -123,7 +125,19 @@ function At1Manage() {
     }
 
     function lock() {
-        // TODO
+        if (record) {
+            setLoading(true)
+            FileService.lock(code, !record.isLocked).then((result) => {
+                console.log('lock result: %o', result)
+                enqueueSnackbar(result.toString() + `, 后续扫码将进入 ${record.isLocked ? '编辑' : '查看'} 页面`, { variant: 'success', autoHideDuration: 2000 })
+                record.isLocked = !record.isLocked;
+            }).catch((err) => {
+                console.log('lock err: %o', err)
+                enqueueSnackbar(err.toString(), { variant: 'error', autoHideDuration: 2000 })
+            }).finally(() => {
+                setLoading(false)
+            });
+        }
     }
 
     return (
@@ -164,10 +178,11 @@ function At1Manage() {
                         <FloatSidebar code={code} managePage={'at_1_manage'} previewPage={'at_1'} ></FloatSidebar>
                     </section>
                 </div>
-            </main >
+            </main>
             <footer>
             </footer>
-        </div >
+            {loading && <ModelLoading></ModelLoading>}
+        </div>
     )
 }
 
