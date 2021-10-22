@@ -104,3 +104,17 @@
   transform: translate(-50%, -50%);
   pointer-events: auto;
 }
+
+.manageBtn {
+  top: 1.4rem;
+  left: 1.2rem;
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  padding: 0;
+  color: #888888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

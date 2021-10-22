@@ -1,19 +1,17 @@
 import { mdiMenu } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { Input } from 'antd';
+import { Button } from 'antd';
 import Head from 'next/head';
 import router from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import BackgroundMusic from '../src/component/background_music/background_music';
-import FloatSidebar from '../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../src/component/main_image/MainImage';
 import Paragraph from '../src/component/paragraph/Paragraph';
 import useAccessToken from '../src/hook/useAccessToken';
 import useCode from '../src/hook/useCode';
 import Article from '../src/model/article';
-import { SkeletonTemplate } from '../src/model/skeleton_template';
 import Uploadfiles from '../src/model/uploadfiles';
 import * as ArtService from '../src/service/art_service';
 import { getFile } from '../src/service/file_service';
@@ -131,7 +129,11 @@ function ArtTemp1() {
                     <BackgroundMusic musicOn={musicOn} source={bgMusicUrl} onClick={() => { setMusicOn(old => !old) }}></BackgroundMusic>
                 </section>
                 <section className={styles.menuBtnContainer}>
-                    <FloatSidebar code={code}></FloatSidebar>
+                    {/* <FloatSidebar code={code}></FloatSidebar> */}
+                    <Button className={styles.manageBtn} title="更多"
+                        onClick={() => { console.log('更多'); router.push({ pathname: '/at_1_manage', query: { code } }) }} >
+                        <Icon path={mdiMenu} size={1.0} />
+                    </Button>
                 </section>
             </div>
         </main>
