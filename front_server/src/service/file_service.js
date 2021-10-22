@@ -162,7 +162,7 @@ export function access(code, password) {
  */
 export function setAccessPwd(code, password) {
     return new Promise((resolve, reject) => {
-        if (code && password != undefined && password != '') {
+        if (code) {
             FileAPI.changeAccessPwd(code, password).then((result) => {
                 console.log(result)
                 resolve(result)
@@ -170,6 +170,8 @@ export function setAccessPwd(code, password) {
                 console.log(err)
                 reject(err)
             });
+        } else {
+            reject('编号不能为空')
         }
     })
 }

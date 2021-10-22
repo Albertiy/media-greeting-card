@@ -65,7 +65,7 @@ router.post('/access', (req, res, next) => {
                 ApiTools.errorWrongPwd(res); return;
             } else {
                 let token = tokenService.genToken(code, access_pwd);
-                res.cookie(ModifyTokenName, token, tokenOptions)
+                res.cookie(AccessTokenName, token, tokenOptions)
                 ApiTools.okLoginSuccess(res)
             }
         }).catch((err) => {

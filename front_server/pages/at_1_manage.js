@@ -122,8 +122,21 @@ function At1Manage() {
     }
 
     function encrypt() {
-        if (code)
-            router.push({ pathname: '/access_pwd', query: { code } })
+        console.log(record.needAccessPwd)
+        if (code && record)
+            if (!record.needAccessPwd) {
+                console.log('访问加密')
+                router.push({ pathname: '/access_pwd', query: { code } })
+            } else {
+                console.log('访问解密')
+                FileService.setAccessPwd(code, null).then((result) => {
+                    enqueueSnackbar('解除加密成功', { variant: 'success', autoHideDuration: 2000 })
+                    // setRecord(old => { let temp = old; temp.needAccessPwd = !old.needAccessPwd; return temp; })
+                    getInfoByCode(code);
+                }).catch((err) => {
+                    enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+                });
+            }
     }
 
     function lock() {

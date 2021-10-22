@@ -91,13 +91,14 @@ function ArtTemp1() {
         try {
             let { record, article } = await ArtService.getRecordAndArticle(code);
             console.log('record: %o\narticle: %o\nskeleton: %o', record, article, article.skeleton)
-            if (record.needAccessPwd) { router.push({ pathname: '\access_login', query: { code } }); return; }
+            if (record.needAccessPwd && !access_token) { // 跳转输入访问密码页面
+                console.log('access_token: %o', access_token);
+                router.push({ pathname: '/access_login', query: { code } })
+                return;
+            }
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);
-            if (record.needAccessPwd && !access_token) { // 跳转输入访问密码页面
-                router.push({ pathname: '/access_login', query: { code } })
-            }
         } catch (error) {
             console.log(error)
             enqueueSnackbar(error.toString())
