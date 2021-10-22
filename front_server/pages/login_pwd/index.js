@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
-import { useCookies } from 'react-cookie'
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar'
 import ModelLoading from '../../src/component/model_loading'
 import useCode from '../../src/hook/useCode'
@@ -18,7 +17,6 @@ export default function loginPwd() {
     const { code } = useCode();
     const [oldPwd, setOldPwd] = useState('')
     const [newPwd, setNewPwd] = useState('')
-    const [cookies, setCookie, removeCookie] = useCookies();
 
     /**
      * 点击登录按钮

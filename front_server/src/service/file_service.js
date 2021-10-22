@@ -163,10 +163,11 @@ export function access(code, password) {
 export function setAccessPwd(code, password) {
     return new Promise((resolve, reject) => {
         if (code && password != undefined && password != '') {
-            FileAPI.setAccessPwd(code, password).then((result) => {
-                console.log(res)
-                resolve(res)
+            FileAPI.changeAccessPwd(code, password).then((result) => {
+                console.log(result)
+                resolve(result)
             }).catch((err) => {
+                console.log(err)
                 reject(err)
             });
         }

@@ -117,11 +117,13 @@ function At1Manage() {
     }
 
     function preview() {
-        router.push({ pathname: '/at_1', query: { code } })
+        if (code)
+            router.push({ pathname: '/at_1', query: { code } })
     }
 
     function encrypt() {
-        // TODO
+        if (code)
+            router.push({ pathname: '/access_pwd', query: { code } })
     }
 
     function lock() {
