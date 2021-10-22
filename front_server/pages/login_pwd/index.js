@@ -2,7 +2,7 @@ import { Button, Input, Layout, Space } from 'antd'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useCookies } from 'react-cookie'
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar'
 import ModelLoading from '../../src/component/model_loading'
@@ -76,14 +76,7 @@ export default function loginPwd() {
                 </Layout>
                 <div className={styles.upperLayer}>
                     <section className={styles.menuBtnContainer}>
-                        <FloatSidebar onItemClicks={[function () { router.push({ pathname: '/at_1_manage', query: { code } }) },
-                        function () { router.push({ pathname: '/login_pwd', query: { code } }) },
-                        function () { router.push({ pathname: '/tips', query: { code } }) }]} onQuitClick={() => {
-                            console.log('退出')
-                            removeCookie(GlobalSettings.modifyToken || 'modify_token')
-                            console.log('modify_token: %o', cookies[GlobalSettings.modifyToken])
-                            router.push({ pathname: '/at_1', query: { code } })
-                        }}></FloatSidebar>
+                        <FloatSidebar code={code}></FloatSidebar>
                     </section>
                 </div>
             </main>

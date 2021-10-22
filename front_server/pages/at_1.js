@@ -130,14 +130,7 @@ function ArtTemp1() {
                     <BackgroundMusic musicOn={musicOn} source={bgMusicUrl} onClick={() => { setMusicOn(old => !old) }}></BackgroundMusic>
                 </section>
                 <section className={styles.menuBtnContainer}>
-                    <FloatSidebar onItemClicks={[function () { router.push({ pathname: '/at_1_manage', query: { code } }) },
-                    function () { router.push({ pathname: '/login_pwd', query: { code } }) },
-                    function () { router.push({ pathname: '/tips', query: { code } }) }]} onQuitClick={() => {
-                        console.log('退出')
-                        removeCookie(GlobalSettings.modifyToken || 'modify_token')
-                        console.log('modify_token: %o', cookies[GlobalSettings.modifyToken])
-                        router.push({ pathname: '/at_1', query: { code } })
-                    }}></FloatSidebar>
+                    <FloatSidebar code={code}></FloatSidebar>
                 </section>
             </div>
         </main>
