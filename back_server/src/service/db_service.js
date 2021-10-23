@@ -8,7 +8,8 @@ const ProductAPI = require('../db/product_api')
 const Uploadfiles = require('../model/uploadfiles');
 const SkeletonTemplate = require('../model/skeleton_template');
 const Article = require('../model/article');
-const BgImage = require('../model/bgimage')
+const BgImage = require('../model/bgimage');
+const ImagefilesAPI = require('../db/imagefiles_api');
 const appConfig = require('../../config').application();
 
 /**
@@ -324,6 +325,10 @@ function updateArticleText(code, title, content) {
 
 }
 
+function getImage(id) {
+    return ImagefilesAPI.getById(id);
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -345,4 +350,5 @@ module.exports = {
     changeModifyPwd,
     changeAccessPwd,
     updateArticleText,
+    getImage,
 }

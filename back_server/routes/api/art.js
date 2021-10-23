@@ -121,4 +121,15 @@ router.post('/updatetext', function (req, res, next) {
     });
 })
 
+router.get('/image', function (req, res, next) {
+    let { id } = req.query;
+    if (!id) { ApiTools.errorNeedParams(res); return; }
+    dbService.getImage(id).then((result) => {
+        ApiTools.okMessage(res, result)
+    }).catch((err) => {
+        ApiTools.errorMessage(res, err)
+    });
+
+})
+
 module.exports = router;

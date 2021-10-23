@@ -4,6 +4,7 @@ import Bgimage from '../model/bgimage';
 import Music from '../model/music';
 import Product from '../model/product';
 import Uploadfiles from '../model/uploadfiles';
+import Imagefiles from '../model/imagefiles';
 
 
 /**
@@ -59,4 +60,13 @@ export function getMusic(id) {
  */
 export function updateText(code, title, content) {
     return ArtAPI.updateText(code, title, content)
+}
+
+/**
+ * 
+ * @param {number} id 
+ * @returns {Promise<Imagefiles>}
+ */
+export function getImage(id) {
+    return ArtAPI.getImage(id);
 }

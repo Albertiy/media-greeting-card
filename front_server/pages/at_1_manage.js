@@ -107,6 +107,7 @@ function At1Manage() {
 
     function chooseMainImg() {
         // TODO
+        router.push({ pathname: '/update_image', query: { code } })
     }
 
     function chooseBgImg() {
