@@ -313,6 +313,17 @@ function changeAccessPwd(code, newPwd) {
     });
 }
 
+function updateArticleText(code, title, content) {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.updateText(code, title, content).then((result) => {
+            if (result.affectedRows > 0) resolve('更新成功')
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -333,4 +344,5 @@ module.exports = {
     getBgImage,
     changeModifyPwd,
     changeAccessPwd,
+    updateArticleText,
 }

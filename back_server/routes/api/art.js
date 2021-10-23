@@ -2,6 +2,7 @@ var express = require('express');
 const ReqBody = require('../../src/model/req_body');
 var router = express.Router();
 var path = require('path')
+var ApiTools = require('./api_tools')
 
 const dbService = require('../../src/service/db_service')
 const fileService = require('../../src/service/file_service')
@@ -104,6 +105,19 @@ router.get('/music', function (req, res, next) {
     dbService.getMusic(id).then((result) => {
         res.send(new ReqBody(1, result.path))
     }).catch(err => { res.send(new ReqBody(0, null, err)) })
+})
+
+router.post('/updatetext', function (req, res, next) {
+    let { code, title, content } = req.body;
+    console.log('code: %o, title: %o, content: %o', code, title, content)
+    if (!code || !title || !content) {
+        res.send(new ReqBody(0, null, '缺少必要参数')); return;
+    }
+    dbService.updateArticleText(code, title, content).then((result) => {
+        ApiTools.okMessage(res, result)
+    }).catch((err) => {
+        ApiTools.errorMessage(res, err)
+    });
 })
 
 module.exports = router;

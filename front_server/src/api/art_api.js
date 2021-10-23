@@ -9,7 +9,7 @@ const getArticleUrl = '/api/article';
 const getRecordAndArticleUrl = '/api/recordandarticle';
 const getBgImageUrl = '/api/bgimage';
 const getMusicUrl = '/api/music';
-const updateTextUrl = '/api/updateText';
+const updateTextUrl = '/api/updatetext';
 
 /**
  * 

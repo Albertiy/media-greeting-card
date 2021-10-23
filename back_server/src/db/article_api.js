@@ -4,6 +4,7 @@ const Article = require('../model/article')
 
 const getArticleByCodeIdSql = 'select * from article where code_id = ?';
 const addArticleSql = 'insert into article(code_id, template_id, skeleton) values(?,?,convert(?, json))';
+const updateTextSql = 'update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.title",?,"$.textList[0]",?) where t2.`uuid` = ?;';
 
 const orderStr = ' order by `order` is null, `order` asc';
 
@@ -50,7 +51,23 @@ function addArticle(code_id, template_id, skeleton) {
 
 }
 
+function updateText(code, title, content) {
+    let query = updateTextSql;
+    let data = [title, content, code];
+    return new Promise((resolve, reject) => {
+        pool.query(query, data, (err, res, fields) => {
+            if (err) {
+                console.log(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+
+}
+
 module.exports = {
     getArticleByCodeId,
     addArticle,
+    updateText,
 }

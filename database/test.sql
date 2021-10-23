@@ -56,3 +56,22 @@ select * from product;
 -- update uploadfiles set modify_pwd = '123456' where `uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
 
 select * from uploadfiles where `uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
+
+select t1.* from article as t1 inner join uploadfiles as t2 where t1.code_id = t2.id and t2.`uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
+
+update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,'$.textList[0]','哈哈哈哈哈', '$.title','are有认真的莫' ) where t2.`uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
+
+select j.* from article as t1 inner join uploadfiles as t2, json_table(t1.skeleton, "$" COLUMNS(
+	rowid for ordinality,
+    `id` int path "$.id",
+    `font` varchar(50) path "$.font",
+    `name` varchar(50) path "$.name",
+    `title` varchar(100) path "$.title",
+    `textList` json path "$.textList",
+    `bgImageId` int path "$.bgImageId",
+    `imageList` json path "$.imageList"
+)) as j where t1.code_id = t2.id and t2.`uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
+
+show full columns from article;
+-- 指定字段的字符集
+ALTER TABLE article MODIFY skeleton TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
