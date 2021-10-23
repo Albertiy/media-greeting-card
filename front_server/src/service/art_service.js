@@ -49,3 +49,14 @@ export function getBgImage(id) {
 export function getMusic(id) {
     return ArtAPI.getMusic(id);
 }
+
+/**
+ * 
+ * @param {string} code 
+ * @param {string} title 标题
+ * @param {string} content 内容
+ * @returns 
+ */
+export function updateText(code, title, content) {
+    return ArtAPI.updateText(code, title, content)
+}

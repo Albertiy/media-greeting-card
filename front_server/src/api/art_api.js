@@ -9,6 +9,7 @@ const getArticleUrl = '/api/article';
 const getRecordAndArticleUrl = '/api/recordandarticle';
 const getBgImageUrl = '/api/bgimage';
 const getMusicUrl = '/api/music';
+const updateTextUrl = '/api/updateText';
 
 /**
  * 
@@ -37,4 +38,9 @@ export function getBgImage(id) {
 
 export function getMusic(id) {
     return apiProcessor(axios.get(getMusicUrl, { params: { id } }))
+}
+
+export function updateText(code, title, content) {
+    let data = { code, title, content }
+    return apiProcessor(axios.post(updateTextUrl, data))
 }

@@ -1,0 +1,106 @@
+@import "./global.scss";
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main {
+  position: relative;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.contentLayer {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  /** grid是由内部元素控制大小，而flex是由外部元素控制 */
+  display: flex;
+  flex-direction: column;
+  // grid-template-rows: 3fr 3fr 3fr;
+  row-gap: 0.5rem;
+}
+
+.contentContainer {
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #4e4a75;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10rem;
+  align-items: center;
+  justify-content: center;
+  row-gap: 10px;
+  //   width: 90%;
+}
+
+.item {
+  width: 80vw;
+  font-size: 1rem;
+  min-height: 2.4rem;
+}
+
+.label {
+  @extend .item;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+
+.input {
+  @extend .item;
+  font-size: 0.9rem;
+}
+
+.btn {
+  @extend .item;
+  font-weight: bold;
+}
+
+.upperLayer {
+  pointer-events: none;
+  position: absolute;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+}
+
+.menuBtnContainer {
+  position: fixed;
+  pointer-events: auto;
+}
+
+.inputLabel {
+  align-self: flex-start;
+  color: rgb(228, 228, 228);
+}
+
+.textTitle {
+  @extend .input;
+}
+
+.textContent {
+  @extend .input;
+  height: 40%;
+  font-weight: 200;
+  font-size: 0.9rem;
+}
+
+.notice {
+  color: rgba(255, 44, 16, 0.931);
+}

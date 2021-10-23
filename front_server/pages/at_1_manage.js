@@ -101,7 +101,8 @@ function At1Manage() {
     }
 
     function setText() {
-        // TODO
+        // TODO 更新标题和文本
+        router.push({ pathname: '/update_text', query: { code } })
     }
 
     function chooseMainImg() {

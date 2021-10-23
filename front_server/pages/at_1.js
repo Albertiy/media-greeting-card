@@ -12,6 +12,7 @@ import Paragraph from '../src/component/paragraph/Paragraph';
 import useAccessToken from '../src/hook/useAccessToken';
 import useCode from '../src/hook/useCode';
 import Article from '../src/model/article';
+import SkeletonTemplate from '../src/model/skeleton_template';
 import Uploadfiles from '../src/model/uploadfiles';
 import * as ArtService from '../src/service/art_service';
 import { getFile } from '../src/service/file_service';
@@ -52,10 +53,10 @@ function ArtTemp1() {
     useEffect(() => {
         if (skeleton != defaultSkeleton) {
             // 加载背景图片
-            if (skeleton.customBgImageId) {
+            if (skeleton.customBgImageId) { // 自定义背景id
 
             }
-            else if (skeleton.bgImageId) {
+            else if (skeleton.bgImageId) {  // 官方背景id
                 ArtService.getBgImage(skeleton.bgImageId).then((result) => {
                     console.log('[bgimage url]: %o', result)
                     setBgImageUrl(getFile(result))
@@ -64,7 +65,7 @@ function ArtTemp1() {
                 });
             }
             // 加载背景音乐
-            if (skeleton.bgMusicId) {
+            if (skeleton.bgMusicId) {   // 官方BGM
                 ArtService.getMusic(skeleton.bgMusicId).then((result) => {
                     console.log('[bgmusic url]: %o', result)
                     setBgMusicUrl(getFile(result))
