@@ -13,6 +13,6 @@ export function apiProcessor(input_promise) {
             let res = result.data;
             if (res.state) resolve(res.data)
             else reject(res.error)
-        })
+        }).catch(err => { reject(err) })
     })
 }
