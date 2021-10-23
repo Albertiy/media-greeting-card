@@ -71,6 +71,7 @@ router.get('/recordandarticle', function (req, res, next) {
             let temp = uploadRecord;
             temp.access_pwd = null;
             temp.modify_pwd = null;
+            console.log(article.skeleton)
             res.send(new ReqBody(1, { record: uploadRecord, article: article }))
         }).catch((err) => {
             res.send(new ReqBody(0, null, err))
