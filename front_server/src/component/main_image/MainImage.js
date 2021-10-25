@@ -2,13 +2,13 @@ import React from 'react'
 import styles from './MainImage.module.scss'
 import PropTypes from 'prop-types'
 
-export default function MainImage(props) {
+function MainImage(props) {
     return (
         <div className={styles.mainImageBorder} onClick={props.onClick || function (e) { console.log('点击了mainImage') }}>
             {
                 props.src ? (
-                    <img src={props.src || ''} ></img>
-                ) : <span>点击上传照片</span>
+                    <img style={{ maxWidth: '100%', maxHeight: '100%' }} src={props.src || ''} ></img>
+                ) : <span className={styles.text}> {props.textOnEmpty || '无图像'} </span>
             }
         </div >
     )
@@ -17,4 +17,7 @@ export default function MainImage(props) {
 MainImage.propTypes = {
     onClick: PropTypes.func,
     src: PropTypes.string,
+    textOnEmpty: PropTypes.string,
 }
+
+export default MainImage;

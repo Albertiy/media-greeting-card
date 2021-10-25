@@ -8,11 +8,21 @@
 }
 
 .mainImageBorder {
-  border: 0.125rem solid $color-shadow-panel;
   border-radius: 0.5rem;
   width: 100%;
   height: 12.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  width: 100%;
+  height: 100%;
+  border: 0.125rem solid $color-shadow-panel;
+  border-radius: 0.5rem;
   background-color: $color-input-bg;
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
