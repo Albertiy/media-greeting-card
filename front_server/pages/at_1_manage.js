@@ -118,11 +118,13 @@ function At1Manage() {
     }
 
     function chooseBgImg() {
-        // TODO
+        // 更新背景图片（自定义）
+        router.push({ pathname: '/update_bg_image', query: { code } })
     }
 
     function chooseBgMusic() {
-        // TODO
+        // TODO 更新背景音乐
+        router.push({ pathname: '/update_bg_music', query: { code } })
     }
 
     function preview() {

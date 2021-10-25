@@ -12,6 +12,7 @@ const getMusicUrl = '/api/music';
 const updateTextUrl = '/api/updatetext';
 const getImageUrl = 'api/image';
 const updateImageUrl = 'api/updateimage';
+const updateCustomBgImageUrl = 'api/updatecustombgimage';
 
 /**
  * 
@@ -53,4 +54,8 @@ export function getImage(id) {
 
 export function updateImage(data) {
     return apiProcessor(axios.post(updateImageUrl, data))
+}
+
+export function updateCustomBgImage(data) {
+    return apiProcessor(axios.post(updateCustomBgImageUrl, data))
 }

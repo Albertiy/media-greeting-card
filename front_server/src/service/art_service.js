@@ -84,3 +84,17 @@ export function updateImage(code, imageFile) {
     data.append('image', imageFile, imageFile.name)
     return ArtAPI.updateImage(data);
 }
+
+/**
+ * 
+ * @param {string} code 
+ * @param {File} imageFile 
+ * @returns {Promise<>}
+ */
+export function updateCustomBgImage(code, imageFile) {
+    console.log('imageFile: %o', imageFile)
+    const data = new FormData();
+    data.append('code', code)
+    data.append('image', imageFile, imageFile.name)
+    return ArtAPI.updateCustomBgImage(data);
+}
