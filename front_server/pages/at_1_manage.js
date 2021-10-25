@@ -69,24 +69,31 @@ function At1Manage() {
         }
     }
 
+    function getDefaultBg(bgImageId) {
+        ArtService.getBgImage(bgImageId).then((result) => {
+            console.log('[bgimage url]: %o', result)
+            setBgImageUrl(FileService.getFile(result))
+        }).catch((err) => {
+            console.log(err)
+        });
+    }
+
     function updateEles(skele) {
         if (skele.customBgImageId) {
-            ArtService.getImage(skeleton.customBgImageId).then((result) => {
+            ArtService.getImage(skele.customBgImageId).then((result) => {
                 console.log('[customBgImage url]: %o', result.path)
-                let src = getFile(result.path)
-                src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
-                setBgImageUrl(src)
+                if (result.path) {
+                    let src = getFile(result.path)
+                    src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
+                    setBgImageUrl(src)
+                } else {
+                    getDefaultBg(skele.bgImageId);
+                }
             }).catch((err) => {
-                enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
+                getDefaultBg(skele.bgImageId);
             });
-        }
-        else if (skele.bgImageId) {
-            ArtService.getBgImage(skele.bgImageId).then((result) => {
-                console.log('[bgimage url]: %o', result)
-                setBgImageUrl(FileService.getFile(result))
-            }).catch((err) => {
-                console.log(err)
-            });
+        } else if (skele.bgImageId) {
+            getDefaultBg(skele.bgImageId);
         }
         // 加载背景音乐
         if (skele.bgMusicId) {

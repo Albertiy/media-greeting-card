@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import AlertDialog from '../../src/component/alert-dialog';
 import authenticatedRoute from '../../src/component/authenticated_route/AuthenticatedRoute';
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../../src/component/main_image/MainImage';
@@ -30,6 +31,8 @@ const defaultSkeleton = null;
 /** 最大图片文件大小 */
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
+const defaultDialog = { open: false, title: '提示', content: '确认' };
+
 function UpdateImage() {
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -44,6 +47,12 @@ function UpdateImage() {
     const [mainSrc, setMainSrc] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [previewSrc, setPreviewSrc] = useState(null);
+
+    const [showDialog, setShowDialog] = useState(defaultDialog.open);
+    const [dialogTitle, setDialogTitle] = useState(defaultDialog.title);
+    const [dialogContent, setDialogContent] = useState(defaultDialog.content);
+    let defaultHandleClose = function (ok) { setShowDialog(false) };
+    const [dialogHandleClose, setDialogHandleClose] = useState(defaultHandleClose);
 
 
     useEffect(() => {
@@ -108,10 +117,10 @@ function UpdateImage() {
     }
 
     /**
-     * 登录
+     * 上传
      */
     function upload() {
-        console.log('code: %o, oldPwd: %o, newPwd: %o', code, textTitle, textContent)
+        console.log('code: %o, imageFile: %o', code, imageFile)
         try {
             setIsLoading(true)
             // 后台请求
@@ -120,6 +129,28 @@ function UpdateImage() {
                 if (window.history.length > 1) {
                     // console.log('window.history: %o', window.history)
                     // console.log('document.referrer: %o', document.referrer)
+                    router.back();
+                } else
+                    router.push({ pathname: '/entry', query: { code } });
+            }).catch((err) => {
+                enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+            }).finally(() => {
+                setIsLoading(false)
+            })
+        } finally { }
+    }
+
+    /**
+     * 删除当前图片
+     */
+    function clear() {
+        console.log('[清空自定义背景图] code: %o', code)
+        try {
+            setIsLoading(true)
+            // 后台请求
+            ArtService.clearCustomBgImage(code).then(res => {
+                enqueueSnackbar('' + res, { variant: 'success', autoHideDuration: 2000 })
+                if (window.history.length > 1) {
                     router.back();
                 } else
                     router.push({ pathname: '/entry', query: { code } });
@@ -159,6 +190,31 @@ function UpdateImage() {
         }
     }, [imageFile])
 
+    function clearBtnClicked() {
+        if (skeleton && !skeleton.customBgImageId) {
+            enqueueSnackbar('尚未上传自定义背景', { variant: 'info', autoHideDuration: 2000 })
+        } else {
+            showAlertDialog('注意', '将删除当前的自定义背景图片，是否继续？', (ok) => {
+                if (ok) { clear() }
+                else { }
+                setShowDialog(false)
+            })
+        }
+    }
+
+    /**
+     * 显示弹窗
+     * @param {string} title 
+     * @param {string} content 
+     * @param {function} [handleClose] 
+     */
+    function showAlertDialog(title, content, handleClose) {
+        setDialogTitle(value => title || defaultDialog.title)
+        setDialogContent(value => content || defaultDialog.content)
+        setDialogHandleClose(value => handleClose || defaultHandleClose)
+        setShowDialog(true)
+    }
+
     return (
         <div className={styles.container}>
             <Head>
@@ -182,6 +238,7 @@ function UpdateImage() {
                         </section>
                         <label className={styles.notice}>注：不能上传违法信息，如有，将追究法律责任。</label>
                         <Button type="primary" block={true} className={styles.btn} size="large" onClick={confirmBtnClicked} disabled={!dataLoaded}>上传</Button>
+                        <Button type="link" block={true} className={styles.linkBtn} size="small" onClick={clearBtnClicked} disabled={!dataLoaded}>&gt;&gt;删除自定义背景</Button>
                     </div>
                     {/* </Space> */}
                     {isLoading && <ModelLoading />}
@@ -191,7 +248,9 @@ function UpdateImage() {
                         <FloatSidebar code={code}></FloatSidebar>
                     </section>
                 </div>
+
             </main>
+            <AlertDialog open={showDialog} title={dialogTitle} content={dialogContent} handleClose={dialogHandleClose} />
         </div>
     )
 }

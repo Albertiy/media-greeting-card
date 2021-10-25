@@ -13,6 +13,7 @@ const updateTextUrl = '/api/updatetext';
 const getImageUrl = 'api/image';
 const updateImageUrl = 'api/updateimage';
 const updateCustomBgImageUrl = 'api/updatecustombgimage';
+const clearCustomBgImageUrl = 'api/clearcustombgimage';
 
 /**
  * 
@@ -58,4 +59,9 @@ export function updateImage(data) {
 
 export function updateCustomBgImage(data) {
     return apiProcessor(axios.post(updateCustomBgImageUrl, data))
+}
+
+export function clearCustomBgImage(code) {
+    let data = { code }
+    return apiProcessor(axios.post(clearCustomBgImageUrl, data))
 }

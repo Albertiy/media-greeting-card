@@ -50,6 +50,15 @@ function ArtTemp1() {
             getInfoByCode(code);
     }, [code])
 
+    function getDefaultBg(bgImageId) {
+        ArtService.getBgImage(bgImageId).then((result) => {
+            console.log('[bgimage url]: %o', result)
+            setBgImageUrl(getFile(result))
+        }).catch((err) => {
+            console.log(err)
+        });
+    }
+
     /** 初始化skeleton，加载内容 */
     useEffect(() => {
         if (skeleton != defaultSkeleton) {
@@ -57,20 +66,19 @@ function ArtTemp1() {
             if (skeleton.customBgImageId) { // 自定义背景id
                 ArtService.getImage(skeleton.customBgImageId).then((result) => {
                     console.log('[customBgImage url]: %o', result.path)
-                    let src = getFile(result.path)
-                    src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
-                    setBgImageUrl(src)
+                    if (result.path) {
+                        let src = getFile(result.path)
+                        src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
+                        setBgImageUrl(src)
+                    } else {
+                        getDefaultBg(skeleton.bgImageId)
+                    }
                 }).catch((err) => {
-                    enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
+                    getDefaultBg(skeleton.bgImageId)
                 });
             }
             else if (skeleton.bgImageId) {  // 官方背景id
-                ArtService.getBgImage(skeleton.bgImageId).then((result) => {
-                    console.log('[bgimage url]: %o', result)
-                    setBgImageUrl(getFile(result))
-                }).catch((err) => {
-                    console.log(err)
-                });
+                getDefaultBg(skeleton.bgImageId)
             }
             // 加载背景音乐
             if (skeleton.bgMusicId) {   // 官方BGM

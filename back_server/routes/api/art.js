@@ -320,4 +320,24 @@ router.post('/updatecustombgimage', function (req, res, next) {
     }
 })
 
+router.post('/clearcustombgimage', function (req, res, next) {
+    try {
+        let { code } = req.body;
+        console.log('[clearcustombgimage] code: %o', code)
+        if (!code) { // || !linkUrl
+            ApiTools.errorNeedParams(res);
+        } else {
+            dbService.updateCustomBgImage(code, '').then(val => {
+                let oldPath = val.oldPath;
+                if (oldPath) fs.rmSync(path.resolve(rootUrl, oldPath));
+                ApiTools.okMessage(res, val.res)
+            }).catch(err => {
+                ApiTools.errorMessage(res, err)
+            })
+        }
+    } catch (e) {
+        ApiTools.errorMessage(res, e)
+    }
+})
+
 module.exports = router;

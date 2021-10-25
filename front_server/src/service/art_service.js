@@ -98,3 +98,7 @@ export function updateCustomBgImage(code, imageFile) {
     data.append('image', imageFile, imageFile.name)
     return ArtAPI.updateCustomBgImage(data);
 }
+
+export function clearCustomBgImage(code) {
+    return ArtAPI.clearCustomBgImage(code);
+}

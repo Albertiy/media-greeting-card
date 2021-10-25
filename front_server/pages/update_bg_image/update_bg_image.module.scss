@@ -73,6 +73,16 @@
   font-weight: bold;
 }
 
+.linkBtn {
+  @extend .btn;
+  width: auto;
+  justify-self: flex-end;
+  align-self: end;
+  font-weight: normal;
+  color: rgb(0, 162, 255);
+  font-size: 0.8rem;
+}
+
 .upperLayer {
   pointer-events: none;
   position: absolute;
