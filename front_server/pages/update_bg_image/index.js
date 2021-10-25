@@ -67,10 +67,12 @@ function UpdateImage() {
             if (skeleton.customBgImageId) {
                 ArtService.getImage(skeleton.customBgImageId).then((result) => {
                     console.log(result)
-                    let src = getFile(result.path)
-                    src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
-                    setMainSrc(src)
-                    setPreviewSrc(src)
+                    if (result.path) {
+                        let src = getFile(result.path)
+                        src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
+                        setMainSrc(src)
+                        setPreviewSrc(src)
+                    }
                 }).catch((err) => {
                     enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
                 });
@@ -149,12 +151,13 @@ function UpdateImage() {
             setIsLoading(true)
             // 后台请求
             ArtService.clearCustomBgImage(code).then(res => {
-                enqueueSnackbar('' + res, { variant: 'success', autoHideDuration: 2000 })
+                enqueueSnackbar('清除自定义背景成功！' + res, { variant: 'success', autoHideDuration: 2000 })
                 if (window.history.length > 1) {
                     router.back();
                 } else
                     router.push({ pathname: '/entry', query: { code } });
             }).catch((err) => {
+                console.log(err)
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
             }).finally(() => {
                 setIsLoading(false)

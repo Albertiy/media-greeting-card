@@ -327,15 +327,18 @@ router.post('/clearcustombgimage', function (req, res, next) {
         if (!code) { // || !linkUrl
             ApiTools.errorNeedParams(res);
         } else {
+            let rootUrl = fileService.getFileRoot();
             dbService.updateCustomBgImage(code, '').then(val => {
                 let oldPath = val.oldPath;
                 if (oldPath) fs.rmSync(path.resolve(rootUrl, oldPath));
                 ApiTools.okMessage(res, val.res)
             }).catch(err => {
+                console.log(err)
                 ApiTools.errorMessage(res, err)
             })
         }
     } catch (e) {
+        console.log(e)
         ApiTools.errorMessage(res, e)
     }
 })
