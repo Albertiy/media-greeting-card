@@ -375,7 +375,42 @@ function updateArticleImage(code, path) {
                 ImagefilesAPI.create(article.code_id, path).then((res) => {
                     let imagefileId = res.insertId;
                     ArticleAPI.updateImage(code, imagefileId, 0).then((res2) => {
-                        if (res2.affectedRows > 0) resolve({ res: '更新成功', oldPath: null });
+                        if (res2.affectedRows > 0) resolve({ res: path, oldPath: null });
+                        else reject('更新图片id失败')
+                    }).catch((err) => { reject(err) });
+                }).catch((err) => { reject(err) });
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+/**
+ * 更新文章的主图，如果图片已存在，只需替换imagefile表的路径，否则新建记录并将id写入article.skeleton.imageList[0]
+ * @param {string} code 
+ * @param {string} path 
+ * @returns {Promise<{res:string,oldPath:string}>}
+ */
+function updateCustomBgImage(code, path) {
+    return new Promise((resolve, reject) => {
+        getArticleByCode(code).then((article) => {
+            // 图片id已存在
+            if (article.skeleton.customBgImageId) {
+                let imagefileId = article.skeleton.customBgImageId;
+                console.log('customBgImagefileId: %o', imagefileId)
+                ImagefilesAPI.getById(imagefileId).then((res) => {
+                    let oldPath = res.path;
+                    ImagefilesAPI.update(imagefileId, path).then((res2) => {
+                        if (res2.affectedRows > 0) resolve({ res: path, oldPath: oldPath });
+                        else reject('更新图片路径失败')
+                    }).catch((err) => { reject(err) });
+                }).catch((err) => { reject(err) });
+            } else {
+                ImagefilesAPI.create(article.code_id, path).then((res) => {
+                    let imagefileId = res.insertId;
+                    ArticleAPI.updateCustomBgImage(code, imagefileId, 0).then((res2) => {
+                        if (res2.affectedRows > 0) resolve({ res: path, oldPath: null });
                         else reject('更新图片id失败')
                     }).catch((err) => { reject(err) });
                 }).catch((err) => { reject(err) });
@@ -410,4 +445,5 @@ module.exports = {
     getImage,
     updateArticleImage,
     getArticleByCode,
+    updateCustomBgImage,
 }

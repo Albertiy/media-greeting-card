@@ -71,7 +71,14 @@ function At1Manage() {
 
     function updateEles(skele) {
         if (skele.customBgImageId) {
-
+            ArtService.getImage(skeleton.customBgImageId).then((result) => {
+                console.log('[customBgImage url]: %o', result.path)
+                let src = getFile(result.path)
+                src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
+                setBgImageUrl(src)
+            }).catch((err) => {
+                enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
+            });
         }
         else if (skele.bgImageId) {
             ArtService.getBgImage(skele.bgImageId).then((result) => {

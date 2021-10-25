@@ -56,8 +56,10 @@ function UpdateImage() {
         if (skeleton != defaultSkeleton) {
             console.log('title: %o, contentList %o', skeleton.title, skeleton.textList)
             if (skeleton.customBgImageId) {
-                ArtService.getBgImage(skeleton.customBgImageId).then((result) => {
-                    let src = getFile(result)
+                ArtService.getImage(skeleton.customBgImageId).then((result) => {
+                    console.log(result)
+                    let src = getFile(result.path)
+                    src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
                     setMainSrc(src)
                     setPreviewSrc(src)
                 }).catch((err) => {

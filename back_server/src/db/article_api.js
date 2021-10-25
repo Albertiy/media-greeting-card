@@ -7,6 +7,7 @@ const getArticleByCodeSql = 'select t1.* from article as t1 inner join uploadfil
 const addArticleSql = 'insert into article(code_id, template_id, skeleton) values(?,?,convert(?, json))';
 const updateTextSql = 'update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.title",?,"$.textList[0]",?) where t2.`uuid` = ?;';
 const updateImageSql = 'update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.imageList[?]",?) where t2.`uuid` = ?;';
+const updateCustomBgImageSql = 'update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.customBgImageId",?) where t2.`uuid` = ?;';
 
 const orderStr = ' order by `order` is null, `order` asc';
 
@@ -101,10 +102,25 @@ function updateImage(code, imageId, imageIdx = 0) {
     })
 }
 
+function updateCustomBgImage(code, imageId) {
+    let query = updateCustomBgImageSql;
+    let data = [imageId, code];
+    return new Promise((resolve, reject) => {
+        pool.query(query, data, (err, res, fields) => {
+            if (err) {
+                console.log(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
+
 module.exports = {
     getArticleByCodeId,
     getArticleByCode,
     addArticle,
     updateText,
     updateImage,
+    updateCustomBgImage,
 }

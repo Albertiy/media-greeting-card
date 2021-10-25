@@ -55,7 +55,14 @@ function ArtTemp1() {
         if (skeleton != defaultSkeleton) {
             // 加载背景图片
             if (skeleton.customBgImageId) { // 自定义背景id
-
+                ArtService.getImage(skeleton.customBgImageId).then((result) => {
+                    console.log('[customBgImage url]: %o', result.path)
+                    let src = getFile(result.path)
+                    src = src.replace('\\', '/')    // 解决反斜杠在style中会转义问题
+                    setBgImageUrl(src)
+                }).catch((err) => {
+                    enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
+                });
             }
             else if (skeleton.bgImageId) {  // 官方背景id
                 ArtService.getBgImage(skeleton.bgImageId).then((result) => {

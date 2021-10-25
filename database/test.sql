@@ -69,6 +69,7 @@ select j.* from article as t1 inner join uploadfiles as t2, json_table(t1.skelet
     `title` varchar(100) path "$.title",
     `textList` json path "$.textList",
     `bgImageId` int path "$.bgImageId",
+	`customBgImageId` int path "$.customBgImageId",
     `imageList` json path "$.imageList"
 )) as j where t1.code_id = t2.id and t2.`uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
 
@@ -85,3 +86,5 @@ update imagefiles set `path` = ? where `id` = ?;
 update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.imageList[?]",?) where t2.`uuid` = ?;
 
 select * from imagefiles where `id` = 1;
+
+update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.customBgImageId",null) where t2.`uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
