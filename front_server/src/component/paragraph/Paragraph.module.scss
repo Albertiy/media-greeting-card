@@ -1,6 +1,6 @@
 @import "../../../styles/global.scss";
 
-textarea.paragraph{
+textarea.paragraph {
   border-radius: 0.5rem;
   user-select: text;
   -webkit-user-select: text;
@@ -21,4 +21,15 @@ textarea.paragraph{
 
 .paragraph:empty {
   border: 0.25rem dashed $color-background-wuwangcao;
+}
+
+.readonly {
+}
+
+.readonly:focus {
+  background-color: transparent;
+  box-shadow: none;
+}
+.readonly:empty {
+  border: none;
 }

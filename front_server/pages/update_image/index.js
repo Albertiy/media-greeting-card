@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import authenticatedRoute from '../../src/component/authenticated_route/AuthenticatedRoute';
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../../src/component/main_image/MainImage';
 import ModelLoading from '../../src/component/model_loading';
@@ -13,10 +14,12 @@ import { SkeletonTemplate } from '../../src/model/skeleton_template';
 import Uploadfiles from '../../src/model/uploadfiles';
 import * as ArtService from '../../src/service/art_service';
 import * as fileService from '../../src/service/file_service';
+import { getFile } from '../../src/service/file_service';
 import GlobalSettings from '../../src/setting/global';
 import * as Tools from '../../src/tool/tools';
 import styles from './update_image.module.scss';
 
+const tokenName = GlobalSettings.modifyToken;
 /**@type{Uploadfiles} */
 const defaultRecord = null;
 /** @type{Article} */
@@ -27,7 +30,7 @@ const defaultSkeleton = null;
 /** 最大图片文件大小 */
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-export default function updateImage() {
+function UpdateImage() {
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { code } = useCode();
@@ -55,7 +58,9 @@ export default function updateImage() {
             // 标题内容
             if (skeleton.imageList && skeleton.imageList[0]) {
                 ArtService.getImage(skeleton.imageList[0]).then((result) => {
-                    setMainSrc(getFile(result.path))
+                    let src = getFile(result.path)
+                    setMainSrc(src)
+                    setPreviewSrc(src)
                 }).catch((err) => {
                     enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
                 });
@@ -116,9 +121,11 @@ export default function updateImage() {
             // 后台请求
             ArtService.updateImage(code, imageFile).then(res => {
                 enqueueSnackbar('' + res, { variant: 'success', autoHideDuration: 2000 })
-                if (window.history.length > 1)
+                if (window.history.length > 1) {
+                    // console.log('window.history: %o', window.history)
+                    // console.log('document.referrer: %o', document.referrer)
                     router.back();
-                else
+                } else
                     router.push({ pathname: '/entry', query: { code } });
             }).catch((err) => {
                 enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
@@ -169,7 +176,7 @@ export default function updateImage() {
                         <label className={styles.label}>图片替换：</label>
                         <label className={styles.inputLabel}>预览</label>
                         <section className={styles.mainImageContainer}>
-                            <MainImage src={mainSrc || previewSrc}></MainImage>
+                            <MainImage src={previewSrc}></MainImage>
                         </section>
                         <label className={styles.inputLabel}>选择图片</label>
                         <section className={styles.uploadContainer}>
@@ -192,3 +199,5 @@ export default function updateImage() {
         </div>
     )
 }
+
+export default authenticatedRoute(UpdateImage, { tokenName: tokenName });

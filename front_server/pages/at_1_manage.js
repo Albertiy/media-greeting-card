@@ -12,6 +12,7 @@ import Article from '../src/model/article';
 import Uploadfiles from '../src/model/uploadfiles';
 import * as ArtService from '../src/service/art_service';
 import * as FileService from '../src/service/file_service';
+import { getFile } from '../src/service/file_service';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/at_1_manage.module.scss';
 
@@ -40,6 +41,7 @@ function At1Manage() {
     const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
     const [p1, setP1] = useState(defaultP1)
     const [loading, setLoading] = useState(false);
+    const [previewSrc, setPreviewSrc] = useState(null);
 
     useEffect(() => {
         if (code)
@@ -96,17 +98,22 @@ function At1Manage() {
         }
         // 图片内容
         if (skeleton.imageList && skeleton.imageList[0]) {
-
+            ArtService.getImage(skeleton.imageList[0]).then((result) => {
+                let src = getFile(result.path)
+                setPreviewSrc(src)
+            }).catch((err) => {
+                enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
+            })
         }
     }
 
     function setText() {
-        // TODO 更新标题和文本
+        // 更新标题和文本
         router.push({ pathname: '/update_text', query: { code } })
     }
 
     function chooseMainImg() {
-        // TODO
+        // 更新图像
         router.push({ pathname: '/update_image', query: { code } })
     }
 
@@ -169,7 +176,7 @@ function At1Manage() {
             <main className={styles.main} style={bgImageUrl ? { backgroundImage: `url(${bgImageUrl})` } : {}}>
                 <div className={styles.contentLayer}>
                     <section className={styles.mainImageContainer}>
-                        <MainImage src={skeleton && skeleton.imageList && skeleton.imageList[0] || ''}></MainImage>
+                        <MainImage src={previewSrc}></MainImage>
                     </section>
                     <section className={styles.editContainer}>
                         <ImageBtn title="文字" src="img/article_btn/note.png" imgStyle={{ transform: 'translate(3px, 0px)' }}

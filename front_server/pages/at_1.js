@@ -43,6 +43,7 @@ function ArtTemp1() {
     const [bgMusicUrl, setBgMusicUrl] = useState(defaultBgMusicUrl);
     const [p1, setP1] = useState(defaultP1)
     const [cookies, setCookie, removeCookie] = useCookies();
+    const [previewSrc, setPreviewSrc] = useState(null);
 
     useEffect(() => {
         if (code)
@@ -81,7 +82,12 @@ function ArtTemp1() {
             }
             // 图片内容
             if (skeleton.imageList && skeleton.imageList[0]) {
-
+                ArtService.getImage(skeleton.imageList[0]).then((result) => {
+                    let src = getFile(result.path)
+                    setPreviewSrc(src)
+                }).catch((err) => {
+                    enqueueSnackbar('' + err, { variant: 'warning', autoHideDuration: 2000 })
+                })
             }
         }
     }, [skeleton])
@@ -116,11 +122,11 @@ function ArtTemp1() {
             {/* 背景层 */}
             <div className={styles.contentLayer}>
                 <section className={styles.mainImageContainer}>
-                    <MainImage src={skeleton && skeleton.imageList && skeleton.imageList[0] && getFile(skeleton.imageList[0])}></MainImage>
+                    <MainImage src={previewSrc}></MainImage>
                 </section>
                 <section className={styles.mainParagraphContainer}>
                     {/*  contentEditable="true" suppressContentEditableWarning="true"  */}
-                    <Paragraph value={p1} onChange={(e) => { console.log(e); setP1(e.target.value) }}></Paragraph>
+                    <Paragraph value={p1} readOnly={true} style={{ backgroundColor: 'transparent' }}></Paragraph>
                 </section>
                 <section className={styles.interactiveMessageContainer}>
                 </section>
