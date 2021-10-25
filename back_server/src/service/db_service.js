@@ -265,6 +265,28 @@ function getArticleByCodeId(codeId) {
     })
 }
 
+/**
+ * 
+ * @param {string} code 
+ * @returns {Promise<Article>}
+ */
+function getArticleByCode(code) {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.getArticleByCode(code).then((result) => {
+            if (result.length > 0) {
+                /** @type{Article} */
+                let res = result[0];
+                if (res.skeleton) res.skeleton = JSON.parse(res.skeleton);
+                if (res.paragraph_set) res.paragraph_set = JSON.parse(res.paragraph_set);
+                resolve(res);
+            } else reject('未找到此code对应的文章')
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+
+}
+
 function getOrCreateArticleByCodeId(codeId) {
     return new Promise((resolve, reject) => {
         getArticleByCodeId(codeId).then((result) => {
@@ -329,6 +351,41 @@ function getImage(id) {
     return ImagefilesAPI.getById(id);
 }
 
+/**
+ * 更新文章的主图，如果图片已存在，只需替换imagefile表的路径，否则新建记录并将id写入article.skeleton.imageList[0]
+ * @param {string} code 
+ * @param {string} path 
+ * @returns {Promise<{res:string,oldPath:string}>}
+ */
+function updateArticleImage(code, path) {
+    return new Promise((resolve, reject) => {
+        getArticleByCode(code).then((article) => {
+            // 图片id已存在
+            if (article.skeleton.imageList && article.skeleton.imageList[0]) {
+                let imagefileId = article.skeleton.imageList[0];
+                console.log('imagefileId: %o', imagefileId)
+                ImagefilesAPI.getById(imagefileId).then((res) => {
+                    let oldPath = res.path;
+                    ImagefilesAPI.update(imagefileId, path).then((res2) => {
+                        if (res2.affectedRows > 0) resolve({ res: path, oldPath: oldPath });
+                        else reject('更新图片路径失败')
+                    }).catch((err) => { reject(err) });
+                }).catch((err) => { reject(err) });
+            } else {
+                ImagefilesAPI.create(article.code_id, path).then((res) => {
+                    let imagefileId = res.insertId;
+                    ArticleAPI.updateImage(code, imagefileId, 0).then((res2) => {
+                        if (res2.affectedRows > 0) resolve({ res: '更新成功', oldPath: null });
+                        else reject('更新图片id失败')
+                    }).catch((err) => { reject(err) });
+                }).catch((err) => { reject(err) });
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -351,4 +408,6 @@ module.exports = {
     changeAccessPwd,
     updateArticleText,
     getImage,
+    updateArticleImage,
+    getArticleByCode,
 }

@@ -10,6 +10,7 @@ module.exports = {
     mkdirs: mkdirs,
     mkdirsSync: mkdirsSync,
     deletefile: deletefile,
+    getImageRoot: getImageRoot,
 }
 
 function getBgImageRoot() {
@@ -18,6 +19,10 @@ function getBgImageRoot() {
 
 function getMusicRoot() {
     return path.resolve(getFileRoot(), config.application().musicRoot);
+}
+
+function getImageRoot() {
+    return path.resolve(getFileRoot(), config.application().imageRoot);
 }
 
 /**

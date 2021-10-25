@@ -77,3 +77,11 @@ show full columns from article;
 ALTER TABLE article MODIFY skeleton TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 SHOW VARIABLES WHERE Variable_name LIKE 'character\_set\_%' OR Variable_name LIKE 'collation%';
+
+insert into imagefiles(`code_id`, `path`) values(123,'ddsfs');
+
+update imagefiles set `path` = ? where `id` = ?;
+
+update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.imageList[?]",?) where t2.`uuid` = ?;
+
+select * from imagefiles where `id` = 1;

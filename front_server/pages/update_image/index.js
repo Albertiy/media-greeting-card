@@ -25,7 +25,7 @@ const defaultArticle = null;
 const defaultSkeleton = null;
 
 /** 最大图片文件大小 */
-const MAX_FILE_SIZE = 1024 * 1024;
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 export default function updateImage() {
     const router = useRouter();

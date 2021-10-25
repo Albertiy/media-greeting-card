@@ -10,6 +10,7 @@
   "qrEntryUrl": "https://heka.neiguiyin.com/entry",
   "videoFileRoot": "./video",
   "audioFileRoot": "./audio",
+  "imageFileRoot": "./image",
   "qrFileRoot": "./qr",
   "bgImageRoot": "./bgimage",
   "musicRoot": "./music",

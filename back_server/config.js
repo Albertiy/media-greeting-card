@@ -15,6 +15,7 @@ const fs = require('fs');
  * qrEntryUrl: string,
  * videoFileRoot: string,
  * audioFileRoot: string,
+ * imageFileRoot: string,
  * qrFileRoot: string,
  * bgImageRoot: string,
  * musicRoot: string,
