@@ -1,19 +1,21 @@
-import { Button, Input, Layout } from 'antd'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useSnackbar } from 'notistack'
-import { useEffect, useState } from 'react'
-import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar'
-import MainImage from '../../src/component/main_image/MainImage'
-import ModelLoading from '../../src/component/model_loading'
-import useCode from '../../src/hook/useCode'
-import Article from '../../src/model/article'
-import { SkeletonTemplate } from '../../src/model/skeleton_template'
-import Uploadfiles from '../../src/model/uploadfiles'
-import * as ArtService from '../../src/service/art_service'
-import * as fileService from '../../src/service/file_service'
-import GlobalSettings from '../../src/setting/global'
-import styles from './update_image.module.scss'
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Input, Layout, Upload } from 'antd';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
+import MainImage from '../../src/component/main_image/MainImage';
+import ModelLoading from '../../src/component/model_loading';
+import useCode from '../../src/hook/useCode';
+import Article from '../../src/model/article';
+import { SkeletonTemplate } from '../../src/model/skeleton_template';
+import Uploadfiles from '../../src/model/uploadfiles';
+import * as ArtService from '../../src/service/art_service';
+import * as fileService from '../../src/service/file_service';
+import GlobalSettings from '../../src/setting/global';
+import * as Tools from '../../src/tool/tools';
+import styles from './update_image.module.scss';
 
 /**@type{Uploadfiles} */
 const defaultRecord = null;
@@ -21,6 +23,9 @@ const defaultRecord = null;
 const defaultArticle = null;
 /** @type{SkeletonTemplate[1]} */
 const defaultSkeleton = null;
+
+/** 最大图片文件大小 */
+const MAX_FILE_SIZE = 1024 * 1024;
 
 export default function updateImage() {
     const router = useRouter();
@@ -34,6 +39,8 @@ export default function updateImage() {
     const [article, setArticle] = useState(defaultArticle);
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
     const [mainSrc, setMainSrc] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
+    const [previewSrc, setPreviewSrc] = useState(null);
 
 
     useEffect(() => {
@@ -92,10 +99,8 @@ export default function updateImage() {
     function confirmBtnClicked(event) {
         if (!code)
             enqueueSnackbar('编码不可为空！', { variant: 'warning', autoHideDuration: 2000 })
-        else if (textTitle == undefined || textTitle == '')
-            enqueueSnackbar('标题不可为空！', { variant: 'warning', autoHideDuration: 2000 })
-        else if (textContent == undefined || textContent == '')
-            enqueueSnackbar('内容不可为空！', { variant: 'warning', autoHideDuration: 2000 })
+        else if (imageFile == null)
+            enqueueSnackbar('请先选择图片', { variant: 'warning', autoHideDuration: 2000 })
         else {
             upload()
         }
@@ -109,7 +114,7 @@ export default function updateImage() {
         try {
             setIsLoading(true)
             // 后台请求
-            ArtService.updateText(code, textTitle, textContent).then(res => {
+            ArtService.updateImage(code, imageFile).then(res => {
                 enqueueSnackbar('' + res, { variant: 'success', autoHideDuration: 2000 })
                 if (window.history.length > 1)
                     router.back();
@@ -123,6 +128,34 @@ export default function updateImage() {
         } finally { }
     }
 
+    function onFileChange(file, fileList) {
+        if (file) {
+            if (Tools.validImageType(file)) {
+                if (file.size <= MAX_FILE_SIZE)
+                    setImageFile(file);
+                else {
+                    enqueueSnackbar('图片尺寸过大，请选择小于10M的图片', { variant: 'warning', autoHideDuration: 2000 })
+                }
+            } else {
+                enqueueSnackbar('选择的文件不是有效的图片格式', { variant: 'warning', autoHideDuration: 2000 })
+            }
+        }
+        return false;   // 阻止自动上传
+    }
+
+    /** 选中的图片变化 */
+    useEffect(() => {
+        if (imageFile != null) {
+            let reader = new FileReader();
+            reader.readAsDataURL(imageFile)
+            reader.onload = function (e) {
+                setPreviewSrc(this.result)
+            }
+        } else {
+            setPreviewSrc(mainSrc)
+        }
+    }, [imageFile])
+
     return (
         <div className={styles.container}>
             <Head>
@@ -134,9 +167,16 @@ export default function updateImage() {
                     {/* <Space direction="vertical" size="large" className={styles.form}> */}
                     <div className={styles.form}>
                         <label className={styles.label}>图片替换：</label>
-                        <MainImage src={skeleton}></MainImage>
+                        <label className={styles.inputLabel}>预览</label>
+                        <section className={styles.mainImageContainer}>
+                            <MainImage src={mainSrc || previewSrc}></MainImage>
+                        </section>
                         <label className={styles.inputLabel}>选择图片</label>
-
+                        <section className={styles.uploadContainer}>
+                            <Upload beforeUpload={onFileChange} accept={Tools.imageFileTypes} maxCount={1} name={'mainImage'} showUploadList={false}>
+                                <Button icon={<UploadOutlined />}>点击选择图片</Button>
+                            </Upload>
+                        </section>
                         <label className={styles.notice}>注：不能上传违法信息，如有，将追究法律责任。</label>
                         <Button type="primary" block={true} className={styles.btn} size="large" onClick={confirmBtnClicked} disabled={!dataLoaded}>上传</Button>
                     </div>

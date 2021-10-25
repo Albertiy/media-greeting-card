@@ -70,3 +70,17 @@ export function updateText(code, title, content) {
 export function getImage(id) {
     return ArtAPI.getImage(id);
 }
+
+/**
+ * 
+ * @param {string} code 
+ * @param {File} imageFile 
+ * @returns {Promise<>}
+ */
+export function updateImage(code, imageFile) {
+    console.log('imageFile: %o', imageFile)
+    const data = new FormData();
+    data.append('code', code)
+    data.append('image', imageFile, imageFile.name)
+    return ArtAPI.updateImage(data);
+}
