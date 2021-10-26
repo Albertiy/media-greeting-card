@@ -421,6 +421,26 @@ function updateCustomBgImage(code, path) {
     })
 }
 
+/**
+ * 更新背景音乐
+ * @param {string} code 
+ * @param {number} id 
+ */
+function updateBgMusic(code, id) {
+    return new Promise((resolve, reject) => {
+        ArticleAPI.updateBgMusic(code, id).then((result) => {
+            if (result.affectedRows > 0) {
+                resolve('更换背景音乐成功😎')
+            } else {
+                reject('更换背景音乐失败😥')
+            }
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+
+}
+
 module.exports = {
     insertCodes,
     insertGenerateRecord,
@@ -446,4 +466,5 @@ module.exports = {
     updateArticleImage,
     getArticleByCode,
     updateCustomBgImage,
+    updateBgMusic,
 }

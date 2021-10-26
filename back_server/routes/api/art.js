@@ -347,4 +347,33 @@ router.post('/clearcustombgimage', function (req, res, next) {
     }
 })
 
+router.post('/updatebgmusic', function (req, res, next) {
+    try {
+        let { code, id } = req.body;
+        if (!code || !id) { ApiTools.errorNeedParams(res); return; }
+        id = parseInt(id);
+        dbService.updateBgMusic(code, id).then((result) => {
+            ApiTools.okMessage(res, result)
+        }).catch((err) => {
+            ApiTools.errorMessage(res, err)
+        });
+    } catch (e) {
+        ApiTools.errorMessage(res, e)
+    }
+})
+
+router.post('/clearbgmusic', function (req, res, next) {
+    try {
+        let { code } = req.body;
+        if (!code) { ApiTools.errorNeedParams(res); return; }
+        dbService.updateBgMusic(code, null).then((result) => {
+            ApiTools.okMessage(res, result)
+        }).catch((err) => {
+            ApiTools.errorMessage(res, err)
+        });
+    } catch (e) {
+        ApiTools.errorMessage(res, e)
+    }
+})
+
 module.exports = router;
