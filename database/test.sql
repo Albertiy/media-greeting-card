@@ -70,7 +70,8 @@ select j.* from article as t1 inner join uploadfiles as t2, json_table(t1.skelet
     `textList` json path "$.textList",
     `bgImageId` int path "$.bgImageId",
 	`customBgImageId` int path "$.customBgImageId",
-    `imageList` json path "$.imageList"
+    `imageList` json path "$.imageList",
+    `bgMusicId` int path "$.bgMusicId"
 )) as j where t1.code_id = t2.id and t2.`uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
 
 show full columns from article;
@@ -88,3 +89,4 @@ update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.s
 select * from imagefiles where `id` = 1;
 
 update article as t1 inner join uploadfiles as t2 on t1.code_id = t2.id set t1.skeleton = json_set(t1.skeleton,"$.customBgImageId",null) where t2.`uuid` = '9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6';
+

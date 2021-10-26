@@ -110,3 +110,22 @@ export function updateCustomBgImage(code, imageFile) {
 export function clearCustomBgImage(code) {
     return ArtAPI.clearCustomBgImage(code);
 }
+
+/**
+ * 
+ * @param {string} code 
+ * @param {number} id 
+ * @returns 
+ */
+export function updateBgMusic(code, id) {
+    return ArtAPI.updateBgMusic(code, id);
+}
+
+/**
+ * 
+ * @param {string} code 
+ * @returns 
+ */
+export function clearBgMusic(code) {
+    return ArtAPI.clearBgMusic(code);
+}

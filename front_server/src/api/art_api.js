@@ -15,6 +15,8 @@ const getImageUrl = 'api/image';
 const updateImageUrl = 'api/updateimage';
 const updateCustomBgImageUrl = 'api/updatecustombgimage';
 const clearCustomBgImageUrl = 'api/clearcustombgimage';
+const updateBgMusicUrl = 'api/updatebgmusic';
+const clearBgMusicUrl = 'api/clearbgmusic';
 
 /**
  * 
@@ -69,4 +71,14 @@ export function updateCustomBgImage(data) {
 export function clearCustomBgImage(code) {
     let data = { code }
     return apiProcessor(axios.post(clearCustomBgImageUrl, data))
+}
+
+export function updateBgMusic(code, id) {
+    let data = { code, id }
+    return apiProcessor(axios.post(updateBgMusicUrl, data))
+}
+
+export function claerBgMusic(code) {
+    let data = { code }
+    return apiProcessor(axios.post(clearBgMusicUrl, data))
 }

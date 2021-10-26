@@ -179,6 +179,13 @@ function UpdateBgMusic() {
      */
     function setBtnClicked(value) {
         console.log('点击了设置背景音乐按钮 %o', value)
+        if (value) {
+            if (skeleton && skeleton.bgMusicId && skeleton.bgImageId == value.id) {
+                enqueueSnackbar('当前已选择此背景音乐', { variant: 'info', autoHideDuration: 2000 })
+            } else {
+                set(code, value.id)
+            }
+        }
     }
 
     /**
@@ -189,16 +196,40 @@ function UpdateBgMusic() {
         if (skeleton && !skeleton.bgMusicId) {
             enqueueSnackbar('尚未选择背景音乐', { variant: 'info', autoHideDuration: 2000 })
         } else {
-            clear()
+            clear(code)
         }
     }
 
-    function set() {
-        // TODO 设置背景音乐
+    function set(code, id) {
+        // 设置背景音乐
+        setLoading(true)
+        ArtService.updateBgMusic(code, id).then((result) => {
+            enqueueSnackbar('' + result, { variant: 'success', autoHideDuration: 2000 })
+            if (window.history.length > 1) {
+                router.back();
+            } else
+                router.push({ pathname: '/entry', query: { code } });
+        }).catch((err) => {
+            enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+        }).finally(() => {
+            setLoading(false)
+        });
     }
 
-    function clear() {
-        // TODO 移除当前选择的背景音乐
+    function clear(code) {
+        setLoading(true)
+        // 移除当前选择的背景音乐
+        ArtService.clearBgMusic(code).then((result) => {
+            enqueueSnackbar('' + result, { variant: 'success', autoHideDuration: 2000 })
+            if (window.history.length > 1) {
+                router.back();
+            } else
+                router.push({ pathname: '/entry', query: { code } });
+        }).catch((err) => {
+            enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+        }).finally(() => {
+            setLoading(false)
+        });
     }
 
 
