@@ -78,7 +78,7 @@ export function updateBgMusic(code, id) {
     return apiProcessor(axios.post(updateBgMusicUrl, data))
 }
 
-export function claerBgMusic(code) {
+export function clearBgMusic(code) {
     let data = { code }
     return apiProcessor(axios.post(clearBgMusicUrl, data))
 }
