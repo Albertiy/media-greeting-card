@@ -1,0 +1,784 @@
+{
+	"info": {
+		"_postman_id": "3842822f-4544-4ee7-87f2-a297e8c7d4bf",
+		"name": "heka",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "hello",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/hello",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"hello"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "生成一组二维码",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"count\": 1,\r\n    \"productId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/generateCode",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"generateCode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "批量获取二维码生成记录",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/records?startTime=2021-09-20&endTime=2021-10-08",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"records"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "4",
+							"disabled": true
+						},
+						{
+							"key": "startTime",
+							"value": "2021-09-20"
+						},
+						{
+							"key": "endTime",
+							"value": "2021-10-08"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用id获取一条二维码生成记录",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/record?id=4",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"record"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "上传祝福文本接口",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\": \"6ee23255-151f-11ec-9fd8-7fbca34d1aa1\",\r\n    \"textFrom\": \"老八7号\",\r\n    \"textTo\": \"老王2号\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/uploadGreetingText",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"uploadGreetingText"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "上传音视频祝福",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "audioFile",
+							"type": "file",
+							"src": "/D:/MyVideo/新录音 - 副本.mp3"
+						},
+						{
+							"key": "videoFile",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/uploadGreetingFiles",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"uploadGreetingFiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取主数据",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"description": "6ee23255-151f-11ec-9fd8-7fbca34d1aa1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/getGreetingFiles",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"getGreetingFiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "文件获取接口",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/file/qr/2021-09-13-17-49-10_d8182ed0-1477-11ec-8995-8f35c6fcfc4d_5000.zip",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"file",
+						"qr",
+						"2021-09-13-17-49-10_d8182ed0-1477-11ec-8995-8f35c6fcfc4d_5000.zip"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "切换锁定状态",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\": \"6ee23255-151f-11ec-9fd8-7fbca34d1aa1\",\r\n    \"lock\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/lock",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"lock"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取背景音乐列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/musiclist",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"musiclist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取背景图片列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/bgimagelist",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"bgimagelist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取商品列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/productlist",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"productlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取文章模板列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/articletemplatelist",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"articletemplatelist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用codeid获取文章接口",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/article?codeid=1278",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"article"
+					],
+					"query": [
+						{
+							"key": "codeid",
+							"value": "1278"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "同时获取record和article",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/recordandarticle?code=9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"recordandarticle"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用id获取背景图片路径",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/bgimage?id=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"bgimage"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用id获取音乐路径",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/music?id=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"music"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "登录管理页",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						},
+						{
+							"key": "modify_pwd",
+							"value": "123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "解锁查看",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						},
+						{
+							"key": "access_pwd",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/access",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改管理密码",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\": \"9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6\",\r\n    \"old_pwd\": \"123456\",\r\n    \"new_pwd\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/changepwd",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"changepwd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改访问密码",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						},
+						{
+							"key": "new_pwd",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/changeaccesspwd",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"changeaccesspwd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新图文文本",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "你的名字",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "宫本茂☀️",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/updatetext",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"updatetext"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用id获取图片对象",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/image?id=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"image"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新图片",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/D:/MyPhoto/情侣肖像/src_http___5b0988e595225.cdn.sohucs.com_images_20180214_43070c2c14ed4396a095869c03d753f6.jpeg_refer_http___5b0988e595225.cdn.sohucs-removebg-preview.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/updateimage",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"updateimage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "清空自定义背景图片",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/clearcustombgimage",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"clearcustombgimage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新自定义背景图片",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/D:/MyPhoto/testDPI.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/updatecustombgimage",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"updatecustombgimage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新背景音乐",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/updatebgmusic",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"updatebgmusic"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "清空背景音乐",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "9f0d5b10-2b0b-11ec-afb0-c15c0e4ce4e6",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/clearbgmusic",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"clearbgmusic"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "localhost:8522"
+		}
+	]
+}
