@@ -190,6 +190,7 @@ function At1Manage() {
             <header>
             </header>
             <main className={styles.main} style={bgImageUrl ? { backgroundImage: `url(${bgImageUrl})` } : {}}>
+                <div className={styles.bgcover}></div>
                 <div className={styles.contentLayer}>
                     <section className={styles.mainImageContainer}>
                         <MainImage src={previewSrc}></MainImage>

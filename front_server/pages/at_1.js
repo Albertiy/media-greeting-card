@@ -134,6 +134,7 @@ function ArtTemp1() {
         <header>
         </header>
         <main className={styles.main} style={bgImageUrl ? { backgroundImage: `url(${bgImageUrl})` } : {}}>
+            <div className={styles.bgcover}></div>
             {/* 背景层 */}
             <div className={styles.contentLayer}>
                 <section className={styles.mainImageContainer}>
