@@ -191,7 +191,7 @@ function updateGreetingFiles(params) {
 
 function getMusicList() {
     return new Promise((resolve, reject) => {
-        ArticleAPI.getMusicList().then((result) => {
+        MusicAPI.getList().then((result) => {
             resolve(result)
         }).catch((err) => {
             reject(err)

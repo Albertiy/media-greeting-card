@@ -25,11 +25,15 @@ router.get('/productlist', function (req, res, next) {
 })
 
 router.get('/musiclist', function (req, res, next) {
-    dbService.getMusicList().then((result) => {
-        res.send(new ReqBody(1, result))
-    }).catch((err) => {
-        res.send(new ReqBody(0, null, err))
-    });
+    try {
+        dbService.getMusicList().then((result) => {
+            ApiTools.okMessage(res, result)
+        }).catch((err) => {
+            ApiTools.errorMessage(res, err)
+        });
+    } catch (e) {
+        ApiTools.errorMessage(res, e)
+    }
 })
 
 router.get('/bgimagelist', function (req, res, next) {

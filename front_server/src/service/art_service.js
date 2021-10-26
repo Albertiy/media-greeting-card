@@ -53,6 +53,14 @@ export function getMusic(id) {
 
 /**
  * 
+ * @returns {Promise<Music>}
+ */
+export function getMusicList() {
+    return ArtAPI.getMusicList()
+}
+
+/**
+ * 
  * @param {string} code 
  * @param {string} title 标题
  * @param {string} content 内容

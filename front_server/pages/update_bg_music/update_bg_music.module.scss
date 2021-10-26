@@ -1,0 +1,128 @@
+@import "./global.scss";
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main {
+  position: relative;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-repeat: repeat;
+  background-position: center top;
+  background-size: contain;
+  background-color: #aee5ff;
+}
+
+.upperLayer {
+  pointer-events: none;
+  position: absolute;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+}
+
+.menuBtnContainer {
+  position: fixed;
+  pointer-events: auto;
+}
+
+.contentLayer {
+  position: relative;
+  flex: 1;
+  width: calc(100% - 2rem);
+  height: 100%;
+  padding: 1rem;
+  /** grid是由内部元素控制大小，而flex是由外部元素控制 */
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  padding-top: 2.5rem;
+}
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+
+.listContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  justify-items: stretch;
+  align-items: flex-start;
+  row-gap: 1rem;
+  overflow-y: auto;
+}
+
+.listItem {
+  height: 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 0.5rem;
+  background-color: #ffffffb7;
+  color: rgb(0, 137, 216);
+}
+
+.listItem:active {
+  color: rgb(0, 162, 255);
+}
+
+.itemName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listBtnGroup {
+}
+
+.listBtn {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.emptyList {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(176, 226, 255);
+  font-size: 1.2rem;
+}
+
+.btnContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.linkBtn {
+  width: auto;
+  justify-self: flex-end;
+  align-self: end;
+  font-weight: normal;
+  color: rgb(0, 162, 255);
+  font-size: 0.8rem;
+}
