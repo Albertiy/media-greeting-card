@@ -1,5 +1,5 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Layout, Upload } from 'antd';
+import { Button, Layout, Upload } from 'antd';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -8,13 +8,10 @@ import authenticatedRoute from '../../src/component/authenticated_route/Authenti
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../../src/component/main_image/MainImage';
 import ModelLoading from '../../src/component/model_loading';
-import useAccessToken from '../../src/hook/useAccessToken';
 import useCode from '../../src/hook/useCode';
 import Article from '../../src/model/article';
-import { SkeletonTemplate } from '../../src/model/skeleton_template';
 import Uploadfiles from '../../src/model/uploadfiles';
 import * as ArtService from '../../src/service/art_service';
-import * as fileService from '../../src/service/file_service';
 import { getFile } from '../../src/service/file_service';
 import GlobalSettings from '../../src/setting/global';
 import * as Tools from '../../src/tool/tools';
@@ -45,8 +42,6 @@ function UpdateImage() {
     const [mainSrc, setMainSrc] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [previewSrc, setPreviewSrc] = useState(null);
-    const access_token = useAccessToken();
-
 
     useEffect(() => {
         if (code)
@@ -85,11 +80,6 @@ function UpdateImage() {
         try {
             let { record, article } = await ArtService.getRecordAndArticle(code);
             console.log('record: %o\narticle: %o\nskeleton: %o', record, article, article.skeleton)
-            if (record.needAccessPwd && !access_token) { // 跳转输入访问密码页面
-                console.log('access_token: %o', access_token);
-                router.push({ pathname: '/access_login', query: { code } })
-                return;
-            }
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);

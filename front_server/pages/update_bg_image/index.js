@@ -9,7 +9,6 @@ import authenticatedRoute from '../../src/component/authenticated_route/Authenti
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../../src/component/main_image/MainImage';
 import ModelLoading from '../../src/component/model_loading';
-import useAccessToken from '../../src/hook/useAccessToken';
 import useCode from '../../src/hook/useCode';
 import Article from '../../src/model/article';
 import { SkeletonTemplate } from '../../src/model/skeleton_template';
@@ -54,8 +53,6 @@ function UpdateImage() {
     const [dialogContent, setDialogContent] = useState(defaultDialog.content);
     let defaultHandleClose = function (ok) { setShowDialog(false) };
     const [dialogHandleClose, setDialogHandleClose] = useState(defaultHandleClose);
-    const access_token = useAccessToken();
-
 
     useEffect(() => {
         if (code)
@@ -92,11 +89,6 @@ function UpdateImage() {
         try {
             let { record, article } = await ArtService.getRecordAndArticle(code);
             console.log('record: %o\narticle: %o\nskeleton: %o', record, article, article.skeleton)
-            if (record.needAccessPwd && !access_token) { // 跳转输入访问密码页面
-                console.log('access_token: %o', access_token);
-                router.push({ pathname: '/access_login', query: { code } })
-                return;
-            }
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);

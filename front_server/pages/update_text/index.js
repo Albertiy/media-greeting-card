@@ -5,13 +5,10 @@ import { useSnackbar } from 'notistack'
 import { useEffect, useState } from 'react'
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar'
 import ModelLoading from '../../src/component/model_loading'
-import useAccessToken from '../../src/hook/useAccessToken'
 import useCode from '../../src/hook/useCode'
 import Article from '../../src/model/article'
-import { SkeletonTemplate } from '../../src/model/skeleton_template'
 import Uploadfiles from '../../src/model/uploadfiles'
 import * as ArtService from '../../src/service/art_service'
-import * as fileService from '../../src/service/file_service'
 import GlobalSettings from '../../src/setting/global'
 import styles from './update_text.module.scss'
 
@@ -33,7 +30,6 @@ export default function UpdateText() {
     const [record, setRecord] = useState(defaultRecord);
     const [article, setArticle] = useState(defaultArticle);
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
-    const access_token = useAccessToken();
 
 
     useEffect(() => {
@@ -66,11 +62,6 @@ export default function UpdateText() {
         try {
             let { record, article } = await ArtService.getRecordAndArticle(code);
             console.log('record: %o\narticle: %o\nskeleton: %o', record, article, article.skeleton)
-            if (record.needAccessPwd && !access_token) { // 跳转输入访问密码页面
-                console.log('access_token: %o', access_token);
-                router.push({ pathname: '/access_login', query: { code } })
-                return;
-            }
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);

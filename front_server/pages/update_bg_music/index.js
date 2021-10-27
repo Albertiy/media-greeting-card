@@ -9,7 +9,6 @@ import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
 import ImageBtn from '../../src/component/image_btn/ImageBtn';
 import MainImage from '../../src/component/main_image/MainImage';
 import ModelLoading from '../../src/component/model_loading';
-import useAccessToken from '../../src/hook/useAccessToken';
 import useCode from '../../src/hook/useCode';
 import Article from '../../src/model/article';
 import Music from '../../src/model/music';
@@ -55,7 +54,6 @@ function UpdateBgMusic() {
     const [source, setSource] = useState(null);
     const audioElement = useRef(defaultAudioElement);
     const audioContext = useRef(defaultAudioContext);
-    const access_token = useAccessToken();
 
     function initAudio() {
         if (audioElement.current) {
@@ -108,11 +106,6 @@ function UpdateBgMusic() {
         try {
             let { record, article } = await ArtService.getRecordAndArticle(code);
             console.log('record: %o\narticle: %o\nskeleton: %o', record, article, article.skeleton)
-            if (record.needAccessPwd && !access_token) { // 跳转输入访问密码页面
-                console.log('access_token: %o', access_token);
-                router.push({ pathname: '/access_login', query: { code } })
-                return;
-            }
             setRecord(record);
             setArticle(article);
             setSkeleton(article.skeleton);
