@@ -9,6 +9,7 @@ import authenticatedRoute from '../../src/component/authenticated_route/Authenti
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
 import MainImage from '../../src/component/main_image/MainImage';
 import ModelLoading from '../../src/component/model_loading';
+import useAccessToken from '../../src/hook/useAccessToken';
 import useCode from '../../src/hook/useCode';
 import Article from '../../src/model/article';
 import { SkeletonTemplate } from '../../src/model/skeleton_template';
@@ -53,6 +54,7 @@ function UpdateImage() {
     const [dialogContent, setDialogContent] = useState(defaultDialog.content);
     let defaultHandleClose = function (ok) { setShowDialog(false) };
     const [dialogHandleClose, setDialogHandleClose] = useState(defaultHandleClose);
+    const access_token = useAccessToken();
 
 
     useEffect(() => {

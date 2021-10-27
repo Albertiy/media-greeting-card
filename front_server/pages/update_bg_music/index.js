@@ -9,6 +9,7 @@ import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar';
 import ImageBtn from '../../src/component/image_btn/ImageBtn';
 import MainImage from '../../src/component/main_image/MainImage';
 import ModelLoading from '../../src/component/model_loading';
+import useAccessToken from '../../src/hook/useAccessToken';
 import useCode from '../../src/hook/useCode';
 import Article from '../../src/model/article';
 import Music from '../../src/model/music';
@@ -54,6 +55,7 @@ function UpdateBgMusic() {
     const [source, setSource] = useState(null);
     const audioElement = useRef(defaultAudioElement);
     const audioContext = useRef(defaultAudioContext);
+    const access_token = useAccessToken();
 
     function initAudio() {
         if (audioElement.current) {
