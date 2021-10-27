@@ -9,7 +9,7 @@ import * as fileService from '../../src/service/file_service'
 import GlobalSettings from '../../src/setting/global'
 import styles from './access_login.module.scss'
 
-export default function accessLogin() {
+export default function AccessLogin() {
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);

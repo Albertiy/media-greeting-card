@@ -10,7 +10,7 @@ import * as fileService from '../../src/service/file_service'
 import GlobalSettings from '../../src/setting/global'
 import styles from './login_pwd.module.scss'
 
-export default function loginPwd() {
+export default function LoginPwd() {
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);

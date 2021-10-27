@@ -21,7 +21,7 @@ const defaultArticle = null;
 /** @type{SkeletonTemplate[1]} */
 const defaultSkeleton = null;
 
-export default function updateText() {
+export default function UpdateText() {
     const router = useRouter();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { code } = useCode();

@@ -6,7 +6,7 @@ import useCode from '../src/hook/useCode';
 import GlobalSettings from '../src/setting/global';
 import styles from '../styles/at_1_manage.module.scss';
 
-export default function tips() {
+export default function Tips() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const { code, routerRefreshCount, routerLoaded } = useCode()
     const [cookies, setCookie, removeCookie] = useCookies();
