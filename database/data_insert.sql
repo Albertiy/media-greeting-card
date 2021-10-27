@@ -21,7 +21,8 @@ insert into bgimage(product_id,`name`,`path`,`order`) values(2, 'Default - 素�
 SELECT * FROM bgimage;
 
 -- 将之前的所有二维码设置product_id
--- --  update uploadfiles set product_id = 1;
+-- -- update uploadfiles set product_id = 1;
+-- -- update generaterecords set product_id = 1;
 
 select * from uploadfiles;
 
