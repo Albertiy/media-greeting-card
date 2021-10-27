@@ -9,7 +9,10 @@
       "log_date_format": "YYYY-MM-DD HH:mm Z",
       "error_file": "./log/pm2_error.log",
       "out_file": "./log/pm2_out.log",
-      "pid_file": "./log/pm2_pid.log"
+      "pid_file": "./log/pm2_pid.log",
+      "watch_options": {
+        "usePolling": true
+      }
     }
   ]
 }
