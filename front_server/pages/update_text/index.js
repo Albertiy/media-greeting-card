@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack'
 import { useEffect, useState } from 'react'
 import FloatSidebar from '../../src/component/float_sidebar/FloatSidebar'
 import ModelLoading from '../../src/component/model_loading'
+import useAccessToken from '../../src/hook/useAccessToken'
 import useCode from '../../src/hook/useCode'
 import Article from '../../src/model/article'
 import { SkeletonTemplate } from '../../src/model/skeleton_template'
@@ -32,6 +33,7 @@ export default function UpdateText() {
     const [record, setRecord] = useState(defaultRecord);
     const [article, setArticle] = useState(defaultArticle);
     const [skeleton, setSkeleton] = useState(defaultSkeleton);
+    const access_token = useAccessToken();
 
 
     useEffect(() => {
