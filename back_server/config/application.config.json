@@ -7,7 +7,7 @@
   "fileRoot": "../storageFiles",
   "tokenSecret": "it's fine if you no more love me",
   "tokenExpires": 3600,
-  "qrEntryUrl": "https://heka.neiguiyin.com/entry",
+  "qrEntryUrl": "https://heka.yigeyiyi.com/entry",
   "videoFileRoot": "./video",
   "audioFileRoot": "./audio",
   "imageFileRoot": "./image",
