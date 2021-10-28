@@ -32,7 +32,7 @@
 .contentLayer {
   position: relative;
   flex: 1;
-  width: calc(100% -2rem);
+  width: calc(100% - 2rem);
   height: 100%;
   padding: 1rem;
   /** grid是由内部元素控制大小，而flex是由外部元素控制 */
