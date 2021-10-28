@@ -15,6 +15,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: #4e4a75;
 }
 
 .upperLayer {
@@ -39,6 +40,35 @@
 }
 
 .tipsContainer {
+  border-radius: 0.5rem;
+  margin-top: 18%;
+  user-select: text;
+  -webkit-user-select: text;
+  width: 100%;
+  min-height: 13rem;
+  padding: 0.5rem;
+  outline: none;
+  text-overflow: ellipsis;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+}
+
+.label {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.details {
+  font-size: 1rem;
+  color: #ccc;
+  width: 100%;
+  text-indent: 2rem;
+  margin-bottom: 0.35rem;
 }
 
 .menuBtnContainer {
